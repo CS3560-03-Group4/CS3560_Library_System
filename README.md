@@ -18,4 +18,11 @@ Run the following commands in order from your terminal on Visual Studio Code:
 
 5. `pnpm dev`
 
-Our development work will be mostly located in `/app` folder
+6. Open the web app by clicking on the link `http://localhost:3000`
+
+If successful, you should see the following page:
+
+![image](https://github.com/user-attachments/assets/357f8486-cd30-475d-a284-701b7d1bffb7)
+
+
+NOTE: Our development work will be mostly located in `/app` folder
