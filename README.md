@@ -8,7 +8,7 @@ This project aims to create an online library system that provides streamlined s
 
 Run the following commands in order from your terminal on Visual Studio Code:
 
-1. `git clone [https://github.com/davidgit3000/cs3560_library_system.git](https://github.com/CS3560-03-Group4/CS3560_Library_System.git)`
+1. `git clone https://github.com/CS3560-03-Group4/CS3560_Library_System.git`
 
 2. `cd library_system`
 
