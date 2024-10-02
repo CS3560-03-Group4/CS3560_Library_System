@@ -10,7 +10,7 @@ Run the following commands in order from your terminal on Visual Studio Code:
 
 1. `git clone https://github.com/CS3560-03-Group4/CS3560_Library_System.git`
 
-2. `cd library_system`
+2. `cd CS3560_Library_System`
 
 3. `npm install -g pnpm`
 
