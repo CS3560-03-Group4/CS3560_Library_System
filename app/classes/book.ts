@@ -1,18 +1,25 @@
 class Book {
-    bookID: number;
-    title: string;
-    author: string;
-    numberOfPages: number;
-    publisher: string;
-    description: string;
+    private bookID: number;
+    private title: string;
+    private author: string;
+    private publisher: string;
+    private numberOfPages: number;
+    private condition: string;
+    private genre: string;
+    private type: string;
+    private isAvailable: boolean;
 
-    constructor(bookID: number, title: string, author: string, numOfPages: number, publisher: string, description: string){
+
+    constructor(bookID: number, title: string, author: string, publisher: string, numOfPages: number, condition: string, genre: string, type: string){
         this.bookID = bookID;
         this.title = title;
         this.author = author;
-        this.numberOfPages = numOfPages;
         this.publisher = publisher;
-        this.description = description;
+        this.numberOfPages = numOfPages;
+        this.condition = condition;
+        this.genre = genre;
+        this.type = type;
+        this.isAvailable = true;
     }
 
     getBookID(): number{
@@ -27,16 +34,27 @@ class Book {
         return this.author;
     }
 
-    getNumOfPages(): number{
-        return this.numberOfPages;
-    }
-
     getPublisher(): string{
         return this.publisher;
     }
 
-    getDescription(): string{
-        return this.description;
+    getNumOfPages(): number{
+        return this.numberOfPages;
     }
+
+    getCondition(): string{
+        return this.condition;
+    }
+
+    getGenre(): string{
+        return this.genre;
+    }
+
+    getType(): string{
+        return this.type;
+    }
+
+
+
 
 }
