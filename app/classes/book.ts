@@ -10,13 +10,18 @@ enum BookType {
   audiobook,
 } // enum for book type
 
+enum Condition {
+  NEW,
+  USED,
+}
+
 class Book {
   private bookID: number;
   private title: string;
   private author: string;
   private publisher: string;
   private numberOfPages: number;
-  private condition: string;
+  private condition: Condition;
   private genre: string;
   private type: BookType;
   private isAvailable: boolean;
@@ -40,7 +45,7 @@ class Book {
     author: string,
     publisher: string,
     numOfPages: number,
-    condition: string,
+    condition: Condition,
     genre: string,
     type: BookType,
     isAvailable: boolean
@@ -102,7 +107,7 @@ class Book {
    * Retrieves the condition of the book.
    * @returns {string} The condition of the book.
    */
-  public getCondition(): string {
+  public getCondition(): Condition {
     return this.condition;
   }
 
@@ -176,7 +181,7 @@ class Book {
    * Sets the condition of the book (e.g. "new", "used", etc.).
    * @param {string} condition - The condition of the book.
    */
-  public setCondition(condition: string) {
+  public setCondition(condition: Condition) {
     this.condition = condition;
   }
 
