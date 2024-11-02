@@ -22,7 +22,7 @@ class Student extends User {
     address: string,
     email: string,
     studentID: string,
-    amountDue: number
+    amountDue: number = 0
   ) {
     super((role = Role.Student), name, phoneNumber, address, email);
     this.studentID = studentID;
@@ -100,7 +100,7 @@ class Student extends User {
       address,
       email,
       studentID,
-      (amountDue = 0)
+      amountDue
     );
     // Additional setup or database storage logic could go here.
     return newStudent;
