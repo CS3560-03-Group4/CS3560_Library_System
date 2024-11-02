@@ -101,7 +101,7 @@ class BookOrder {
     dueDate: string,
     status: Status,
     borrowDate: string
-  ) {
+  ): void {
     // TODO
   }
 
@@ -109,7 +109,7 @@ class BookOrder {
    * Cancel the book order by updating its status to Cancelled.
    * @param {number} orderID - ID of the order to be cancelled.
    */
-  cancelBookOrder(orderID: number) {
+  cancelBookOrder(orderID: number): void {
     // TODO
   }
 
@@ -117,7 +117,7 @@ class BookOrder {
    * Renew the book order by updating its status to Renewed.
    * @param {number} orderID - ID of the order to be renewed.
    */
-  renewBookOrder(orderID: number) {
+  renewBookOrder(orderID: number): void {
     // TODO
   }
 
@@ -125,7 +125,9 @@ class BookOrder {
    * Return the book order by updating its status to Returned.
    * @param {number} orderID - ID of the order to be returned.
    */
-  returnBookOrder(orderID: number) {
+  returnBookOrder(orderID: number): void {
     // TODO
   }
 }
+
+export default BookOrder;

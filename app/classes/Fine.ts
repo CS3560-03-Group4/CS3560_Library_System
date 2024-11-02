@@ -1,32 +1,39 @@
 class Fine {
-    private amount: number;
-    private status: string;
+  private amount: number;
+  private status: string;
 
-    constructor(amount: number, status: string) {
-        this.amount = amount;
-        this.status = status; // Status might be something like 'unpaid', 'paid', 'pending', etc.
-    }
+  /**
+   * Creates a new Fine object.
+   * @param {number} amount - The amount of the fine.
+   * @param {string} status - The status of the fine, e.g. 'unpaid', 'paid', 'pending', etc.
+   */
+  constructor(amount: number, status: string) {
+    this.amount = amount;
+    this.status = status; // Status might be something like 'unpaid', 'paid', 'pending', etc.
+  }
 
-    // Method to update the fine amount
-    updateAmount(newAmount: number) {
-        this.amount = newAmount;
-    }
+  /**
+   * Updates the amount of the fine.
+   * @param {number} newAmount - The new amount of the fine.
+   */
+  updateAmount(newAmount: number) {
+    // TODO
+  }
 
-    // Method to change the status of the fine
-    updateStatus(newStatus: string) {
-        this.status = newStatus;
-    }
+  /**
+   * Updates the status of the fine.
+   * @param {string} newStatus - The new status of the fine.
+   */
+  updateStatus(newStatus: string) {
+    // TODO
+  }
 
-    // Method to display fine details
-    displayFineDetails() {
-        console.log(`Amount: $${this.amount}`);
-        console.log(`Status: ${this.status}`);
-    }
+  /**
+   * Displays the fine details to the console.
+   */
+  displayFineDetails() {
+    // TODO
+  }
 }
 
-/* Example usage:
-let fine1 = new Fine(25.00, 'unpaid');
-fine1.displayFineDetails();
-fine1.updateAmount(30.00);
-fine1.updateStatus('paid');
-fine1.displayFineDetails(); */
+export default Fine;

@@ -1,38 +1,37 @@
-// BookItem.ts
+import Book from "./Book";
+import BookOrder from "./BookOrder";
 
+// An association class between Book and BookOrder
 class BookItem {
-    // Order ID for the book item
-    private orderID: string;
-  
-    // Book ID for the book item
-    private bookID: string;
-  
-    // Constructor to initialize orderID and bookID
-    constructor(orderID: string, bookID: string) {
-      this.orderID = orderID;
-      this.bookID = bookID;
+    private book: Book;
+    private bookOrder: BookOrder;
+
+    /**
+     * Constructor for initializing a BookItem with a Book and a BookOrder.
+     *
+     * @param book - The book for the book item
+     * @param bookOrder - The book order for the book item
+     */
+    constructor(book: Book, bookOrder: BookOrder) {
+        this.book = book;
+        this.bookOrder = bookOrder;
     }
-  
-    // Getter for orderID
-    public getOrderID(): string {
-      return this.orderID;
+
+    /**
+     * Retrieves the book associated with this BookItem.
+     * @returns {Book} The book associated with this BookItem.
+     */
+    getBook(): Book {
+        return this.book;
     }
-  
-    // Setter for orderID
-    public setOrderID(orderID: string): void {
-      this.orderID = orderID;
+
+    /**
+     * Retrieves the book order associated with this BookItem.
+     * @returns {BookOrder} The book order associated with this BookItem.
+     */
+    getBookOrder(): BookOrder {
+        return this.bookOrder;
     }
-  
-    // Getter for bookID
-    public getBookID(): string {
-      return this.bookID;
-    }
-  
-    // Setter for bookID
-    public setBookID(bookID: string): void {
-      this.bookID = bookID;
-    }
-  }
-  
-  export default BookItem;
-  
+}
+
+export default BookItem;
