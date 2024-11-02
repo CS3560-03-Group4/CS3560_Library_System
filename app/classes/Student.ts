@@ -1,5 +1,7 @@
+import { ST } from "next/dist/shared/lib/utils";
+
 class Student extends User {
-  private studentID: number;
+  private studentID: string;
   private amountDue: number;
 
   /**
@@ -19,10 +21,10 @@ class Student extends User {
     phoneNumber: string,
     address: string,
     email: string,
-    studentID: number,
+    studentID: string,
     amountDue: number
   ) {
-    super(role = Role.Student, name, phoneNumber, address, email);
+    super((role = Role.Student), name, phoneNumber, address, email);
     this.studentID = studentID;
     this.amountDue = amountDue;
   }
@@ -31,7 +33,7 @@ class Student extends User {
    * Retrieves the student ID.
    * @returns {number} The student ID.
    */
-  public getStudentID(): number {
+  public getStudentID(): string {
     return this.studentID;
   }
 
@@ -39,7 +41,7 @@ class Student extends User {
    * Sets the student ID.
    * @param {number} newStudentID - The new student ID to set.
    */
-  public setStudentID(newStudentID: number) {
+  public setStudentID(newStudentID: string) {
     this.studentID = newStudentID;
   }
 
@@ -47,12 +49,17 @@ class Student extends User {
    * Retrieves the amount due from the student.
    * @returns {number} The amount due from the student.
    */
-  public getAmountDue(): number {
+  // Method to check due amount
+  public checkDueAmount(): number {
     return this.amountDue;
   }
 
   /**
-   * Sets the amount due from the student.
+   * Sets the student's total outstanding amount due each time there is a fine for a student's BookOrder.
+   *
+   * This value is calculated based on the total of unpaid fines (Fine.amount) associated with student's BookOrder.
+   *
+   * Ensures that the new amount is non-negative; otherwise, logs an error.
    * @param {number} newAmountDue - The new amount due from the student.
    */
   public setAmountDue(newAmountDue: number) {
@@ -63,6 +70,51 @@ class Student extends User {
    * Displays the student's profile.
    */
   public viewProfile(): void {
+    // TODO
+  }
+
+  /**
+   * A static method to create a new Student account
+   * @param {Role} role - The role of the user (Student or Staff).
+   * @param {string} name - The name of the user.
+   * @param {string} phoneNumber - The phone number of the user.
+   * @param {string} address - The address of the user.
+   * @param {string} email - The email of the user.
+   * @param {string} studentID - The student ID of the user.
+   * @param {number} amountDue - The amount that the user owes (initially defaults to 0).
+   * @returns {Student} The new Student account.
+   */
+  static createAccount(
+    role: Role,
+    name: string,
+    phoneNumber: string,
+    address: string,
+    email: string,
+    studentID: string,
+    amountDue: number
+  ): Student {
+    const newStudent = new Student(
+      (role = Role.Student),
+      name,
+      phoneNumber,
+      address,
+      email,
+      studentID,
+      (amountDue = 0)
+    );
+    // Additional setup or database storage logic could go here.
+    return newStudent;
+  }
+
+  /**
+   * Method to pay a specified amount towards the student's outstanding balance.
+   * - If the payment amount is less than or equal to the current amount due, it deducts the amount from the total outstanding balance.
+   * - If the payment amount exceeds the amount due, logs an error message to indicate that the payment is more than the outstanding balance.
+   *
+   * This method ensures that the outstanding balance does not become negative due to overpayment.
+   * @param amount
+   */
+  public payDue(amount: number): void {
     // TODO
   }
 }
