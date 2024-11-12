@@ -1,14 +1,19 @@
+import User, { Role } from "./User";
+
 class Staff extends User {
   private staffID: string;
   constructor(
+    userID: number,
     role: Role,
-    name: string,
+    firstName: string,
+    lastName: string,
+    username: string,
     phoneNumber: string,
     address: string,
     email: string,
     staffID: string
   ) {
-    super((role = Role.Staff), name, phoneNumber, address, email);
+    super(userID,(role = Role.STAFF), firstName, lastName, username, phoneNumber, address, email);
     this.staffID = staffID;
   }
 
@@ -38,15 +43,22 @@ class Staff extends User {
    * @returns {Staff} The new Staff account.
    */
   static createAccount(
-    name: string,
+    userId: number,
+    role: Role,
+    firstName: string,
+    lastName: string,
+    username: string,
     phoneNumber: string,
     address: string,
     email: string,
     staffID: string
   ): Staff {
     const newStaff = new Staff(
-      Role.Staff,
-      name,
+      userId,
+      (role = Role.STAFF),
+      firstName,
+      lastName,
+      username,
       phoneNumber,
       address,
       email,

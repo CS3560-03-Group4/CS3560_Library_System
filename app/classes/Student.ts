@@ -1,30 +1,46 @@
-import { ST } from "next/dist/shared/lib/utils";
+import User, { Role } from "./User";
 
 class Student extends User {
   private studentID: string;
   private amountDue: number;
 
+  
   /**
-   * Constructor for initializing a Student with a role, name, phone number, address, email, student ID, and amount due.
+   * Constructor for initializing a Student instance with necessary details.
    *
-   * @param role - The role of the user
-   * @param name - The name of the user
-   * @param phoneNumber - The phone number of the user
-   * @param address - The address of the user
-   * @param email - The email of the user
-   * @param studentID - The ID of the student
-   * @param amountDue - The amount the student owes
+   * @param userID - Unique identifier for the user
+   * @param role - The role of the user (Student or Staff).
+   * @param firstName - The first name of the user.
+   * @param lastName - The last name of the user.
+   * @param username - The username of the user.
+   * @param phoneNumber - The phone number of the user.
+   * @param address - The address of the user.
+   * @param email - The email of the user.
+   * @param studentID - The student ID of the user.
+   * @param amountDue - The amount that the user owes (initially defaults to 0).
    */
   constructor(
+    userID: number,
     role: Role,
-    name: string,
+    firstName: string,
+    lastName: string,
+    username: string,
     phoneNumber: string,
     address: string,
     email: string,
     studentID: string,
     amountDue: number = 0
   ) {
-    super((role = Role.Student), name, phoneNumber, address, email);
+    super(
+      userID,
+      (role = Role.STUDENT),
+      firstName,
+      lastName,
+      username,
+      phoneNumber,
+      address,
+      email
+    );
     this.studentID = studentID;
     this.amountDue = amountDue;
   }
@@ -85,8 +101,11 @@ class Student extends User {
    * @returns {Student} The new Student account.
    */
   static createAccount(
+    userId: number,
     role: Role,
-    name: string,
+    firstName: string,
+    lastName: string,
+    username: string,
     phoneNumber: string,
     address: string,
     email: string,
@@ -94,8 +113,11 @@ class Student extends User {
     amountDue: number
   ): Student {
     const newStudent = new Student(
-      (role = Role.Student),
-      name,
+      userId,
+      (role = Role.STUDENT),
+      firstName,
+      lastName,
+      username,
       phoneNumber,
       address,
       email,
