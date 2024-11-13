@@ -31,7 +31,7 @@ NOTE: Our development work will be mostly located in `/app` folder
 
 1. Install Prisma: `pnpm i -D prisma`
 
-2. Install Prisma Client: `pnpm I @prisma/client`
+2. Install Prisma Client: `pnpm i @prisma/client`
 
 3. Create the folder `prisma`: `pnpx prisma init`
 
