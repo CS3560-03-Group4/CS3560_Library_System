@@ -51,7 +51,6 @@ model Staff {
 }
 
 // Subclass Book
-
 model Book {
   bookID      Int       @id @default(autoincrement())
   title       String
@@ -63,8 +62,6 @@ model Book {
   isAvailable Boolean
   bookItems   BookItem[]
 }
-
-
 
 // Subclass BookOrder
 model BookOrder {
@@ -82,7 +79,6 @@ model BookItem {
   quantity Int
   order    BookOrder @relation(fields: [orderID], references: [orderID])
   book     Book @relation(fields: [bookID], references: [bookID])
-
   @@id([orderID, bookID]) // primary key to allow multiple book items per order and the same book in different orders
 }
 
