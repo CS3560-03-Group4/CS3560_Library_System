@@ -49,3 +49,54 @@ model Staff {
   userID  Int    @unique
   user    User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
 }
+
+// Subclass Book
+
+model Book {
+  bookID      Int       @id @default(autoincrement())
+  title       String
+  author      String
+  publisher   String
+  numberOfPages Int
+  condition   String // Values might include "New", "Used", "Good", etc.
+  genre       String
+  isAvailable Boolean
+  bookItems   BookItem[]
+}
+
+
+
+// Subclass BookOrder
+model BookOrder {
+  orderID    Int      @id @default(autoincrement())
+  dueDate    DateTime
+  status     String   // Values might include "Processing", "Borrowed", "Returned", etc.
+  borrowDate DateTime
+  bookItems  BookItem[]
+}
+
+// Subclass BookItem
+model BookItem {
+  orderID  Int
+  bookID   Int
+  quantity Int
+  order    BookOrder @relation(fields: [orderID], references: [orderID])
+  book     Book @relation(fields: [bookID], references: [bookID])
+
+  @@id([orderID, bookID]) // primary key to allow multiple book items per order and the same book in different orders
+}
+
+// Subclass Fine
+model Fine {
+  fineID      Int       @id @default(autoincrement())
+  amount      Float
+  status      String    // e.g., "Unpaid", "Paid"
+}
+
+// Subclass Payment
+model Payment {
+  paymentID   Int       @id @default(autoincrement())
+  paymentMethod String
+  date        DateTime
+  amount      Float
+}
