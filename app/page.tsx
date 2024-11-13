@@ -1,24 +1,31 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Router } from "next/router";
+import Header from "@/components/ui/headbar";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    router.push("/sign-in");
-  };
+  useEffect(() => {
+    // Check if user is authenticated by looking for a token in localStorage
+    const token = localStorage.getItem("authToken"); // Replace "authToken" with your actual token key
+    if (token) {
+      setIsAuthenticated(true);
+    } else {
+      router.push("/sign-in"); // Redirect to sign-in if not authenticated
+    }
+  }, [router]);
 
   return (
     <>
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <h1 className="text-3xl font-bold">Home page</h1>
-        <Button className="text-white rounded-xl" onClick={handleLogout}>
-          Log out
-        </Button>
+      <main className="flex flex-col min-h-screen items-center">
+        {/* Header */}
+        {isAuthenticated && <Header />}
+
+        {/* Home Page Title */}
+        <h1 className="text-3xl font-bold mt-8">Home page</h1>
       </main>
     </>
   );
