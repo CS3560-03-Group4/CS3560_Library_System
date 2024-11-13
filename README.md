@@ -31,8 +31,10 @@ NOTE: Our development work will be mostly located in `/app` folder
 
 1. Install Prisma: `pnpm i -D prisma`
 
-2. Create the folder `prisma`: `pnpx prisma init`
+2. Install Prisma Client: `pnpm I @prisma/client`
 
-3. After defining all models, run `pnpx prisma generate`
+3. Create the folder `prisma`: `pnpx prisma init`
 
-4. Then run `pnpx prisma migrate dev` to create tables remotely on Neon DB
+4. After defining all models, run `pnpx prisma generate`
+
+5. Then run `pnpx prisma migrate dev` to create tables remotely on Neon DB
