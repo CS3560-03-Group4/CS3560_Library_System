@@ -13,10 +13,12 @@ import TextField from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify"; // Assuming you use react-toastify for notifications
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function SignIn() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isValidated, setIsValidated] = useState(false);
   const [signinForm, setSigninForm] = useState({
     username: "",
     password: "",
@@ -42,6 +44,9 @@ export default function SignIn() {
       return;
     }
 
+    // After validation, set isValidated to true
+    setIsValidated(true);
+
     try {
       // Send a request to the server to authenticate
       const response = await fetch("/api/signin", {
@@ -61,8 +66,8 @@ export default function SignIn() {
         // Store userID and token in localStorage
         localStorage.setItem("userID", userID);
         localStorage.setItem("authToken", token);
-        setIsLoading(false);
-        // Navigate to the Home page
+
+        // Navigate to the Home page after successful sign-in
         router.push("/");
       } else {
         toast.error("Invalid credentials. Please try again.", {
@@ -76,6 +81,8 @@ export default function SignIn() {
         position: "top-center",
         autoClose: 3000,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -131,7 +138,20 @@ export default function SignIn() {
                   onClick={handleSignin}
                   className="hover:bg-primary/90 text-white md:text-md lg:text-lg mt-4 w-full rounded-xl"
                 >
-                  {isLoading == true ? "Signing In..." : "Sign In"}
+                  {isValidated && isLoading ? (
+                    <>
+                      Signing In...
+                      <CircularProgress
+                        color="inherit"
+                        size={"1rem"}
+                        sx={{
+                          animation: "spin 1s linear infinite",
+                        }}
+                      />
+                    </>
+                  ) : (
+                    "Sign In"
+                  )}
                 </Button>
                 <p>
                   Don't have an account?{" "}

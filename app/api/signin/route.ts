@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error during sign-in:", error);
+    console.error("[ROUTE_SIGNIN] Error during sign-in:", error);
     return NextResponse.json(
       { message: "An error occurred during sign-in" },
       { status: 500 }

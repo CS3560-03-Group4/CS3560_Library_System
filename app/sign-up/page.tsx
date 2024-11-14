@@ -13,10 +13,12 @@ import {
 import TextField from "@mui/material/TextField";
 import { Grid2 } from "@mui/material";
 import { toast } from "react-toastify";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function SignUp() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isValidated, setIsValidated] = useState(false);
   const [registerForm, setRegisterForm] = useState({
     broncoID: "",
     firstName: "",
@@ -75,6 +77,9 @@ export default function SignUp() {
       return; // Stop the function if validation fails
     }
 
+    // After validation, set isValidated to true
+    setIsValidated(true);
+
     // Handle sign-up logic
     try {
       // console.log(registerForm);
@@ -93,11 +98,11 @@ export default function SignUp() {
         console.log("User ID:", userID);
         console.log("Token:", token);
         // Store the token in localStorage
-        localStorage.setItem("token", token);
+        localStorage.setItem("authToken", token);
         localStorage.setItem("userID", userID.toString());
 
         setIsLoading(false);
-        // Redirect to home page after sign-up
+        // Redirect to home page after successful sign-up
         router.push("/");
 
         toast.success("Sign-up successful!", {
@@ -114,8 +119,9 @@ export default function SignUp() {
           password: "",
         });
       } else {
-        console.error(response);
-        toast.error("Sign-up failed. Please try again.", {
+        const data = await response.json();
+        console.error(data.message);
+        toast.error(data.message, {
           position: "top-center",
           autoClose: 3000,
         });
@@ -126,6 +132,8 @@ export default function SignUp() {
         position: "top-center",
         autoClose: 3000,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -219,7 +227,20 @@ export default function SignUp() {
                   onClick={handleSignup}
                   className="hover:bg-primary/90 text-white md:text-md lg:text-lg mt-4 w-full rounded-xl"
                 >
-                  {isLoading ? "Creating your account..." : "Register"}
+                  {isValidated == true && isLoading ? (
+                    <>
+                      Creating your account...
+                      <CircularProgress
+                        color="inherit"
+                        size={"1rem"}
+                        sx={{
+                          animation: "spin 1s linear infinite",
+                        }}
+                      />
+                    </>
+                  ) : (
+                    "Register"
+                  )}
                 </Button>
                 <p>
                   Already have an account?{" "}

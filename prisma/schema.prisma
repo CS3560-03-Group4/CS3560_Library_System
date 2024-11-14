@@ -6,7 +6,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["typedSql"]
+  previewFeatures = ["typedSql", "postgresqlExtensions"]
 }
 
 datasource db {
@@ -14,18 +14,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Define all enums that stores constant values 
 enum Role {
   STUDENT
   STAFF
 }
 
+enum OrderStatus {
+  PENDING
+  ORDERED
+  BORROWED
+  RETURNED
+  RENEWED
+  CANCELED
+  OVERDUE
+}
+
+enum FineStatus {
+  PAID
+  UNPAID
+  PENDING
+}
+
+// --------------------------------------------
+// Define all required tables
 // Base class User
 model User {
-  userID      Int      @id @default(autoincrement())
+  userID      String   @id @default(dbgenerated("gen_random_uuid()"))
   firstName   String
   lastName    String
   username    String   @unique
-  password    String   @unique  
+  password    String   @unique
   email       String   @unique
   phoneNumber String?
   address     String?
@@ -37,7 +56,7 @@ model User {
 // Subclass Student
 model Student {
   studentID String  @id
-  userID    Int     @unique
+  userID    String  @unique
   user      User    @relation(fields: [userID], references: [userID], onDelete: Cascade)
   major     String?
   amountDue Int?
@@ -46,6 +65,51 @@ model Student {
 // Subclass Staff
 model Staff {
   staffID String @id
-  userID  Int    @unique
+  userID  String @unique
   user    User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
+}
+
+model Book {
+  bookID        String     @id @default(dbgenerated("gen_random_uuid()"))
+  title         String
+  author        String
+  publisher     String
+  numberOfPages Int
+  condition     String // Values might include "New", "Used", "Good", etc.
+  genre         String
+  isAvailable   Boolean
+  bookItems     BookItem[]
+}
+
+model BookOrder {
+  orderID    String      @id @default(dbgenerated("gen_random_uuid()"))
+  dueDate    DateTime
+  status     OrderStatus // Values might include "Processing", "Borrowed", "Returned", etc.
+  borrowDate DateTime
+  bookItems  BookItem[]
+}
+
+// Association table between Book and BookOrder
+model BookItem {
+  orderID  String
+  bookID   String
+  quantity Int
+  order    BookOrder @relation(fields: [orderID], references: [orderID])
+  book     Book      @relation(fields: [bookID], references: [bookID])
+
+  @@id([orderID, bookID]) // primary key to allow multiple book items per order and the same book in different orders
+}
+
+model Fine {
+  fineID String     @id @default(dbgenerated("gen_random_uuid()"))
+  amount Float
+  status FineStatus // e.g., "Unpaid", "Paid"
+}
+
+// Subclass Payment
+model Payment {
+  paymentID     String   @id @default(dbgenerated("gen_random_uuid()"))
+  paymentMethod String
+  date          DateTime
+  amount        Float
 }

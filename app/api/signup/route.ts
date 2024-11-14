@@ -3,9 +3,11 @@ import { hash } from "bcryptjs"; //For password hashing
 import jwt from "jsonwebtoken"; // Import jsonwebtoken to generate a token
 import { db } from "@/lib/db";
 import {
-  createNewUser,
   createNewStudent,
   createNewStaff,
+  getUserByUsername,
+  getAllStudents,
+  getAllUsers,
 } from "@prisma/client/sql";
 import { Role } from "@/app/classes/User";
 import User from "@/app/classes/User";
@@ -40,6 +42,41 @@ export async function POST(req: Request) {
     // console.log("First Name:", firstName);
     // console.log("Last Name:", lastName);
     // console.log("Email:", email);
+
+    // Check if BroncoID already exists in the database
+    const existingBroncoID = await db.$queryRawTyped(getAllStudents());
+
+    if (
+      existingBroncoID.length > 0 &&
+      existingBroncoID[0].studentID == broncoID
+    ) {
+      return NextResponse.json(
+        { message: "BroncoID already exists" },
+        { status: 400 }
+      );
+    }
+
+    // Check if email already exists in the database
+    const existingEmail = await db.$queryRawTyped(getAllUsers());
+
+    if (existingEmail.length > 0 && existingEmail[0].email == email) {
+      return NextResponse.json(
+        { message: "Email already exists" },
+        { status: 400 }
+      );
+    }
+
+    // Check if the username already exists in the database
+    const existingUser = await db.$queryRawTyped(getUserByUsername(username));
+
+    if (existingUser.length > 0) {
+      return NextResponse.json(
+        { message: "Username already exists" },
+        { status: 400 }
+      );
+    }
+
+    // Determine the role based on the broncoID
     const role: Role = broncoID.startsWith("S") ? Role.STUDENT : Role.STAFF;
 
     const newUser = await User.createNewUser(
@@ -79,7 +116,7 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error during sign-up:", error);
+    console.error("[ROUTE_SIGNUP] Error during sign-up:", error);
     return NextResponse.json(
       { message: "An error occurred during sign-up" },
       { status: 500 }
