@@ -55,11 +55,15 @@ model User {
 
 // Subclass Student
 model Student {
-  studentID String  @id
-  userID    String  @unique
-  user      User    @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  studentID String      @id
+  userID    String      @unique
+  user      User        @relation(fields: [userID], references: [userID], onDelete: Cascade)
   major     String?
   amountDue Int?
+  // Student - BookOrder (one to many)
+  bookOrder BookOrder[]
+  // Student - Payment (one to many)
+  payment   Payment[]
 }
 
 // Subclass Staff
@@ -78,6 +82,7 @@ model Book {
   condition     String // Values might include "New", "Used", "Good", etc.
   genre         String
   isAvailable   Boolean
+  // Book - BookItem (one to many)
   bookItems     BookItem[]
 }
 
@@ -86,30 +91,39 @@ model BookOrder {
   dueDate    DateTime
   status     OrderStatus // Values might include "Processing", "Borrowed", "Returned", etc.
   borrowDate DateTime
+  // BookOrder - BookItem (one to many)
   bookItems  BookItem[]
+  // Studdent - BookOrder (one to many)
+  studentID  String
+  student    Student     @relation(fields: [studentID], references: [studentID], onDelete: Cascade)
+  // BookOrder - Fine (one to one)
+  fine       Fine?
 }
 
-// Association table between Book and BookOrder
+// Association table between Book and BookOrder (many to many)
 model BookItem {
   orderID  String
   bookID   String
   quantity Int
-  order    BookOrder @relation(fields: [orderID], references: [orderID])
-  book     Book      @relation(fields: [bookID], references: [bookID])
+  order    BookOrder @relation(fields: [orderID], references: [orderID], onDelete: Cascade)
+  book     Book      @relation(fields: [bookID], references: [bookID], onDelete: Cascade)
 
   @@id([orderID, bookID]) // primary key to allow multiple book items per order and the same book in different orders
 }
 
 model Fine {
-  fineID String     @id @default(dbgenerated("gen_random_uuid()"))
-  amount Float
-  status FineStatus // e.g., "Unpaid", "Paid"
+  fineID      String     @id @default(dbgenerated("gen_random_uuid()"))
+  amount      Float
+  status      FineStatus // e.g., "Unpaid", "Paid"
+  bookOrderID String     @unique
+  bookOrder   BookOrder  @relation(fields: [bookOrderID], references: [orderID], onDelete: Cascade)
 }
 
-// Subclass Payment
 model Payment {
   paymentID     String   @id @default(dbgenerated("gen_random_uuid()"))
   paymentMethod String
   date          DateTime
   amount        Float
+  studentID     String
+  student       Student  @relation(fields: [studentID], references: [studentID], onDelete: Cascade)
 }
