@@ -40,14 +40,18 @@ model Student {
   userID    Int     @unique
   user      User    @relation(fields: [userID], references: [userID], onDelete: Cascade)
   major     String?
-  amountDue Int?
+  amountDue Float?
+  payments  Payment[]
+  bookOrders  BookOrder[]
 }
 
 // Subclass Staff
 model Staff {
-  staffID String @id
-  userID  Int    @unique
-  user    User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  staffID   String @id
+  userID    Int    @unique
+  user      User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  hireDate  DateTime
+  position  String?
 }
 
 // Subclass Book
@@ -57,42 +61,58 @@ model Book {
   author      String
   publisher   String
   numberOfPages Int
-  condition   String // Values might include "New", "Used", "Good", etc.
   genre       String
-  isAvailable Boolean
+  imageURL    String? // storing the image URL
   bookItems   BookItem[]
+  inventory   BookInventory @relation(fields: [bookID], references: [bookID])
 }
 
-// Subclass BookOrder
+// BookInventory for managing quantities
+model BookInventory {
+  bookID    Int
+  quantity  Int
+  book      Book @relation(fields: [bookID], references: [bookID])
+
+  @@id([bookID])
+}
+
+// BookOrder for tracking user orders
 model BookOrder {
   orderID    Int      @id @default(autoincrement())
+  studentID  String
+  totalItems Int
+  orderDate  DateTime
   dueDate    DateTime
   status     String   // Values might include "Processing", "Borrowed", "Returned", etc.
-  borrowDate DateTime
+  student    Student @relation(fields: [studentID], references: [studentID])
   bookItems  BookItem[]
+  fines      Fine[]
 }
 
-// Subclass BookItem
+// BookItem for managing books in orders
 model BookItem {
   orderID  Int
   bookID   Int
-  quantity Int
   order    BookOrder @relation(fields: [orderID], references: [orderID])
   book     Book @relation(fields: [bookID], references: [bookID])
   @@id([orderID, bookID]) // primary key to allow multiple book items per order and the same book in different orders
 }
 
-// Subclass Fine
+// Fine for tracking fines associated with orders
 model Fine {
   fineID      Int       @id @default(autoincrement())
+  orderID     Int 
   amount      Float
   status      String    // e.g., "Unpaid", "Paid"
+  order       BookOrder @relation(fields: [orderID], references: [orderID])
 }
 
-// Subclass Payment
+// Payment for tracking user payments
 model Payment {
   paymentID   Int       @id @default(autoincrement())
+  studentID   String
   paymentMethod String
   date        DateTime
   amount      Float
+  student     Student @relation(fields: [studentID], references: [studentID])
 }
