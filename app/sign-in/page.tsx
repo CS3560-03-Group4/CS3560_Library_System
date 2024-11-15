@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify"; // Assuming you use react-toastify for notifications
 import CircularProgress from "@mui/material/CircularProgress";
+import { useUser } from "@/contexts/UserContext";
 
 export default function SignIn() {
   const router = useRouter();
@@ -23,6 +24,8 @@ export default function SignIn() {
     username: "",
     password: "",
   });
+
+  const { login } = useUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -66,6 +69,9 @@ export default function SignIn() {
         // Store userID and token in localStorage
         localStorage.setItem("userID", userID);
         localStorage.setItem("authToken", token);
+
+        // Call login() from UserContext to update context values immediately
+        login();
 
         // Navigate to the Home page after successful sign-in
         router.push("/");

@@ -1,14 +1,14 @@
 "use client";
 
-import type { Metadata } from "next";
+import Footer from "@/components/footer/footer"; // Import Footer component
+import Header from "@/components/header/headbar"; // Import Header component
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import localFont from "next/font/local";
 import { usePathname } from "next/navigation";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import Header from "@/components/header/headbar"; // Import Header component
-import Footer from "@/components/footer/footer"; // Import Footer component
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+import { UserProvider } from "@/contexts/UserContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,16 +32,21 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <title>Home</title>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        <AppRouterCacheProvider>
-          {/* Conditionally render Header and Footer */}
-          {!hideHeaderAndFooter && <Header />}
-          {children}
-          {!hideHeaderAndFooter && <Footer />}
-        </AppRouterCacheProvider>
-        <ToastContainer />
+        <UserProvider>
+          <AppRouterCacheProvider>
+            {/* Conditionally render Header and Footer */}
+            {!hideHeaderAndFooter && <Header />}
+            {children}
+            {!hideHeaderAndFooter && <Footer />}
+          </AppRouterCacheProvider>
+          <ToastContainer />
+        </UserProvider>
       </body>
     </html>
   );

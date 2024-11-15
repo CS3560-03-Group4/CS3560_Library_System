@@ -1,16 +1,16 @@
 import HomeIcon from "@mui/icons-material/Home";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Badge from "@mui/material/Badge";
-import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import Link from "@mui/material/Link";
+import Link from "next/link";
 import Toolbar from "@mui/material/Toolbar";
 import AccountMenu from "./accountmenu";
 import Searchbar from "./searchbar";
-import { Tooltip } from "@mui/material";
+import { memo } from "react";
 
-const Headbar = () => {
+const Headbar = memo(() => {
   return (
     <AppBar position="static" style={{ backgroundColor: "#00843d" }}>
       <Toolbar className="flex gap-4 justify-between">
@@ -19,7 +19,6 @@ const Headbar = () => {
           <Link
             href="/"
             color="inherit"
-            underline="none"
             className="hover:bg-green-100/70 hover:text-black rounded-xl"
           >
             <h4 className="font-bold text-4xl">CPPLib</h4>
@@ -35,7 +34,6 @@ const Headbar = () => {
             <Link
               href="/"
               color="inherit"
-              underline="none"
               className="hover:bg-green-100/70 hover:text-black rounded-full"
             >
               <IconButton color="inherit">
@@ -49,7 +47,6 @@ const Headbar = () => {
             <Link
               href="/"
               color="inherit"
-              underline="none"
               className="hover:bg-green-100/70 hover:text-black rounded-full"
             >
               <IconButton color="inherit">
@@ -61,11 +58,11 @@ const Headbar = () => {
           </Tooltip>
 
           {/* Account Menu with Logout */}
-          <AccountMenu className="bg-white w-9 h-9 flex items-center justify-center rounded-full text-black hover:bg-slate-700/45 hover:text-white hover:font-bold " />
+          <AccountMenu className="bg-white w-9 h-9 flex items-center justify-center rounded-full text-black font-bold hover:bg-slate-700/45 hover:text-white hover:font-bold " />
         </div>
       </Toolbar>
     </AppBar>
   );
-};
+});
 
 export default Headbar;
