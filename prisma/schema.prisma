@@ -36,12 +36,12 @@ model User {
 
 // Subclass Student
 model Student {
-  studentID String  @id
-  userID    Int     @unique
-  user      User    @relation(fields: [userID], references: [userID], onDelete: Cascade)
-  major     String?
-  amountDue Float?
-  payments  Payment[]
+  studentID   String  @id
+  userID      Int     @unique
+  user        User    @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  major       String?
+  amountDue   Float?
+  payments    Payment[]
   bookOrders  BookOrder[]
 }
 
@@ -56,24 +56,22 @@ model Staff {
 
 // Subclass Book
 model Book {
-  bookID      Int       @id @default(autoincrement())
-  title       String
-  author      String
-  publisher   String
+  bookID        Int       @id @default(autoincrement())
+  title         String
+  author        String
+  publisher     String
   numberOfPages Int
-  genre       String
-  imageURL    String? // storing the image URL
-  bookItems   BookItem[]
-  inventory   BookInventory @relation(fields: [bookID], references: [bookID])
+  genre         String
+  imageURL      String? // storing the image URL
+  bookItems     BookItem[]
+  inventory     BookInventory?
 }
 
 // BookInventory for managing quantities
 model BookInventory {
-  bookID    Int
-  quantity  Int
-  book      Book @relation(fields: [bookID], references: [bookID])
-
-  @@id([bookID])
+  bookID      Int @unique
+  quantity    Int
+  book        Book @relation(fields: [bookID], references: [bookID])
 }
 
 // BookOrder for tracking user orders
@@ -95,6 +93,7 @@ model BookItem {
   bookID   Int
   order    BookOrder @relation(fields: [orderID], references: [orderID])
   book     Book @relation(fields: [bookID], references: [bookID])
+  
   @@id([orderID, bookID]) // primary key to allow multiple book items per order and the same book in different orders
 }
 
@@ -103,16 +102,16 @@ model Fine {
   fineID      Int       @id @default(autoincrement())
   orderID     Int 
   amount      Float
-  status      String    // e.g., "Unpaid", "Paid"
+  status      String    // Values include "Unpaid", "Paid"
   order       BookOrder @relation(fields: [orderID], references: [orderID])
 }
 
 // Payment for tracking user payments
 model Payment {
-  paymentID   Int       @id @default(autoincrement())
-  studentID   String
+  paymentID     Int       @id @default(autoincrement())
+  studentID     String
   paymentMethod String
-  date        DateTime
-  amount      Float
-  student     Student @relation(fields: [studentID], references: [studentID])
+  date          DateTime
+  amount        Float
+  student       Student @relation(fields: [studentID], references: [studentID])
 }
