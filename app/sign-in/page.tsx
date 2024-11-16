@@ -8,15 +8,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Grid2 } from "@mui/material";
+import { Grid2, IconButton, InputAdornment } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify"; // Assuming you use react-toastify for notifications
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUser } from "@/contexts/UserContext";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function SignIn() {
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isValidated, setIsValidated] = useState(false);
@@ -26,6 +28,8 @@ export default function SignIn() {
   });
 
   const { login } = useUser();
+
+  const handleShowPassword = () => setShowPassword((show) => !show);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -127,13 +131,32 @@ export default function SignIn() {
                 />
                 <TextField
                   label="Password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   variant="outlined"
                   name="password"
                   value={signinForm.password}
                   onChange={handleChange}
                   fullWidth
                   required
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label={
+                              showPassword
+                                ? "hide the password"
+                                : "display the password"
+                            }
+                            edge="end"
+                            onClick={handleShowPassword}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               </form>
             </CardContent>

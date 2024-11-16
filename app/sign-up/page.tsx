@@ -11,11 +11,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import TextField from "@mui/material/TextField";
-import { Grid2 } from "@mui/material";
+import { Grid2, IconButton, InputAdornment } from "@mui/material";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function SignUp() {
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isValidated, setIsValidated] = useState(false);
@@ -27,6 +29,8 @@ export default function SignUp() {
     username: "",
     password: "",
   });
+
+  const handleShowPassword = () => setShowPassword((show) => !show);
 
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -209,7 +213,7 @@ export default function SignUp() {
                 />
                 <TextField
                   label="Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   variant="outlined"
                   fullWidth
                   name="password"
@@ -217,6 +221,25 @@ export default function SignUp() {
                   onChange={handleChange}
                   required
                   helperText="Password must be at least 8 characters long."
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label={
+                              showPassword
+                                ? "hide the password"
+                                : "display the password"
+                            }
+                            edge="end"
+                            onClick={handleShowPassword}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               </form>
             </CardContent>
