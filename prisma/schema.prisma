@@ -32,6 +32,9 @@ model User {
   role        Role
   student     Student?
   staff       Staff?
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 // Subclass Student
@@ -43,6 +46,9 @@ model Student {
   amountDue   Float?
   payments    Payment[]
   bookOrders  BookOrder[]
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 // Subclass Staff
@@ -52,6 +58,9 @@ model Staff {
   user      User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
   hireDate  DateTime
   position  String?
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 // Subclass Book
@@ -65,6 +74,9 @@ model Book {
   imageURL      String? // storing the image URL
   bookItems     BookItem[]
   inventory     BookInventory?
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 // BookInventory for managing quantities
@@ -72,6 +84,9 @@ model BookInventory {
   bookID      Int @unique
   quantity    Int
   book        Book @relation(fields: [bookID], references: [bookID])
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 // BookOrder for tracking user orders
@@ -85,6 +100,9 @@ model BookOrder {
   student    Student @relation(fields: [studentID], references: [studentID])
   bookItems  BookItem[]
   fines      Fine[]
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 // BookItem for managing books in orders
@@ -95,6 +113,9 @@ model BookItem {
   book     Book @relation(fields: [bookID], references: [bookID])
   
   @@id([orderID, bookID]) // primary key to allow multiple book items per order and the same book in different orders
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 // Fine for tracking fines associated with orders
@@ -104,6 +125,9 @@ model Fine {
   amount      Float
   status      String    // Values include "Unpaid", "Paid"
   order       BookOrder @relation(fields: [orderID], references: [orderID])
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 // Payment for tracking user payments
@@ -114,4 +138,7 @@ model Payment {
   date          DateTime
   amount        Float
   student       Student @relation(fields: [studentID], references: [studentID])
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
