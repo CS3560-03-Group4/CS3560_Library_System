@@ -2,3 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+.custom-list {
+  list-style: none;
+  counter-reset: item;
+}
+.custom-list li::before {
+  counter-increment: item;
+  content: "(" counter(item) ") ";
+  color: #000;
+  margin-right: 0.25rem; 
+}

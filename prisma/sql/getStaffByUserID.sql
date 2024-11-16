@@ -1,0 +1,1 @@
+SELECT * FROM "Staff" WHERE "userID" = $1;
