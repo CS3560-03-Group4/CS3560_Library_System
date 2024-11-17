@@ -23,9 +23,7 @@ enum Role {
 enum OrderStatus {
   PENDING
   ORDERED
-  BORROWED
   RETURNED
-  RENEWED
   CANCELED
   OVERDUE
 }
@@ -51,79 +49,131 @@ model User {
   role        Role
   student     Student?
   staff       Staff?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Subclass Student
 model Student {
-  studentID String      @id
-  userID    String      @unique
-  user      User        @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  studentID String  @id
   major     String?
-  amountDue Int?
-  // Student - BookOrder (one to many)
-  bookOrder BookOrder[]
-  // Student - Payment (one to many)
-  payment   Payment[]
+  amountDue Float?
+
+  userID String @unique
+  user   User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
+
+  // relations to Payment and BookOrder
+  payments   Payment[] // Student - Payment (one to many) 
+  bookOrders BookOrder[] // Student - BookOrder (one to many)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Subclass Staff
 model Staff {
-  staffID String @id
-  userID  String @unique
-  user    User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
+  staffID  String    @id
+  hireDate DateTime?
+  position String?
+
+  userID String @unique
+  user   User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
+// Book model
 model Book {
-  bookID        String     @id @default(dbgenerated("gen_random_uuid()"))
+  bookID        String    @id @default(dbgenerated("gen_random_uuid()"))
   title         String
   author        String
   publisher     String
   numberOfPages Int
-  condition     String // Values might include "New", "Used", "Good", etc.
   genre         String
-  isAvailable   Boolean
-  // Book - BookItem (one to many)
-  bookItems     BookItem[]
+  datePublished DateTime?
+  description   String?
+  imageURL      String? // storing the image URL
+
+  // relations to BookInventory and BookOrder
+  bookItems BookItem[] // Book - BookItem (one to many)
+  inventory BookInventory? // Book - BookInventory (one to one)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
+// BookInventory for managing quantities
+model BookInventory {
+  bookID   String @unique
+  quantity Int
+  book     Book   @relation(fields: [bookID], references: [bookID])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([bookID])
+}
+
+// BookOrder for tracking user orders
 model BookOrder {
   orderID    String      @id @default(dbgenerated("gen_random_uuid()"))
+  totalItems Int
+  orderDate  DateTime
   dueDate    DateTime
   status     OrderStatus // Values might include "Processing", "Borrowed", "Returned", etc.
-  borrowDate DateTime
-  // BookOrder - BookItem (one to many)
-  bookItems  BookItem[]
-  // Studdent - BookOrder (one to many)
-  studentID  String
-  student    Student     @relation(fields: [studentID], references: [studentID], onDelete: Cascade)
-  // BookOrder - Fine (one to one)
-  fine       Fine?
+
+  // studentID is a foreign key to Student
+  studentID String
+  student   Student @relation(fields: [studentID], references: [studentID])
+
+  // relations to BookItem and Fine
+  bookItems BookItem[] // BookOrder - BookItem (one to many)
+  fine      Fine? // BookOrder - Fine (one to one)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-// Association table between Book and BookOrder (many to many)
+// BookItem for managing books in orders (Association table between Book and BookOrder)
 model BookItem {
-  orderID  String
-  bookID   String
-  quantity Int
-  order    BookOrder @relation(fields: [orderID], references: [orderID], onDelete: Cascade)
-  book     Book      @relation(fields: [bookID], references: [bookID], onDelete: Cascade)
+  orderID String
+  bookID  String
+  order   BookOrder @relation(fields: [orderID], references: [orderID])
+  book    Book      @relation(fields: [bookID], references: [bookID])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([orderID, bookID]) // primary key to allow multiple book items per order and the same book in different orders
 }
 
+// Fine for tracking fines associated with orders
 model Fine {
-  fineID      String     @id @default(dbgenerated("gen_random_uuid()"))
-  amount      Float
-  status      FineStatus // e.g., "Unpaid", "Paid"
-  bookOrderID String     @unique
-  bookOrder   BookOrder  @relation(fields: [bookOrderID], references: [orderID], onDelete: Cascade)
+  fineID String     @id @default(dbgenerated("gen_random_uuid()"))
+  amount Float
+  status FineStatus // Values include "Unpaid", "Paid"
+
+  // orderID is a foreign key to BookOrder
+  orderID String    @unique
+  order   BookOrder @relation(fields: [orderID], references: [orderID])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
+// Payment for tracking user payments
 model Payment {
   paymentID     String   @id @default(dbgenerated("gen_random_uuid()"))
   paymentMethod String
-  date          DateTime
+  paymentDate   DateTime
   amount        Float
-  studentID     String
-  student       Student  @relation(fields: [studentID], references: [studentID], onDelete: Cascade)
+
+  // studentID is a foreign key to Student
+  studentID String
+  student   Student @relation(fields: [studentID], references: [studentID])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
