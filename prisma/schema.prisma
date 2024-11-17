@@ -14,18 +14,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Define all enums that stores constant values 
 enum Role {
   STUDENT
   STAFF
 }
 
+enum OrderStatus {
+  PENDING
+  ORDERED
+  RETURNED
+  CANCELED
+  OVERDUE
+}
+
+enum FineStatus {
+  PAID
+  UNPAID
+  PENDING
+}
+
+// --------------------------------------------
+// Define all required tables
 // Base class User
 model User {
-  userID      Int      @id @default(autoincrement())
+  userID      String   @id @default(dbgenerated("gen_random_uuid()"))
   firstName   String
   lastName    String
   username    String   @unique
-  password    String   @unique  
+  password    String   @unique
   email       String   @unique
   phoneNumber String?
   address     String?
@@ -33,112 +50,130 @@ model User {
   student     Student?
   staff       Staff?
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Subclass Student
 model Student {
-  studentID   String  @id
-  userID      Int     @unique
-  user        User    @relation(fields: [userID], references: [userID], onDelete: Cascade)
-  major       String?
-  amountDue   Float?
-  payments    Payment[]
-  bookOrders  BookOrder[]
+  studentID String  @id
+  major     String?
+  amountDue Float?
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  userID String @unique
+  user   User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
+
+  // relations to Payment and BookOrder
+  payments   Payment[] // Student - Payment (one to many) 
+  bookOrders BookOrder[] // Student - BookOrder (one to many)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Subclass Staff
 model Staff {
-  staffID   String @id
-  userID    Int    @unique
-  user      User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
-  hireDate  DateTime
-  position  String?
+  staffID  String    @id
+  hireDate DateTime?
+  position String?
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  userID String @unique
+  user   User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-// Subclass Book
+// Book model
 model Book {
-  bookID        Int       @id @default(autoincrement())
+  bookID        String    @id @default(dbgenerated("gen_random_uuid()"))
   title         String
   author        String
   publisher     String
   numberOfPages Int
   genre         String
+  datePublished DateTime?
+  description   String?
   imageURL      String? // storing the image URL
-  bookItems     BookItem[]
-  inventory     BookInventory?
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  // relations to BookInventory and BookOrder
+  bookItems BookItem[] // Book - BookItem (one to many)
+  inventory BookInventory? // Book - BookInventory (one to one)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // BookInventory for managing quantities
 model BookInventory {
-  bookID      Int @unique
-  quantity    Int
-  book        Book @relation(fields: [bookID], references: [bookID])
+  bookID   String @unique
+  quantity Int
+  book     Book   @relation(fields: [bookID], references: [bookID])
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([bookID])
 }
 
 // BookOrder for tracking user orders
 model BookOrder {
-  orderID    Int      @id @default(autoincrement())
-  studentID  String
+  orderID    String      @id @default(dbgenerated("gen_random_uuid()"))
   totalItems Int
   orderDate  DateTime
   dueDate    DateTime
-  status     String   // Values might include "Processing", "Borrowed", "Returned", etc.
-  student    Student @relation(fields: [studentID], references: [studentID])
-  bookItems  BookItem[]
-  fines      Fine[]
+  status     OrderStatus // Values might include "Processing", "Borrowed", "Returned", etc.
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  // studentID is a foreign key to Student
+  studentID String
+  student   Student @relation(fields: [studentID], references: [studentID])
+
+  // relations to BookItem and Fine
+  bookItems BookItem[] // BookOrder - BookItem (one to many)
+  fine      Fine? // BookOrder - Fine (one to one)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-// BookItem for managing books in orders
+// BookItem for managing books in orders (Association table between Book and BookOrder)
 model BookItem {
-  orderID  Int
-  bookID   Int
-  order    BookOrder @relation(fields: [orderID], references: [orderID])
-  book     Book @relation(fields: [bookID], references: [bookID])
-  
-  @@id([orderID, bookID]) // primary key to allow multiple book items per order and the same book in different orders
+  orderID String
+  bookID  String
+  order   BookOrder @relation(fields: [orderID], references: [orderID])
+  book    Book      @relation(fields: [bookID], references: [bookID])
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([orderID, bookID]) // primary key to allow multiple book items per order and the same book in different orders
 }
 
 // Fine for tracking fines associated with orders
 model Fine {
-  fineID      Int       @id @default(autoincrement())
-  orderID     Int 
-  amount      Float
-  status      String    // Values include "Unpaid", "Paid"
-  order       BookOrder @relation(fields: [orderID], references: [orderID])
+  fineID String     @id @default(dbgenerated("gen_random_uuid()"))
+  amount Float
+  status FineStatus // Values include "Unpaid", "Paid"
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  // orderID is a foreign key to BookOrder
+  orderID String    @unique
+  order   BookOrder @relation(fields: [orderID], references: [orderID])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Payment for tracking user payments
 model Payment {
-  paymentID     Int       @id @default(autoincrement())
-  studentID     String
+  paymentID     String   @id @default(dbgenerated("gen_random_uuid()"))
   paymentMethod String
-  date          DateTime
+  paymentDate   DateTime
   amount        Float
-  student       Student @relation(fields: [studentID], references: [studentID])
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  // studentID is a foreign key to Student
+  studentID String
+  student   Student @relation(fields: [studentID], references: [studentID])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
