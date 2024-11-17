@@ -43,7 +43,7 @@ const ConfirmationPage = () => {
       {/* Fixed Go Back Button Positioned Above the Bottom */}
       <Box
         sx={{
-          position: "fixed",
+          position: "absolute",
           bottom: 145, // Adjust this as needed to avoid overlap
           right: 16,
         }}

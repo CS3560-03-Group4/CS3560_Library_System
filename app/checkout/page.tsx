@@ -2,15 +2,27 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Box, Typography, Button, Divider, Grid } from "@mui/material";
+import { Box, Typography, Button, Divider, Grid2 } from "@mui/material";
 
 const ReviewOrderPage = () => {
   const router = useRouter();
 
   // Example order data
   const orderItems = [
-    { title: "Soul Screamers 1: My Soul to Take", author: "Rachel Vincent", qty: 1, image: "/images/example1.jpg" },
-    { title: "Soul Screamers 2: My Soul to Save", author: "Rachel Vincent", qty: 1, image: "/images/example2.jpg" },
+    {
+      title: "Soul Screamers 1: My Soul to Take",
+      author: "Rachel Vincent",
+      qty: 1,
+      image:
+        "https://m.media-amazon.com/images/I/51BJSnsM8iL._UF1000,1000_QL80_.jpg",
+    },
+    {
+      title: "Soul Screamers 2: My Soul to Save",
+      author: "Rachel Vincent",
+      qty: 1,
+      image:
+        "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1255722532i/6763961.jpg",
+    },
   ];
 
   // Function to handle confirm button click
@@ -31,16 +43,16 @@ const ReviewOrderPage = () => {
       </Typography>
       <Divider sx={{ my: 2 }} />
 
-      <Grid container spacing={4}>
+      <Grid2 container spacing={4}>
         {/* Left Section: Ordered Items */}
-        <Grid item xs={12} md={8}>
+        <Grid2 size={{ xs: 12, md: 8 }}>
           {orderItems.map((item, index) => (
             <Box key={index} sx={{ display: "flex", mb: 2 }}>
               <Box
                 component="img"
                 src={item.image}
                 alt={item.title}
-                sx={{ width: 100, height: 150, mr: 2 }}
+                sx={{ width: 100, height: 150, mr: 2, objectFit: "cover" }}
               />
               <Box>
                 <Typography variant="h6">{item.title}</Typography>
@@ -51,10 +63,10 @@ const ReviewOrderPage = () => {
               </Box>
             </Box>
           ))}
-        </Grid>
+        </Grid2>
 
         {/* Right Section: Order Summary */}
-        <Grid item xs={12} md={4}>
+        <Grid2 size={{ xs: 12, md: 4 }}>
           <Typography variant="h6">Order Summary</Typography>
           <Divider sx={{ my: 1 }} />
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
@@ -73,26 +85,26 @@ const ReviewOrderPage = () => {
             <Typography>Total</Typography>
             <Typography>$0.00</Typography>
           </Box>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
 
       {/* Bottom Buttons */}
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 4, mt: 4 }}>
         <Button
           variant="contained"
           color="success"
-          sx={{ mx: 2, width: 150 }}
+          // sx={{ mx: 2, width: 150 }}
           onClick={handleConfirm} // Call handleConfirm when Confirm button is clicked
         >
-          Confirm
+          Place your order
         </Button>
         <Button
           variant="contained"
           color="inherit"
-          sx={{ mx: 2, width: 150 }}
+          // sx={{ mx: 2, width: 150 }}
           onClick={handleCancel} // Call handleCancel when Cancel button is clicked
         >
-          Cancel
+          Back to Your Cart
         </Button>
       </Box>
     </Box>
