@@ -37,8 +37,8 @@ export default function AccountMenu({ className }: { className: string }) {
 
   return (
     <>
-      <Tooltip title="Account settings" arrow>
-        {isAuthenticated ? (
+      {isAuthenticated ? (
+        <Tooltip title="Account settings" arrow>
           <IconButton
             onClick={handleClick}
             size="small"
@@ -49,16 +49,17 @@ export default function AccountMenu({ className }: { className: string }) {
             {/* Circle with First Initial */}
             <div className={className}>{firstInitial}</div>
           </IconButton>
-        ) : (
-          <Link
-            href="/sign-in"
-            color="inherit"
-            className="text-lg p-2 hover:bg-green-100/70 hover:text-black rounded-xl"
-          >
-            Sign in
-          </Link>
-        )}
-      </Tooltip>
+        </Tooltip>
+      ) : (
+        <Link
+          href="/sign-in"
+          color="inherit"
+          className="text-lg p-2 hover:bg-green-100/70 hover:text-black rounded-xl"
+        >
+          Sign in
+        </Link>
+      )}
+
       <Menu
         anchorEl={anchorEl}
         id="account-menu"
