@@ -33,6 +33,7 @@ export async function POST(req: Request) {
     );
   }
 
+  console.log("BroncoID:", broncoID);
   try {
     // Hash the password
     const hashedPassword = await hash(password, 10);
@@ -87,6 +88,8 @@ export async function POST(req: Request) {
       email,
       role
     );
+
+    console.log("ROUTE_SIGNUP: New User:", newUser);
 
     if (!newUser) {
       return NextResponse.json(

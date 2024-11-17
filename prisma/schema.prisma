@@ -51,7 +51,7 @@ model User {
   staff       Staff?
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 // Subclass Student
@@ -68,7 +68,7 @@ model Student {
   bookOrders BookOrder[] // Student - BookOrder (one to many)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 // Subclass Staff
@@ -81,7 +81,7 @@ model Staff {
   user   User   @relation(fields: [userID], references: [userID], onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 // Book model
@@ -101,7 +101,7 @@ model Book {
   inventory BookInventory? // Book - BookInventory (one to one)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 // BookInventory for managing quantities
@@ -111,7 +111,7 @@ model BookInventory {
   book     Book   @relation(fields: [bookID], references: [bookID])
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@id([bookID])
 }
@@ -133,7 +133,7 @@ model BookOrder {
   fine      Fine? // BookOrder - Fine (one to one)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 // BookItem for managing books in orders (Association table between Book and BookOrder)
@@ -144,7 +144,7 @@ model BookItem {
   book    Book      @relation(fields: [bookID], references: [bookID])
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@id([orderID, bookID]) // primary key to allow multiple book items per order and the same book in different orders
 }
@@ -160,7 +160,7 @@ model Fine {
   order   BookOrder @relation(fields: [orderID], references: [orderID])
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 // Payment for tracking user payments
@@ -175,5 +175,5 @@ model Payment {
   student   Student @relation(fields: [studentID], references: [studentID])
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
