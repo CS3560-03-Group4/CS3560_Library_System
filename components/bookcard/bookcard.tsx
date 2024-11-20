@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardMedia, CardContent, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import Link from 'next/link';
 
 // Define the prop types for the BookCard component
@@ -45,6 +46,7 @@ const BookCard: React.FC<BookProps> = ({ id, title, author, date, imageUrl }) =>
         }}
         image={imageUrl}
         alt={`Cover of ${title}`}
+        onError={(e) => (e.currentTarget.src = 'path/to/fallback-image.jpg')}  // Fallback image
       />
       {/* CardContent contains the text elements of the card */}
       <CardContent sx={{ bgcolor: '#fff' }}> {/* Background color: white */}
@@ -64,16 +66,17 @@ const BookCard: React.FC<BookProps> = ({ id, title, author, date, imageUrl }) =>
       {/* IconButton to toggle the addition state of the book */}
       <IconButton
         onClick={handleAdd}
+        aria-label={isAdded ? "Remove from added list" : "Add to added list"}
         sx={{
           position: 'absolute',
           bottom: 8,
           right: 8,
-          color: 'primary.main', // Button color
+          color: isAdded? 'primary.main' : 'primary.main', // Button color
           '&:hover': {
             color: 'primary.dark', // Button color on hover
           }
         }}>
-        <AddIcon /> {/* Icon displayed in the button */}
+        {isAdded ? <RemoveIcon /> : <AddIcon />} {/* Icon displayed in the button */}
       </IconButton>
     </Card>
   );
