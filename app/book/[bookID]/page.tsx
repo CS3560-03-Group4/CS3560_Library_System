@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,8 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 export default function BookPage() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center p-6">
       {/* Main Content Section */}
@@ -41,8 +45,8 @@ export default function BookPage() {
                 <p className="text-gray-700 text-lg md:text-xl leading-relaxed border-t border-gray-300 pt-6">
                   She doesn't see dead people, but... <br />
                   She senses when someone near her is about to die. And when
-                  that happens, a force beyond her control compels her to
-                  scream bloody murder. Literally. <br />
+                  that happens, a force beyond her control compels her to scream
+                  bloody murder. Literally. <br />
                   Kaylee just wants to enjoy having caught the attention of the
                   hottest guy in school. But a normal date is hard to come by
                   when Nash seems to know more about her need to scream than she
@@ -55,31 +59,34 @@ export default function BookPage() {
         </div>
 
         {/* Book Information Section */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-gray-300 pt-8 text-lg md:text-xl text-gray-700">
+        <div className="flex justify-between items-center border-t border-gray-300 pt-8 text-gray-700">
           <div>
-            <p className="font-bold text-xl md:text-2xl">Publisher:</p>
-            <p>Harlequin Teen</p>
+            <p className="font-bold text-sm md:text-xl">Publisher:</p>
+            <p className="text-sm md:text-xl">Harlequin Teen</p>
           </div>
           <div>
-            <p className="font-bold text-xl md:text-2xl">Print Length:</p>
-            <p>288 pages</p>
+            <p className="font-bold text-sm md:text-xl">Print Length:</p>
+            <p className="text-sm md:text-xl">288 pages</p>
           </div>
           <div>
-            <p className="font-bold text-xl md:text-2xl">Genre:</p>
-            <p>Fiction, Fantasy</p>
+            <p className="font-bold text-sm md:text-xl">Genre:</p>
+            <p className="text-sm md:text-xl">Fiction, Fantasy</p>
           </div>
           <div>
-            <p className="font-bold text-xl md:text-2xl">Available:</p>
-            <p>10 in stock</p>
+            <p className="font-bold text-sm md:text-xl">Available:</p>
+            <p className="text-sm md:text-xl">10 in stock</p>
           </div>
         </div>
 
         {/* Bottom Button Section */}
-        <div className="flex justify-end gap-4 mt-4">
-          <Button className="bg-[#A1EBDA] hover:bg-[#80D9C4] text-black px-8 py-3 rounded-md text-lg md:text-xl">
+        <div className="flex justify-end gap-8 mt-4">
+          <Button className="bg-primary text-white hover:bg-[#80D9C4] hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl">
             Add to cart
           </Button>
-          <Button className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-3 rounded-md text-lg md:text-xl">
+          <Button
+            className="bg-gray-500 hover:bg-gray-300 hover:text-black text-white px-8 py-3 text-lg rounded-xl shadow-xl md:text-xl"
+            onClick={() => router.push("/")}
+          >
             Go back
           </Button>
         </div>
