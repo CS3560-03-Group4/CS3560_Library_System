@@ -192,7 +192,7 @@ export default function Home() {
                       gap: 2,
                     }}
                   >
-                    {books.map((book) => (
+                    {books.length > 0 ? books.map((book) => (
                       <BookCard
                         key={book.bookID}
                         id={book.bookID}
@@ -201,7 +201,9 @@ export default function Home() {
                         date={book.datePublished}
                         imageUrl={book.imageURL}
                       />
-                    ))}
+                    )) : (
+                      <Typography variant="h6">No books found.</Typography>
+                    )}
                   </Box>
                 </Box>
               ))}
