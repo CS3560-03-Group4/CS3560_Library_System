@@ -12,7 +12,7 @@ import Link from "next/link";
 
 // Define the prop types for the BookCard component
 interface BookProps {
-  id: number;
+  id: string;
   title: string;
   author: string;
   date: string;
@@ -54,9 +54,10 @@ const BookCard: React.FC<BookProps> = ({
       <CardMedia
         component="img"
         sx={{
-          width: 345, // Set width to match the Card's width
+          width: "100%", // Set width to match the Card's width
           height: 300, // Set a fixed height
-          objectFit: "cover", // Ensures the image covers the area without stretching
+          objectFit: "contain", // Ensures the image covers the area without stretching
+          bgcolor: "#00843d",
         }}
         image={imageUrl}
         alt={`Cover of ${title}`}
@@ -64,7 +65,6 @@ const BookCard: React.FC<BookProps> = ({
       />
       {/* CardContent contains the text elements of the card */}
       <CardContent sx={{ bgcolor: "#fff" }}>
-        {" "}
         {/* Background color: white */}
         {/* Link to detailed page */}
         <Link href={`/book/${id}`} passHref>

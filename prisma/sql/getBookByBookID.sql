@@ -1,0 +1,1 @@
+SELECT "title", "author", "datePublished", "description", "imageURL", "publisher", "numberOfPages", "genre" FROM "Book" WHERE "bookID" = $1;
