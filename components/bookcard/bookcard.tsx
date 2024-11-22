@@ -18,7 +18,6 @@ interface BookProps {
   author: string;
   date: string;
   imageUrl: string;
-  genre: string[];
 }
 // Functional component BookCard using React.FC with BookProps for type definition
 const BookCard: React.FC<BookProps> = ({
@@ -27,7 +26,6 @@ const BookCard: React.FC<BookProps> = ({
   author,
   date,
   imageUrl,
-  genre,
 }) => {
   return (
     // Card component from MUI styled using the sx prop
@@ -89,13 +87,6 @@ const BookCard: React.FC<BookProps> = ({
         <Typography variant="body2" color="text.secondary">
           {date} {/* Display the date */}
         </Typography>
-        {genre.map((genre, index) => (
-          <Chip
-            key={index}
-            label={genre}
-            sx={{ mt: 1, mr: 1, bgcolor: "#00843d", color: "#fff" }}
-          />
-        ))}
       </CardContent>
     </Card>
   );
