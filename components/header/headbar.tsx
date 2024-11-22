@@ -9,10 +9,13 @@ import Toolbar from "@mui/material/Toolbar";
 import AccountMenu from "./accountmenu";
 import Searchbar from "./searchbar";
 import { memo } from "react";
+import { useCart } from "@/contexts/CartContext";
 
 const Headbar = memo(() => {
+  const { cart } = useCart();
+
   return (
-    <AppBar position="static" style={{ backgroundColor: "#00843d" }}>
+    <AppBar position="sticky" style={{ backgroundColor: "#00843d" }}>
       <Toolbar className="flex gap-4 justify-between">
         <div className="flex gap-4 flex-1 items-center">
           {/* Logo */}
@@ -50,7 +53,7 @@ const Headbar = memo(() => {
               className="hover:bg-green-100/70 hover:text-black rounded-full"
             >
               <IconButton color="inherit">
-                <Badge badgeContent={0} color="error">
+                <Badge badgeContent={cart.length} color="error">
                   <ShoppingCartIcon fontSize="large" />
                 </Badge>
               </IconButton>

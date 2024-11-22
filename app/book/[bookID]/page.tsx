@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useCart } from "@/contexts/CartContext";
 import { formatDate } from "@/lib/utils";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -15,6 +16,7 @@ import { useEffect, useState } from "react";
 
 export default function BookPage({ params }: { params: { bookID: string } }) {
   const router = useRouter();
+  const { cart, setCart } = useCart();
   const { bookID } = params;
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [bookInfo, setBookInfo] = useState({
@@ -67,6 +69,22 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
     fetchBookByBookID();
   }, []);
 
+  console.log("CART: ", cart);
+
+  const [isAdded, setIsAdded] = useState<boolean>(cart.includes(bookID));
+  const handleAddToCart = () => {
+    // if (cart.includes(bookID)) return; // Prevent adding the same book twice
+    // setIsAdded(true);
+    // cart.push(bookID);
+    // localStorage.setItem("cart", JSON.stringify(cart));
+    if (isAdded) return;
+    setIsAdded(true);
+
+    const updatedCart = [...cart, bookID];
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
   return (
     <>
       {isLoading ? (
@@ -116,7 +134,7 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
                   </CardHeader>
                   <CardContent>
                     <p className="text-gray-700 text-lg md:text-xl leading-relaxed border-t border-gray-300 pt-6">
-                      {bookInfo.description.split("\\n").map((word, index) => (
+                      {bookInfo.description && bookInfo.description.split("\\n").map((word, index) => (
                         <p key={index}>{word}</p>
                       ))}
                     </p>
@@ -151,8 +169,16 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
 
             {/* Bottom Button Section */}
             <div className="flex justify-end gap-8 mt-4">
-              <Button className="bg-primary text-white hover:bg-[#4095ea] hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl">
-                Add to cart
+              <Button
+                disabled={isAdded}
+                className={`bg-primary text-white hover:bg-[#4095ea] hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl ${
+                  isAdded
+                    ? "disabled:opacity-25 disabled:cursor-not-allowed"
+                    : ""
+                }`}
+                onClick={handleAddToCart}
+              >
+                {isAdded ? "Added to cart" : "Add to cart"}
               </Button>
               <Button
                 className="bg-gray-600 text-white hover:bg-gray-400/95 hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl"
