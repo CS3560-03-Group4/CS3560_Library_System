@@ -21,6 +21,7 @@ const categories = [
   "Thriller",
   "Mystery",
   "Fantasy",
+  "Self-help",
   "Computer Science",
 ];
 
@@ -192,16 +193,18 @@ export default function Home() {
                       gap: 2,
                     }}
                   >
-                    {books.length > 0 ? books.map((book) => (
-                      <BookCard
-                        key={book.bookID}
-                        id={book.bookID}
-                        title={book.title}
-                        author={book.author}
-                        date={book.datePublished}
-                        imageUrl={book.imageURL}
-                      />
-                    )) : (
+                    {books.length > 0 ? (
+                      books.map((book) => (
+                        <BookCard
+                          key={book.bookID}
+                          id={book.bookID}
+                          title={book.title}
+                          author={book.author}
+                          date={book.datePublished}
+                          imageUrl={book.imageURL}
+                        />
+                      ))
+                    ) : (
                       <Typography variant="h6">No books found.</Typography>
                     )}
                   </Box>
