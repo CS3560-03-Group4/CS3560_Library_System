@@ -21,6 +21,7 @@ const categories = [
   "Thriller",
   "Mystery",
   "Fantasy",
+  "Self-help",
   "Computer Science",
 ];
 
@@ -46,7 +47,7 @@ export default function Home() {
         const response = await fetch("/api/book");
         const data = await response.json();
         const allBooks = data.books;
-        console.log(allBooks);
+        // console.log(allBooks);
         if (allBooks) {
           // Map and directly set the new state
           setBooks(
@@ -83,8 +84,11 @@ export default function Home() {
 
   const filteredGroupedBooks =
     selectedGenre === "All"
-      ? groupedBooks
+      ? { All: books } // Wrap the books array in an object with a single key
       : { [selectedGenre]: groupedBooks[selectedGenre] || [] };
+
+  console.log(filteredGroupedBooks);
+  console.log(Object.values(filteredGroupedBooks));
 
   // console.log(books);
   // Function to handle click events on category items
@@ -161,38 +165,31 @@ export default function Home() {
                 marginLeft: "12rem",
                 width: "100%",
                 flex: 1, // Takes up remaining space after the sidebar
+                flexWrap: "wrap",
                 padding: "0 1.5rem 1.5rem 1.5rem", // Padding around the content area
                 justifyContent: "center", // Centers the content horizontally
               }}
             >
               {/* Iterates over each category and its books to render them */}
               {Object.entries(filteredGroupedBooks).map(([genre, books]) => (
-                <Box key={genre} sx={{ marginBottom: "2rem" }}>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      mt: 2,
-                      mb: 2,
-                      color: "#00843d",
-                      fontWeight: "bold",
-                      fontSize: "1.5rem",
-                    }}
-                  >
-                    {genre}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: {
-                        xs: "repeat(1, 1fr)",
-                        sm: "repeat(2, 1fr)",
-                        md: "repeat(3, 1fr)",
-                        lg: "repeat(4, 1fr)",
-                      },
-                      gap: 2,
-                    }}
-                  >
-                    {books.length > 0 ? books.map((book) => (
+                <Box
+                  key={genre}
+                  sx={{
+                    pt: 2,
+                    pb: 2,
+                    display: "grid",
+                    gridTemplateColumns: {
+                      xs: "repeat(1, 1fr)",
+                      sm: "repeat(2, 1fr)",
+                      md: "repeat(3, 1fr)",
+                      lg: "repeat(4, 1fr)",
+                    },
+                    gap: 3,
+                    
+                  }}
+                >
+                  {books.length > 0 ? (
+                    books.map((book: any) => (
                       <BookCard
                         key={book.bookID}
                         id={book.bookID}
@@ -200,11 +197,12 @@ export default function Home() {
                         author={book.author}
                         date={book.datePublished}
                         imageUrl={book.imageURL}
+                        genre={book.genre.split(", ")}
                       />
-                    )) : (
-                      <Typography variant="h6">No books found.</Typography>
-                    )}
-                  </Box>
+                    ))
+                  ) : (
+                    <Typography variant="h6">No books found.</Typography>
+                  )}
                 </Box>
               ))}
             </Box>

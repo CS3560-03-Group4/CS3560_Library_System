@@ -7,6 +7,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { useCart } from "./CartContext";
 
 type UserContextType = {
   firstInitial: string;
@@ -22,8 +23,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [firstInitial, setFirstInitial] = useState<string>("");
-  const token = localStorage.getItem("authToken");
-  const userID = localStorage.getItem("userID");
+  const { setCart } = useCart();
 
   // Fetch user information (e.g., first initial)
   const fetchUser = async (userID: string) => {
@@ -38,11 +38,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // On initial mount, check authentication and fetch user info
   useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    const userID = localStorage.getItem("userID");
     if (token && userID) {
       setIsAuthenticated(true);
       fetchUser(userID); // Fetch the user only if userID exists
     }
-  }, [token, userID]);
+  }, []);
 
   const login = () => {
     const token = localStorage.getItem("authToken");
@@ -55,6 +57,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logout = () => {
     localStorage.clear();
+    setCart([]);
     setIsAuthenticated(false);
     setFirstInitial("");
   };

@@ -5,6 +5,7 @@ import {
   CardContent,
   Typography,
   IconButton,
+  Chip,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -17,6 +18,7 @@ interface BookProps {
   author: string;
   date: string;
   imageUrl: string;
+  genre: string[];
 }
 // Functional component BookCard using React.FC with BookProps for type definition
 const BookCard: React.FC<BookProps> = ({
@@ -25,15 +27,8 @@ const BookCard: React.FC<BookProps> = ({
   author,
   date,
   imageUrl,
+  genre,
 }) => {
-  // State to manage whether the book has been added
-  const [isAdded, setIsAdded] = React.useState(false);
-
-  // Handler for adding or removing a book, toggles the isAdded state
-  const handleAdd = () => {
-    setIsAdded(!isAdded);
-  };
-  // Component return JSX
   return (
     // Card component from MUI styled using the sx prop
     <Card
@@ -61,7 +56,7 @@ const BookCard: React.FC<BookProps> = ({
         }}
         image={imageUrl}
         alt={`Cover of ${title}`}
-        onError={(e) => (e.currentTarget.src = "path/to/fallback-image.jpg")} // Fallback image
+        onError={(e) => (e.currentTarget.src = "/placeholder_image.png")} // Fallback image
       />
       {/* CardContent contains the text elements of the card */}
       <CardContent sx={{ bgcolor: "#fff" }}>
@@ -94,24 +89,14 @@ const BookCard: React.FC<BookProps> = ({
         <Typography variant="body2" color="text.secondary">
           {date} {/* Display the date */}
         </Typography>
+        {genre.map((genre, index) => (
+          <Chip
+            key={index}
+            label={genre}
+            sx={{ mt: 1, mr: 1, bgcolor: "#00843d", color: "#fff" }}
+          />
+        ))}
       </CardContent>
-      {/* IconButton to toggle the addition state of the book */}
-      <IconButton
-        onClick={handleAdd}
-        aria-label={isAdded ? "Remove from added list" : "Add to added list"}
-        sx={{
-          position: "absolute",
-          bottom: 8,
-          right: 8,
-          color: isAdded ? "red" : "primary.main", // Button color
-          "&:hover": {
-            bgcolor: "#E5E4E2", // Button color on hover
-          },
-        }}
-      >
-        {isAdded ? <RemoveIcon /> : <AddIcon />}{" "}
-        {/* Icon displayed in the button */}
-      </IconButton>
     </Card>
   );
 };
