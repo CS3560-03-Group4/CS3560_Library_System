@@ -84,11 +84,13 @@ export default function AccountMenu({ className }: { className: string }) {
           </MenuItem>
         </Link>
         <Link href={"/order"}>
-          <MenuItem href="/orders">
-            <ListItemIcon>
-              <OrderIcon fontSize="small" />
-            </ListItemIcon>
-            My Orders
+          <MenuItem onClick={handleClose}>
+            <Link href="/profile/myorders" style={{ display: "flex", alignItems: "center", width: "100%" }}>
+              <ListItemIcon>
+                <OrderIcon fontSize="small" />
+              </ListItemIcon>
+              My Orders
+            </Link>
           </MenuItem>
         </Link>
         <Divider />
