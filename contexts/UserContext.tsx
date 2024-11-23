@@ -12,7 +12,7 @@ import { useCart } from "./CartContext";
 type UserContextType = {
   firstInitial: string;
   isAuthenticated: boolean;
-  login: () => void;
+  login: (userID: string) => void;
   logout: () => void;
 };
 
@@ -46,13 +46,15 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  const login = () => {
-    const token = localStorage.getItem("authToken");
-    const userID = localStorage.getItem("userID");
-    if (token && userID) {
-      setIsAuthenticated(true);
-      fetchUser(userID); // Fetch the user only if userID exists
-    }
+  const login = (userID: string) => {
+    // Save userID in localStorage for persistence
+    localStorage.setItem("userID", userID);
+
+    // Set authenticated state
+    setIsAuthenticated(true);
+
+    // Fetch the user data immediately
+    fetchUser(userID);
   };
 
   const logout = () => {

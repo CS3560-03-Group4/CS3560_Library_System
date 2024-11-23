@@ -15,6 +15,7 @@ import { Grid2, IconButton, InputAdornment } from "@mui/material";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useUser } from "@/contexts/UserContext";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +30,7 @@ export default function SignUp() {
     username: "",
     password: "",
   });
+  const { login } = useUser();
 
   const handleShowPassword = () => setShowPassword((show) => !show);
 
@@ -104,6 +106,8 @@ export default function SignUp() {
         // Store the token in localStorage
         localStorage.setItem("authToken", token);
         localStorage.setItem("userID", userID.toString());
+
+        login(userID);
 
         setIsLoading(false);
         // Redirect to home page after successful sign-up

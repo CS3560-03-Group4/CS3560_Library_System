@@ -75,7 +75,7 @@ export default function SignIn() {
         localStorage.setItem("authToken", token);
 
         // Call login() from UserContext to update context values immediately
-        login();
+        login(userID);
 
         // Navigate to the Home page after successful sign-in
         router.push("/");
