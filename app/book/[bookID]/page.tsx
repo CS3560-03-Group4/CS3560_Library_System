@@ -4,9 +4,8 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
 import { useRouter } from "next/navigation";
@@ -58,7 +57,7 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-700 text-lg md:text-xl leading-relaxed border-t border-gray-300 pt-6">
-                  She doesn't see dead people, but... <br />
+                  She doesn&apos;t see dead people, but... <br />
                   She senses when someone near her is about to die. And when
                   that happens, a force beyond her control compels her to scream
                   bloody murder. Literally. <br />

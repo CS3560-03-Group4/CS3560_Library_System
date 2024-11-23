@@ -1,4 +1,7 @@
+import { useCart } from "@/contexts/CartContext";
+import { useUser } from "@/contexts/UserContext";
 import HomeIcon from "@mui/icons-material/Home";
+import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
   Box,
@@ -14,20 +17,15 @@ import {
 import AppBar from "@mui/material/AppBar";
 import Badge from "@mui/material/Badge";
 import IconButton from "@mui/material/IconButton";
-import Link from "next/link";
 import Toolbar from "@mui/material/Toolbar";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { memo, useState } from "react";
 import AccountMenu from "./accountmenu";
 import Searchbar from "./searchbar";
-import MenuIcon from "@mui/icons-material/Menu";
-import { memo, useState } from "react";
-import { useCart } from "@/contexts/CartContext";
-import { useUser } from "@/contexts/UserContext";
-import { useRouter } from "next/navigation";
 
 const Headbar = memo(() => {
-  const userID = localStorage.getItem("userID");
   const drawerWidth = 240;
-  const { logout } = useUser();
   const router = useRouter();
 
   const navigateTo = (path: string) => {
