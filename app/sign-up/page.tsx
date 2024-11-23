@@ -144,7 +144,10 @@ export default function SignUp() {
   return (
     <Grid2 container>
       {/* Left Banner */}
-      <Grid2 size={{ xs: 12, md: 5 }}>
+      <Grid2
+        size={{ xs: 12, md: 5 }}
+        sx={{ display: { xs: "none", md: "block" } }}
+      >
         <div className="h-screen bg-[#00843D] flex flex-col justify-center items-center gap-3">
           <img
             src="/lib_logo.jpg"
@@ -158,8 +161,8 @@ export default function SignUp() {
 
       {/* Right Area with Form */}
       <Grid2 size={{ xs: 12, md: 7 }}>
-        <div className="flex justify-center items-center h-screen">
-          <Card className="shadow-xl m-20 rounded-xl">
+        <div className="flex justify-center items-center h-screen bg-[#00843D] lg:bg-transparent">
+          <Card className="shadow-xl m-20 rounded-xl bg-white">
             <CardHeader>
               <CardTitle className="text-4xl font-bold">Register</CardTitle>
             </CardHeader>

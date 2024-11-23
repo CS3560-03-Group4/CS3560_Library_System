@@ -36,7 +36,7 @@ export default function ProfileInfo({ userID }: { userID: string }) {
 
   return (
     <>
-      <div className="flex flex-col gap-4 ">
+      <div className="flex flex-col gap-4 mb-4">
         <h1 className="text-4xl font-bold mb-3">
           {userInfo.firstName + " " + userInfo.lastName}
         </h1>

@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Grid2, IconButton, InputAdornment } from "@mui/material";
+import { Grid2, IconButton, InputAdornment, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -99,7 +99,10 @@ export default function SignIn() {
   return (
     <Grid2 container>
       {/* Left Banner */}
-      <Grid2 size={{ xs: 12, md: 5 }}>
+      <Grid2
+        size={{ xs: 12, md: 5 }}
+        sx={{ display: { xs: "none", md: "block" } }}
+      >
         <div className="h-screen bg-[#00843D] flex flex-col justify-center items-center gap-3">
           <img
             src="/lib_logo.jpg"
@@ -113,9 +116,10 @@ export default function SignIn() {
 
       {/* Right Area with Form */}
       <Grid2 size={{ xs: 12, md: 7 }}>
-        <div className="flex justify-center items-center h-screen">
-          <Card className="shadow-xl m-10 rounded-xl">
+        <div className="flex justify-center items-center h-screen bg-[#00843D] lg:bg-transparent">
+          <Card className="shadow-xl m-10 rounded-xl bg-white">
             <CardHeader>
+              <p className="lg:hidden text-xl md:text-3xl font-bold">Welcome to CPPLib!</p>
               <CardTitle className="text-4xl font-bold">Sign In</CardTitle>
             </CardHeader>
             <CardContent className="pb-0">
@@ -131,7 +135,7 @@ export default function SignIn() {
                 />
                 <TextField
                   label="Password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   variant="outlined"
                   name="password"
                   value={signinForm.password}
