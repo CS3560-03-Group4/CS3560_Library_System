@@ -8,10 +8,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useCart } from "@/contexts/CartContext";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function BookPage() {
+export default function BookPage({ params }: { params: { bookID: string } }) {
   const router = useRouter();
+  const { cart, setCart } = useCart();
+  const { bookID } = params;
+  const [isAdded, setIsAdded] = useState<boolean>(cart.includes(bookID));
+  
+  const handleAddToCart = () => {
+    if (isAdded) return;
+    setIsAdded(true);
+
+    const updatedCart = [...cart, bookID];
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
 
   return (
     <div className="min-h-screen bg-gray-200/65 flex justify-center items-center p-6">
@@ -81,10 +95,19 @@ export default function BookPage() {
 
         {/* Bottom Button Section */}
         <div className="flex justify-end gap-8 mt-4">
-          <Button className="bg-primary text-white hover:bg-[#4095ea] hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl">
-            Add to cart
+          <Button
+            disabled={isAdded}
+            className={`bg-primary text-white hover:bg-[#4095ea] hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl ${
+              isAdded ? "disabled:opacity-25 disabled:cursor-not-allowed" : ""
+            }`}
+            onClick={handleAddToCart}
+          >
+            {isAdded ? "Added to cart" : "Add to cart"}
           </Button>
-          <Button className="bg-gray-600 text-white hover:bg-gray-400/95 hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl" onClick={() => router.back()}>
+          <Button
+            className="bg-gray-600 text-white hover:bg-gray-400/95 hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl"
+            onClick={() => router.back()}
+          >
             Go back
           </Button>
         </div>
