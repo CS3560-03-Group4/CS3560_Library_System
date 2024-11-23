@@ -12,14 +12,21 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function AccountMenu({ className }: { className: string }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const router = useRouter();
   const { firstInitial, isAuthenticated, logout } = useUser();
-  const userID = localStorage.getItem("userID");
+  const [userID, setUserID] = useState<string>("");
+
+  useEffect(() => {
+    const userID = localStorage.getItem("userID");
+    if (userID) {
+      setUserID(userID);
+    }
+  }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

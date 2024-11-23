@@ -10,15 +10,14 @@ const CartContext = createContext<{
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const storedCart = localStorage.getItem("cart");
-
   const [cart, setCart] = useState<string[]>([]);
 
   useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
     if (storedCart) {
       setCart(JSON.parse(storedCart));
     }
-  }, [storedCart]);
+  }, []);
 
   return (
     <CartContext.Provider value={{ cart, setCart }}>
