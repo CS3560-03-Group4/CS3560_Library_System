@@ -1,11 +1,9 @@
 enum Status {
-  PENDING = "PENDING",
   ORDERED = "ORDERED",
   BORROWED = "BORROWED",
   RETURNED = "RETURNED",
-  RENEWED = "RENEWED",
-  OVERDUE = "OVERDUE",
   CANCELLED = "CANCELLED",
+  OVERDUE = "OVERDUE",
 }
 
 class BookOrder {
