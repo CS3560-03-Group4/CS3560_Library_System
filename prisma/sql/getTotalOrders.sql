@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM "BookOrder" WHERE "BookOrder"."status" != 'RETURNED'
