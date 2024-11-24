@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function ProfileInfo({ userID }: { userID: string }) {
+export default function StudentInfo({ userID }: { userID: string }) {
   const [userInfo, setUserInfo] = useState({
     broncoID: "",
     firstName: "",

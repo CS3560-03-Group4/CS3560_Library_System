@@ -16,7 +16,7 @@ export default function StaffInfo({ userID }: { userID: string }) {
       try {
         const response = await fetch(`/api/user/${userID}`);
         const user = await response.json();
-        console.log(user);
+        // console.log(user);
         if (user) {
           setUserInfo({
             broncoID: user.staffID,
