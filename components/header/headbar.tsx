@@ -1,5 +1,4 @@
 import { useCart } from "@/contexts/CartContext";
-import { useUser } from "@/contexts/UserContext";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -26,7 +25,6 @@ import Searchbar from "./searchbar";
 
 const Headbar = memo(() => {
   const [role, setRole] = useState<string | null>("");
-  const [isLoading, setISLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const userID = localStorage.getItem("userID");
@@ -38,8 +36,6 @@ const Headbar = memo(() => {
       } catch (error) {
         console.error("Error fetching role:", error);
         return null;
-      } finally {
-        setISLoading(false);
       }
     };
     getRole();
@@ -127,7 +123,7 @@ const Headbar = memo(() => {
             {role === "STUDENT" && (
               <Tooltip title="Book Cart" arrow>
                 <Link
-                  href="/"
+                  href="/cart"
                   color="inherit"
                   className="hidden md:block hover:bg-green-100/70 hover:text-black rounded-full"
                 >
