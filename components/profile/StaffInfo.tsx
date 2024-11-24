@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 
-export default function ProfileInfo({ userID }: { userID: string }) {
+export default function StaffInfo({ userID }: { userID: string }) {
   const [userInfo, setUserInfo] = useState({
     broncoID: "",
     firstName: "",
     lastName: "",
-    major: "",
+    role: "",
     email: "",
   });
 
@@ -16,13 +16,13 @@ export default function ProfileInfo({ userID }: { userID: string }) {
       try {
         const response = await fetch(`/api/user/${userID}`);
         const user = await response.json();
-        console.log(user);
+        // console.log(user);
         if (user) {
           setUserInfo({
-            broncoID: user.studentID,
+            broncoID: user.staffID,
             firstName: user.firstName,
             lastName: user.lastName,
-            major: user.major,
+            role: user.role,
             email: user.email,
           });
         }
@@ -36,7 +36,7 @@ export default function ProfileInfo({ userID }: { userID: string }) {
 
   return (
     <>
-      <div className="flex flex-col gap-4 mb-4">
+      <div className="flex flex-col gap-4 ">
         <h1 className="text-4xl font-bold mb-3">
           {userInfo.firstName + " " + userInfo.lastName}
         </h1>
@@ -45,8 +45,8 @@ export default function ProfileInfo({ userID }: { userID: string }) {
           <p>{userInfo.broncoID}</p>
         </div>
         <div>
-          <h3 className="font-semibold text-xl">Major</h3>
-          <p>{userInfo.major}</p>
+          <h3 className="font-semibold text-xl">Role</h3>
+          <p>{userInfo.role}</p>
         </div>
         <div>
           <h3 className="font-semibold text-xl">Email</h3>
