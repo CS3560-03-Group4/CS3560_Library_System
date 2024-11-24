@@ -1,22 +1,62 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
+import { formatDate } from "@/lib/utils";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 
 export default function BookPage({ params }: { params: { bookID: string } }) {
   const router = useRouter();
   const { cart, setCart } = useCart();
   const { bookID } = params;
   const [isAdded, setIsAdded] = useState<boolean>(cart.includes(bookID));
-  
+  const [bookInfo, setBookInfo] = useState({
+    // [var, function to update var]
+    title: "",
+    author: "",
+    datePublished: "",
+    description: "",
+    publisher: "",
+    numberOfPages: "",
+    genre: "",
+    imageURL: "",
+    quantityInStock: "",
+  });
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Use when fetching data from DB
+  useEffect(() => {
+    const fetchBookInfo = async () => {
+      try {
+        const response = await fetch(`/api/book/${bookID}`);
+        const book = await response.json(); // Results got from route.ts in api/book/[bookID]
+        console.log(book);
+        setBookInfo({
+          ...bookInfo,
+          title: book.title,
+          author: book.author,
+          datePublished: formatDate(book.datePublished),
+          description: book.description,
+          publisher: book.publisher,
+          numberOfPages: book.numberOfPages,
+          genre: book.genre,
+          imageURL: book.imageURL,
+          quantityInStock: book.quantity
+        });
+      } catch (error) {
+        console.error("Error fetching book info:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchBookInfo();
+  }, [bookID]);
+
   const handleAddToCart = () => {
     if (isAdded) return;
     setIsAdded(true);
@@ -27,6 +67,22 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
   };
 
   return (
+    <>
+      {isLoading ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            minHeight: "100vh",
+          }}
+        >
+          <CircularProgress color="success" />
+          <Typography sx={{ mt: 2 }}>Fetching book information...</Typography>
+        </Box>
+      ) : (
     <div className="min-h-screen bg-gray-200/65 flex justify-center items-center p-6">
       {/* Main Content Section */}
       <div className="w-full max-w-7xl grid grid-rows-[1fr_auto] gap-8 bg-white p-8 md:p-12 rounded-xl shadow-2xl">
@@ -36,7 +92,7 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
           <div className="flex justify-center items-center">
             <div className="w-full max-w-sm h-full flex items-center justify-center bg-gray-200 rounded-lg overflow-hidden">
               <img
-                src="/promo1.jpg" // Replace with the actual image path
+                src={bookInfo.imageURL} // Replace with the actual image path
                 alt="Soul Screamers Cover"
                 className="object-contain w-full h-auto"
               />
@@ -48,24 +104,21 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
             <Card className="shadow-none border-none h-full">
               <CardHeader>
                 <CardTitle className="text-4xl md:text-5xl font-bold">
-                  Soul Screamers 1: My Soul to Take
+                  {bookInfo.title}
                 </CardTitle>
                 <p className="text-gray-500 mt-2 text-xl md:text-2xl">
-                  by Rachel Vincent
+                  by {bookInfo.author}
                 </p>
-                <p className="text-gray-400 text-lg mt-1">Published in 2009</p>
+                <p className="text-gray-400 text-lg mt-1">
+                  Published on {bookInfo.datePublished}
+                </p>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-700 text-lg md:text-xl leading-relaxed border-t border-gray-300 pt-6">
-                  She doesn&apos;t see dead people, but... <br />
-                  She senses when someone near her is about to die. And when
-                  that happens, a force beyond her control compels her to scream
-                  bloody murder. Literally. <br />
-                  Kaylee just wants to enjoy having caught the attention of the
-                  hottest guy in school. But a normal date is hard to come by
-                  when Nash seems to know more about her need to scream than she
-                  does. And when classmates start dropping dead for no apparent
-                  reason, only Kaylee knows who'll be next...
+                  {bookInfo.description &&
+                    bookInfo.description
+                      .split("\\n")
+                      .map((word, index) => <p key={index}>{word}</p>)}
                 </p>
               </CardContent>
             </Card>
@@ -76,19 +129,19 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
         <div className="flex justify-between gap-6 border-t border-gray-300 pt-8 text-lg md:text-xl text-gray-700">
           <div>
             <p className="font-bold text-sm md:text-2xl">Publisher:</p>
-            <p className="text-sm md:text-xl">Harlequin Teen</p>
+            <p className="text-sm md:text-xl">{bookInfo.publisher}</p>
           </div>
           <div>
             <p className="font-bold text-sm md:text-2xl">Print Length:</p>
-            <p className="text-sm md:text-xl">288 pages</p>
+            <p className="text-sm md:text-xl">{bookInfo.numberOfPages} pages</p>
           </div>
           <div>
             <p className="font-bold text-sm md:text-2xl">Genre:</p>
-            <p className="text-sm md:text-xl">Fiction, Fantasy</p>
+            <p className="text-sm md:text-xl">{bookInfo.genre}</p>
           </div>
           <div>
             <p className="font-bold text-sm md:text-2xl">Available:</p>
-            <p className="text-sm md:text-xl">10 in stock</p>
+            <p className="text-sm md:text-xl">{bookInfo.quantityInStock} in stock</p>
           </div>
         </div>
 
@@ -111,6 +164,7 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
           </Button>
         </div>
       </div>
-    </div>
+    </div> )}
+    </>
   );
 }
