@@ -44,104 +44,104 @@ const Headbar = memo(() => {
   };
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2, fontWeight: "bold" }}>
-        CPPLib
-      </Typography>
-      <Divider />
-      <List>
-        {Object.entries(navItems).map(([text, func]) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }} onClick={func}>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
+      <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+        <Typography variant="h6" sx={{ my: 2, fontWeight: "bold" }}>
+          CPPLib
+        </Typography>
+        <Divider />
+        <List>
+          {Object.entries(navItems).map(([text, func]) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton sx={{ textAlign: "center" }} onClick={func}>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+          ))}
+        </List>
+      </Box>
   );
 
   return (
-    <>
-      <AppBar position="sticky" style={{ backgroundColor: "#00843d" }}>
-        <Toolbar className="flex gap-4 justify-between">
-          <div className="flex gap-4 flex-1 items-center">
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: "none" } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            {/* Logo */}
-            <Link
-              href="/"
-              color="inherit"
-              className="hover:bg-green-100/70 hover:text-black rounded-xl"
-            >
-              <h4 className="hidden sm:block font-bold text-4xl">CPPLib</h4>
-            </Link>
-
-            {/* Search Bar */}
-            <Searchbar />
-          </div>
-
-          <div className="flex gap-4 items-center">
-            {/* Navigation Links */}
-            <Tooltip title="Home" arrow>
-              <Link
-                href="/"
-                color="inherit"
-                className="hidden md:block hover:bg-green-100/70 hover:text-black rounded-full"
+      <>
+        <AppBar position="sticky" style={{ backgroundColor: "#00843d" }}>
+          <Toolbar className="flex gap-4 justify-between">
+            <div className="flex gap-4 flex-1 items-center">
+              <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  edge="start"
+                  onClick={handleDrawerToggle}
+                  sx={{ mr: 2, display: { sm: "none" } }}
               >
-                <IconButton color="inherit">
-                  <HomeIcon fontSize="large" />
-                </IconButton>
-              </Link>
-            </Tooltip>
-
-            {/* Cart Icon */}
-            <Tooltip title="Book Cart" arrow>
+                <MenuIcon />
+              </IconButton>
+              {/* Logo */}
               <Link
-                href="/"
-                color="inherit"
-                className="hidden md:block hover:bg-green-100/70 hover:text-black rounded-full"
+                  href="/"
+                  color="inherit"
+                  className="hover:bg-green-100/70 hover:text-black rounded-xl"
               >
-                <IconButton color="inherit">
-                  <Badge badgeContent={cart.length} color="error">
-                    <ShoppingCartIcon fontSize="large" />
-                  </Badge>
-                </IconButton>
+                <h4 className="hidden sm:block font-bold text-4xl">CPPLib</h4>
               </Link>
-            </Tooltip>
 
-            {/* Account Menu with Logout */}
-            <AccountMenu className="bg-white w-9 h-9 flex items-center justify-center rounded-full text-black font-bold hover:bg-slate-700/45 hover:text-white hover:font-bold " />
-          </div>
-        </Toolbar>
-      </AppBar>
-      <nav>
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { md: "block", lg: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </nav>
-    </>
+              {/* Search Bar */}
+              <Searchbar />
+            </div>
+
+            <div className="flex gap-4 items-center">
+              {/* Navigation Links */}
+              <Tooltip title="Home" arrow>
+                <Link
+                    href="/"
+                    color="inherit"
+                    className="hidden md:block hover:bg-green-100/70 hover:text-black rounded-full"
+                >
+                  <IconButton color="inherit">
+                    <HomeIcon fontSize="large" />
+                  </IconButton>
+                </Link>
+              </Tooltip>
+
+              {/* Cart Icon */}
+              <Tooltip title="Book Cart" arrow>
+                <Link
+                    href="/cart"
+                    color="inherit"
+                    className="hidden md:block hover:bg-green-100/70 hover:text-black rounded-full"
+                >
+                  <IconButton color="inherit">
+                    <Badge badgeContent={cart.length} color="error">
+                      <ShoppingCartIcon fontSize="large" />
+                    </Badge>
+                  </IconButton>
+                </Link>
+              </Tooltip>
+
+              {/* Account Menu with Logout */}
+              <AccountMenu className="bg-white w-9 h-9 flex items-center justify-center rounded-full text-black font-bold hover:bg-slate-700/45 hover:text-white hover:font-bold " />
+            </div>
+          </Toolbar>
+        </AppBar>
+        <nav>
+          <Drawer
+              variant="temporary"
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+              ModalProps={{
+                keepMounted: true, // Better open performance on mobile.
+              }}
+              sx={{
+                display: { md: "block", lg: "none" },
+                "& .MuiDrawer-paper": {
+                  boxSizing: "border-box",
+                  width: drawerWidth,
+                },
+              }}
+          >
+            {drawer}
+          </Drawer>
+        </nav>
+      </>
   );
 });
 
