@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import CartItem from "@/components/cartItem/cartItem"; // Ensure this is the correct path
+import CartItem from "@/components/cartItem/cartItem";
 
 // Mock cart items with initial quantity
 const cartItems = [
