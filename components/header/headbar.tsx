@@ -1,5 +1,4 @@
 import { useCart } from "@/contexts/CartContext";
-import { useUser } from "@/contexts/UserContext";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -20,11 +19,29 @@ import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import AccountMenu from "./accountmenu";
 import Searchbar from "./searchbar";
 
 const Headbar = memo(() => {
+  const [role, setRole] = useState<string | null>("");
+
+  useEffect(() => {
+    const userID = localStorage.getItem("userID");
+    const getRole = async () => {
+      try {
+        const response = await fetch(`/api/user/${userID}`);
+        const data = await response.json();
+        setRole(data.role);
+      } catch (error) {
+        console.error("Error fetching role:", error);
+        return null;
+      }
+    };
+    getRole();
+  }, []);
+  // console.log(role);
+
   const drawerWidth = 240;
   const router = useRouter();
 
@@ -103,19 +120,21 @@ const Headbar = memo(() => {
             </Tooltip>
 
             {/* Cart Icon */}
-            <Tooltip title="Book Cart" arrow>
-              <Link
-                href="/"
-                color="inherit"
-                className="hidden md:block hover:bg-green-100/70 hover:text-black rounded-full"
-              >
-                <IconButton color="inherit">
-                  <Badge badgeContent={cart.length} color="error">
-                    <ShoppingCartIcon fontSize="large" />
-                  </Badge>
-                </IconButton>
-              </Link>
-            </Tooltip>
+            {role === "STUDENT" && (
+              <Tooltip title="Book Cart" arrow>
+                <Link
+                  href="/cart"
+                  color="inherit"
+                  className="hidden md:block hover:bg-green-100/70 hover:text-black rounded-full"
+                >
+                  <IconButton color="inherit">
+                    <Badge badgeContent={cart.length} color="error">
+                      <ShoppingCartIcon fontSize="large" />
+                    </Badge>
+                  </IconButton>
+                </Link>
+              </Tooltip>
+            )}
 
             {/* Account Menu with Logout */}
             <AccountMenu className="bg-white w-9 h-9 flex items-center justify-center rounded-full text-black font-bold hover:bg-slate-700/45 hover:text-white hover:font-bold " />
