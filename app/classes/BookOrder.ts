@@ -1,5 +1,7 @@
-enum Status {
+export enum Status {
   ORDERED = "ORDERED",
+  RECEIVED = "RECEIVED",
+  READY = "READY",
   BORROWED = "BORROWED",
   RETURNED = "RETURNED",
   CANCELLED = "CANCELLED",

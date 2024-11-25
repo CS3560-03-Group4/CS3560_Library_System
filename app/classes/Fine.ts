@@ -1,4 +1,4 @@
-enum FineStatus {
+export enum FineStatus {
   PAID = "PAID",
   UNPAID = "UNPAID",
   PENDING = "PENDING",
