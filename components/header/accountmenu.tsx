@@ -83,8 +83,10 @@ export default function AccountMenu({ className }: { className: string }) {
             Profile
           </MenuItem>
         </Link>
-        <Link href={"/order"}>
-          <MenuItem href="/orders">
+        <Link
+          href="/orders"
+        >
+          <MenuItem onClick={handleClose}>
             <ListItemIcon>
               <OrderIcon fontSize="small" />
             </ListItemIcon>
