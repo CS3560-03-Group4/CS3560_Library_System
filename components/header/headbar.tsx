@@ -70,6 +70,12 @@ const Headbar = memo(() => {
         {Object.entries(navItems).map(([text, func]) => (
           <ListItem key={text} disablePadding>
             <ListItemButton sx={{ textAlign: "center" }} onClick={func}>
+              {text === "Your Cart" && (
+                <Badge badgeContent={cart.length} color="secondary">
+                  <ShoppingCartIcon />
+                </Badge>
+              )}
+              {text === "Home" && <HomeIcon />}
               <ListItemText primary={text} />
             </ListItemButton>
           </ListItem>
