@@ -14,7 +14,7 @@ type CartItemType = {
 
 const Cart = () => {
   const [items, setItems] = useState<CartItemType[]>([]); // Specify the type for items
-  const { cart } = useCart();
+  const { cart, setCart } = useCart();
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -46,13 +46,19 @@ const Cart = () => {
   const handleRemove = (id: string) => {
     const updatedItems = items.filter((item) => item.bookID !== id);
     setItems(updatedItems);
-    localStorage.setItem("cart", JSON.stringify(updatedItems));
+
+    // Update the cart in the CartContext
+    const updatedCart = cart.filter((bookID) => bookID !== id);
+    setCart(updatedCart);
+
+    // Persist the updated cart to localStorage
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <main className="max-w-4xl mx-auto p-4 bg-white shadow-md">
-        <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
+    <div className="bg-gray-100">
+      <main className="min-h-screen max-w-4xl mx-auto p-4 bg-white shadow-md">
+        <h1 className="text-xl md:text-4xl font-bold mb-4">Your Cart</h1>
 
         {/* Cart Items */}
         {items.length > 0 ? (
@@ -67,7 +73,9 @@ const Cart = () => {
             />
           ))
         ) : (
-          <p className="text-center text-gray-500">Your cart is empty.</p>
+          <p className="text-xl text-center text-gray-500">
+            Your cart is empty.
+          </p>
         )}
 
         {/* Checkout and Add More Books Buttons */}
