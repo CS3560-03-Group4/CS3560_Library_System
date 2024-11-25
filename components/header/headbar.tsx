@@ -40,7 +40,7 @@ const Headbar = memo(() => {
     };
     getRole();
   }, []);
-  console.log(role);
+  // console.log(role);
 
   const drawerWidth = 240;
   const router = useRouter();

@@ -33,6 +33,14 @@ export default function Profile({ params }: { params: { userID: string } }) {
     }
   };
 
+  // Fetch total books and orders id role is staff
+  const fetchTotalBooksAndOrders = () => {
+    if (role === "STAFF") {
+      fetchTotalBooks();
+      fetchTotalOrders();
+    }
+  };
+
   // Fetch total books
   const fetchTotalBooks = async () => {
     try {
@@ -58,11 +66,10 @@ export default function Profile({ params }: { params: { userID: string } }) {
   // Fetch data when component mounts
   useEffect(() => {
     getRole();
-    fetchTotalBooks();
-    fetchTotalOrders();
+    fetchTotalBooksAndOrders();
   }, []);
 
-  console.log(role === "STUDENT");
+  // console.log(role === "STUDENT");
   return (
     <>
       {isLoading ? (
