@@ -61,7 +61,7 @@ export default function AccountMenu({ className }: { className: string }) {
         <Link
           href="/sign-in"
           color="inherit"
-          className="text-lg p-2 hover:bg-green-100/70 hover:text-black rounded-xl"
+          className="text-md sm:text-lg p-2 hover:bg-green-100/70 hover:text-black rounded-xl"
         >
           Sign in
         </Link>
@@ -83,9 +83,7 @@ export default function AccountMenu({ className }: { className: string }) {
             Profile
           </MenuItem>
         </Link>
-        <Link
-          href="/orders"
-        >
+        <Link href="/orders">
           <MenuItem onClick={handleClose}>
             <ListItemIcon>
               <OrderIcon fontSize="small" />

@@ -5,9 +5,14 @@ import { formatDate } from "@/lib/utils";
 import {
   Box,
   CircularProgress,
+  FormControl,
+  InputLabel,
   List,
   ListItem,
   ListItemText,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -93,6 +98,13 @@ export default function Home() {
     setSelectedGenre(category);
     setActiveGenre(category); // Hightlight the selected genre
   };
+
+  const [category, setCategory] = React.useState("");
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setCategory(event.target.value);
+    setSelectedGenre(event.target.value);
+  };
   // Render the component
   return (
     <>
@@ -122,6 +134,7 @@ export default function Home() {
                 overflowY: "auto", // Allows scrolling if content exceeds the viewport height
                 borderRight: "1px solid #ddd", // Right border styling
                 zIndex: 1,
+                display: { xs: "none", sm: "block" },
               }}
             >
               {/* List component that contains clickable list items for categories */}
@@ -159,13 +172,66 @@ export default function Home() {
             {/* Main Content Area for displaying books by category */}
             <Box
               sx={{
-                marginLeft: "12rem",
+                marginLeft: { xs: "0", sm: "12rem" },
                 width: "100%",
                 flex: 1, // Takes up remaining space after the sidebar
                 padding: "0 1.5rem 1.5rem 1.5rem", // Padding around the content area
                 justifyContent: "center", // Centers the content horizontally
               }}
             >
+              <FormControl
+                variant="filled"
+                sx={{
+                  mt: 2,
+                  width: "100%",
+                  display: { xs: "block", sm: "none" },
+                  backgroundColor: "#00843D",
+                  color: "white",
+                  opacity: 0.9,
+                  borderRadius: "1rem",
+                  "& .MuiFilledInput-root": {
+                    borderRadius: "1rem", // Rounds the inner Select component
+                    backgroundColor: "#00843D", // Ensure consistent background
+                    borderBottom: "none", // Remove the bottom border
+                    "&:before": {
+                      borderBottom: "none", // Removes the underline before focus
+                    },
+                    "&:after": {
+                      borderBottom: "none", // Removes the underline after focus
+                    },
+                  },
+                }}
+              >
+                <InputLabel
+                  id="demo-simple-select-filled-label"
+                  sx={{
+                    color: "white",
+                    borderRadius: "1rem",
+                    "&.Mui-focused": {
+                      color: "white", // Change this to your desired color
+                    },
+                  }}
+                >
+                  Category
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-filled-label"
+                  id="demo-simple-select-filled"
+                  value={category}
+                  onChange={handleChange}
+                  sx={{
+                    width: "100%",
+                    color: "white",
+                    borderRadius: "1rem",
+                  }}
+                >
+                  {categories.map((category, index) => (
+                    <MenuItem key={index} value={category}>
+                      {category}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               {/* Iterates over each category and its books to render them */}
               {Object.entries(filteredGroupedBooks).map(([genre, books]) => (
                 <Box key={genre} sx={{ marginBottom: "2rem" }}>
