@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import StudentInfo from "@/components/profile/StudentInfo";
 import StaffInfo from "@/components/profile/StaffInfo";
+import OverduePayment from "@/components/profile/OverduePayment";
 
 export default function Profile({ params }: { params: { userID: string } }) {
   const { userID } = params;
@@ -108,13 +109,18 @@ export default function Profile({ params }: { params: { userID: string } }) {
           {/* Right Area with Form */}
           <Grid2 size={{ xs: 12, md: 8 }}>
             {role === "STUDENT" ? (
-              <h1 className="mt-4 text-3xl font-bold">Overdue Payment</h1>
+              <>
+                <h1 className="mt-4 text-4xl font-bold">Overdue Payment</h1>
+                <div className="mt-4" style={{ width: "100%" }}>
+                  <OverduePayment userID={userID} />
+                </div>
+              </>
             ) : (
               <>
                 {/* Heading */}
                 <h1 className="text-4xl font-bold mb-6">Summary</h1>
                 {/* Catalog Summary */}
-                <div className="mt-4 scale-110" style={{ width: "10%" }}>
+                <div className="mt-4 scale-110" style={{ width: "100%" }}>
                   <CatalogSummary
                     totalBooks={totalBooks}
                     totalOrders={totalOrders}

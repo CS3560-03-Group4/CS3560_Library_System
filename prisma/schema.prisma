@@ -157,9 +157,10 @@ model Fine {
   amount Float
   status FineStatus // Values include "Unpaid", "Paid"
 
+  payement Payment? // Fine - Payment (one to one)
   // orderID is a foreign key to BookOrder
-  orderID String    @unique
-  order   BookOrder @relation(fields: [orderID], references: [orderID])
+  orderID  String    @unique
+  order    BookOrder @relation(fields: [orderID], references: [orderID])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -175,6 +176,9 @@ model Payment {
   // studentID is a foreign key to Student
   studentID String
   student   Student @relation(fields: [studentID], references: [studentID])
+
+  fineID    String  @unique // Payment - Fine (one to one)
+  fine      Fine    @relation(fields: [fineID], references: [fineID])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
