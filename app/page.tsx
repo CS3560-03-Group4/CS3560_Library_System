@@ -197,11 +197,11 @@ export default function Home() {
                       books.map((book) => (
                         <BookCard
                           key={book.bookID}
-                          id={book.bookID}
+                          bookID={book.bookID}
                           title={book.title}
                           author={book.author}
                           date={book.datePublished}
-                          imageUrl={book.imageURL}
+                          imageURL={book.imageURL}
                         />
                       ))
                     ) : (

@@ -22,31 +22,34 @@ const Cart = () => {
 
   useEffect(() => {
     const fetchCartItems = async () => {
-      const fetchedItems: CartItemType[] = []; // Explicitly type the fetched items
-      for (const bookID of cart) {
-        try {
-          const response = await fetch(`/api/book/${bookID}`);
-          const data = await response.json();
-          fetchedItems.push({
-            bookID: bookID,
-            title: data.title,
-            author: data.author,
-            imageURL: data.imageURL,
-          });
-        } catch (error) {
-          console.error(`Error fetching book info for ID ${bookID}:`, error);
-        } finally {
-          setIsLoading(false);
-        }
+      if (cart.length === 0) {
+        setItems([]); // Clear items when cart is empty
+        setIsLoading(false);
+        return;
       }
-      setItems(fetchedItems); // Update state with the fetched items
+
+      try {
+        const fetchedItems = await Promise.all(
+          cart.map(async (bookID) => {
+            const response = await fetch(`/api/book/${bookID}`);
+            const data = await response.json();
+            return {
+              bookID,
+              title: data.title,
+              author: data.author,
+              imageURL: data.imageURL,
+            };
+          })
+        );
+        setItems(fetchedItems);
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    if (cart.length > 0) {
-      fetchCartItems();
-    } else {
-      setItems([]); // Clear items when cart is empty
-    }
+    fetchCartItems();
   }, [cart]);
 
   const handleRemove = (id: string) => {

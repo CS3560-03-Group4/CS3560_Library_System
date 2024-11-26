@@ -3,27 +3,27 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
-  Typography
+  Typography,
 } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 // Define the prop types for the BookCard component
-interface BookProps {
-  id: string;
+export interface BookProps {
+  bookID: string;
   title: string;
   author: string;
   date: string;
-  imageUrl: string;
+  imageURL: string;
 }
 // Functional component BookCard using React.FC with BookProps for type definition
 const BookCard: React.FC<BookProps> = ({
-  id,
+  bookID,
   title,
   author,
   date,
-  imageUrl,
+  imageURL,
 }) => {
   const router = useRouter();
 
@@ -43,7 +43,7 @@ const BookCard: React.FC<BookProps> = ({
         },
       }}
     >
-      <CardActionArea onClick={() => router.push(`/book/${id}`)}>
+      <CardActionArea onClick={() => router.push(`/book/${bookID}`)}>
         {/* CardMedia to display book image */}
         <CardMedia
           component="img"
@@ -53,7 +53,7 @@ const BookCard: React.FC<BookProps> = ({
             objectFit: "contain", // Ensures the image covers the area without stretching
             bgcolor: "#00843d",
           }}
-          image={imageUrl}
+          image={imageURL}
           alt={`Cover of ${title}`}
           onError={(e) => (e.currentTarget.src = "/placeholder_image.png")} // Fallback image
         />
@@ -61,7 +61,7 @@ const BookCard: React.FC<BookProps> = ({
         <CardContent sx={{ bgcolor: "#fff" }}>
           {/* Background color: white */}
           {/* Link to detailed page */}
-          <Link href={`/book/${id}`} passHref>
+          <Link href={`/book/${bookID}`} passHref>
             <Typography
               component="a"
               variant="h5"
