@@ -1,39 +1,32 @@
-import React from "react";
 import {
   Card,
-  CardMedia,
+  CardActionArea,
   CardContent,
+  CardMedia,
   Typography,
-  IconButton,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 // Define the prop types for the BookCard component
-interface BookProps {
-  id: string;
+export interface BookProps {
+  bookID: string;
   title: string;
   author: string;
   date: string;
-  imageUrl: string;
+  imageURL: string;
 }
 // Functional component BookCard using React.FC with BookProps for type definition
 const BookCard: React.FC<BookProps> = ({
-  id,
+  bookID,
   title,
   author,
   date,
-  imageUrl,
+  imageURL,
 }) => {
-  // State to manage whether the book has been added
-  const [isAdded, setIsAdded] = React.useState(false);
+  const router = useRouter();
 
-  // Handler for adding or removing a book, toggles the isAdded state
-  const handleAdd = () => {
-    setIsAdded(!isAdded);
-  };
-  // Component return JSX
   return (
     // Card component from MUI styled using the sx prop
     <Card
@@ -50,68 +43,53 @@ const BookCard: React.FC<BookProps> = ({
         },
       }}
     >
-      {/* CardMedia to display book image */}
-      <CardMedia
-        component="img"
-        sx={{
-          width: "100%", // Set width to match the Card's width
-          height: 300, // Set a fixed height
-          objectFit: "contain", // Ensures the image covers the area without stretching
-          bgcolor: "#00843d",
-        }}
-        image={imageUrl}
-        alt={`Cover of ${title}`}
-        onError={(e) => (e.currentTarget.src = "path/to/fallback-image.jpg")} // Fallback image
-      />
-      {/* CardContent contains the text elements of the card */}
-      <CardContent sx={{ bgcolor: "#fff" }}>
-        {/* Background color: white */}
-        {/* Link to detailed page */}
-        <Link href={`/book/${id}`} passHref>
+      <CardActionArea onClick={() => router.push(`/book/${bookID}`)}>
+        {/* CardMedia to display book image */}
+        <CardMedia
+          component="img"
+          sx={{
+            width: "100%", // Set width to match the Card's width
+            height: 300, // Set a fixed height
+            objectFit: "contain", // Ensures the image covers the area without stretching
+            bgcolor: "#00843d",
+          }}
+          image={imageURL}
+          alt={`Cover of ${title}`}
+          onError={(e) => (e.currentTarget.src = "/placeholder_image.png")} // Fallback image
+        />
+        {/* CardContent contains the text elements of the card */}
+        <CardContent sx={{ bgcolor: "#fff" }}>
+          {/* Background color: white */}
+          {/* Link to detailed page */}
+          <Link href={`/book/${bookID}`} passHref>
+            <Typography
+              component="a"
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                marginBottom: 1,
+                textDecoration: "none",
+                color: "inherit",
+                "&:hover": {
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              {title} {/* Display the book title */}
+            </Typography>
+          </Link>
           <Typography
-            component="a"
-            variant="h5"
-            sx={{
-              fontWeight: "bold",
-              marginBottom: 1,
-              textDecoration: "none",
-              color: "inherit",
-              "&:hover": {
-                textDecoration: "underline",
-              },
-            }}
+            variant="body1"
+            color="text.secondary"
+            sx={{ marginBottom: 1 }}
           >
-            {title} {/* Display the book title */}
+            by {author} {/* Display the author */}
           </Typography>
-        </Link>
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          sx={{ marginBottom: 1 }}
-        >
-          by {author} {/* Display the author */}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {date} {/* Display the date */}
-        </Typography>
-      </CardContent>
-      {/* IconButton to toggle the addition state of the book */}
-      <IconButton
-        onClick={handleAdd}
-        aria-label={isAdded ? "Remove from added list" : "Add to added list"}
-        sx={{
-          position: "absolute",
-          bottom: 8,
-          right: 8,
-          color: isAdded ? "red" : "primary.main", // Button color
-          "&:hover": {
-            bgcolor: "#E5E4E2", // Button color on hover
-          },
-        }}
-      >
-        {isAdded ? <RemoveIcon /> : <AddIcon />}{" "}
-        {/* Icon displayed in the button */}
-      </IconButton>
+          <Typography variant="body2" color="text.secondary">
+            {date} {/* Display the date */}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 };
