@@ -64,11 +64,15 @@ export default function Profile({ params }: { params: { userID: string } }) {
     }
   };
 
-  // Fetch data when component mounts
   useEffect(() => {
     getRole();
-    fetchTotalBooksAndOrders();
-  }, []);
+  }, []); // Fetch role only once when the component mounts
+
+  useEffect(() => {
+    if (role === "STAFF") {
+      fetchTotalBooksAndOrders();
+    }
+  }, [role]); // Fetch totalBooks and totalOrders only after the role is set to "STAFF"
 
   // console.log(role === "STUDENT");
   return (
@@ -120,7 +124,7 @@ export default function Profile({ params }: { params: { userID: string } }) {
                 {/* Heading */}
                 <h1 className="text-4xl font-bold mb-6">Summary</h1>
                 {/* Catalog Summary */}
-                <div className="mt-4 scale-110" style={{ width: "100%" }}>
+                <div className="mt-4" style={{ width: "100%" }}>
                   <CatalogSummary
                     totalBooks={totalBooks}
                     totalOrders={totalOrders}
