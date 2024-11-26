@@ -1,5 +1,4 @@
 import { db } from "@/lib/db";
-import { getBookByTitle } from "@prisma/client/sql";
 import { NextResponse } from "next/server";
 import { title } from "process";
 
