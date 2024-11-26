@@ -11,13 +11,18 @@ export async function GET(request: Request) {
       return NextResponse.json({ message: "No fines found" }, { status: 401 });
     }
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         message: "Fetching fines successfully",
         fines,
       },
       { status: 200 }
-    );
+    )
+
+    // Add Cache-Control header to the response
+    response.headers.set("Cache-Control", "no-store");
+    
+    return response
   } catch (error) {
     console.error("[ROUTE_FINE_GET] Error fetching fine data:", error);
     return NextResponse.json(

@@ -10,13 +10,18 @@ export async function GET() {
       return NextResponse.json({ message: "No books found" }, { status: 401 });
     }
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         message: "Fetching books successfully",
         books,
       },
       { status: 200 }
     );
+
+    // Add Cache-Control header to the response
+    response.headers.set("Cache-Control", "no-store");
+
+    return response;
   } catch (error) {
     console.error("[ROUTE_BOOK_ID] Error during fetching books:", error);
     return NextResponse.json(

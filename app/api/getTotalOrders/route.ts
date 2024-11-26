@@ -13,13 +13,19 @@ export async function GET() {
         : 0;
 
     // console.log("TOTAL ORDERS:", totalOrders);
-    return NextResponse.json(
+
+    const response = NextResponse.json(
       {
         message: "Fetching orders successfully",
         total: totalOrders,
       },
       { status: 200 }
     );
+
+    // Add Cache-Control header to the response
+    response.headers.set("Cache-Control", "no-store");
+
+    return response;
   } catch (error) {
     console.error(
       "[ROUTE_BOOK_ID] Error during fetching total number of orders:",

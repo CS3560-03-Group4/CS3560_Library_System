@@ -24,10 +24,15 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: "Payment created successfully" },
       { status: 200 }
     );
+
+    // Add Cache-Control header to the response
+    response.headers.set("Cache-Control", "no-store");
+
+    return response;
   } catch (error) {
     console.error(
       "[ROUTE_PAYMENT_POST] Error when creating a new payment:",
