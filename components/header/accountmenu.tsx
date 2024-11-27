@@ -21,6 +21,23 @@ export default function AccountMenu({ className }: { className: string }) {
   const { firstInitial, isAuthenticated, logout } = useUser();
   const [userID, setUserID] = useState<string>("");
 
+  const [role, setRole] = useState<string | null>("");
+
+  useEffect(() => {
+    const userID = localStorage.getItem("userID");
+    const getRole = async () => {
+      try {
+        const response = await fetch(`/api/user/${userID}`);
+        const data = await response.json();
+        setRole(data.role);
+      } catch (error) {
+        console.error("Error fetching role:", error);
+        return null;
+      }
+    };
+    getRole();
+  }, []);
+
   useEffect(() => {
     const userID = localStorage.getItem("userID");
     if (userID) {
@@ -83,14 +100,16 @@ export default function AccountMenu({ className }: { className: string }) {
             Profile
           </MenuItem>
         </Link>
-        <Link href="/orders">
-          <MenuItem onClick={handleClose}>
-            <ListItemIcon>
-              <OrderIcon fontSize="small" />
-            </ListItemIcon>
-            My Orders
-          </MenuItem>
-        </Link>
+        {role === "STUDENT" && (
+          <Link href="/orders">
+            <MenuItem onClick={handleClose}>
+              <ListItemIcon>
+                <OrderIcon fontSize="small" />
+              </ListItemIcon>
+              My Orders
+            </MenuItem>
+          </Link>
+        )}
         <Divider />
         <MenuItem
           onClick={handleLogout}
