@@ -3,18 +3,60 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Typography, Button, Divider, Grid2 } from "@mui/material";
+import { CartItemType } from "../cart/page";
+import { formatDate } from "@/lib/utils";
+import { useCart } from "@/contexts/CartContext";
+import { useUser } from "@/contexts/UserContext";
+import { toast } from "react-toastify";
 
-// Define the type for cart items
-type CartItemType = {
-  bookID: string;
-  title: string;
-  author: string;
-  imageURL: string;
+type OrderDetails = {
+  totalItems: number;
+  orderDate: string;
+  dueDate: string;
+  status: string;
+  studentID: string;
+  orderItems: string[];
 };
 
 const ReviewOrderPage = () => {
   const router = useRouter();
+  const { cart, setCart } = useCart();
+  const { isAuthenticated } = useUser();
+  const [studentID, setStudentID] = useState<string | null>(null);
   const [orderItems, setOrderItems] = useState<CartItemType[]>([]);
+  const orderDate = formatDate(new Date().toLocaleDateString("en-CA"));
+  // Add 7 days to the current date as the due date*
+  const dueDate = formatDate(
+    new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleDateString(
+      "en-CA"
+    )
+  );
+
+  // Fetch studentID when the component loads
+  useEffect(() => {
+    const fetchStudentID = async () => {
+      const userID = localStorage.getItem("userID");
+
+      if (!userID) {
+        console.error("Failed to fetch student ID. Please try again.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/user/${userID}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch student ID");
+        }
+
+        const data = await response.json();
+        setStudentID(data.studentID); // Assuming `data.studentID` contains the student ID
+      } catch (error) {
+        console.error("Error fetching student ID:", error);
+      }
+    };
+
+    fetchStudentID();
+  }, []);
 
   useEffect(() => {
     // Retrieve cart data from localStorage
@@ -24,8 +66,60 @@ const ReviewOrderPage = () => {
     }
   }, []);
 
-  const handleConfirm = () => {
-    router.push("/confirm"); // Navigate to the confirmation page
+  const handleConfirm = async () => {
+    if (!isAuthenticated) {
+      localStorage.setItem("redirectUrl", "/checkout");
+      toast.error("You must be logged in to place an order.", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+
+      router.push("/sign-in"); // Redirect to sign-in page
+      return;
+    }
+
+    if (!studentID) {
+      console.error("Failed to fetch your student ID. Please try again.");
+      return;
+    }
+
+    try {
+      const order: OrderDetails = {
+        totalItems: orderItems.length,
+        orderDate,
+        dueDate,
+        status: "ORDERED",
+        studentID,
+        orderItems: cart,
+      };
+
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        body: JSON.stringify(order),
+      });
+
+      if (!response.ok) {
+        toast.error("Failed to confirm order.", {
+          position: "top-center",
+          autoClose: 3000,
+        });
+      }
+
+      toast.success("Order placed successfully.", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+
+      localStorage.removeItem("cart");
+      setCart([]);
+      router.push("/confirm"); // Navigate to the confirmation page
+    } catch (error) {
+      console.error("Error confirming order:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -69,6 +163,14 @@ const ReviewOrderPage = () => {
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
             <Typography>Total Items</Typography>
             <Typography>{orderItems.length}</Typography>
+          </Box>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+            <Typography>Order Date:</Typography>
+            <Typography>{orderDate}</Typography>
+          </Box>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+            <Typography>Due Date:</Typography>
+            <Typography>{dueDate}</Typography>
           </Box>
         </Grid2>
       </Grid2>

@@ -7,7 +7,7 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 
 // Define the type for a cart item
-type CartItemType = {
+export type CartItemType = {
   bookID: string;
   title: string;
   author: string;
@@ -65,13 +65,9 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    if (items.length > 0) {
       // Store the cart items in localStorage
       localStorage.setItem("checkoutItems", JSON.stringify(items));
       router.push("/checkout"); // Navigate to the checkout page
-    } else {
-      alert("Your cart is empty. Please add items to proceed.");
-    }
   };
 
   return (

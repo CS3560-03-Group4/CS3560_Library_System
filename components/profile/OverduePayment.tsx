@@ -57,9 +57,17 @@ export default function OverduePayment({ userID }: { userID: string }) {
         console.error("Error fetching student ID:", error);
       }
     };
+
+    getStudentID();
+  }, [userID]);
+
+  useEffect(() => {
+    if (!payment?.studentID) {
+      return;
+    }
     const getFineInfo = async () => {
       try {
-        const response = await fetch("/api/fine");
+        const response = await fetch(`/api/fines/${payment?.studentID}`);
         const data = await response.json();
         const fines = data.fines;
         console.log(fines);
@@ -71,9 +79,8 @@ export default function OverduePayment({ userID }: { userID: string }) {
       }
     };
 
-    getStudentID();
     getFineInfo();
-  }, []);
+  }, [payment?.studentID]);
 
   useEffect(() => {
     // Computer fine remaining amount from the list of unpaid fines
@@ -122,6 +129,7 @@ export default function OverduePayment({ userID }: { userID: string }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
         body: JSON.stringify(newPayment),
       });

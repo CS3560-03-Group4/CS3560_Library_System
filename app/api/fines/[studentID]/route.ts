@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getAllFines } from "@prisma/client/sql";
+import { getAllFinesByStudentID } from "@prisma/client/sql";
 
-export async function GET(request: Request) {
+export async function GET(
+  request: Request,
+  { params }: { params: { studentID: string } }
+) {
+  const { studentID } = params;
+
   try {
-    const fines = await db.$queryRawTyped(getAllFines());
+    const fines = await db.$queryRawTyped(getAllFinesByStudentID(studentID));
     console.log(fines);
 
     if (!fines) {
@@ -17,12 +22,12 @@ export async function GET(request: Request) {
         fines,
       },
       { status: 200 }
-    )
+    );
 
     // Add Cache-Control header to the response
     response.headers.set("Cache-Control", "no-store");
-    
-    return response
+
+    return response;
   } catch (error) {
     console.error("[ROUTE_FINE_GET] Error fetching fine data:", error);
     return NextResponse.json(

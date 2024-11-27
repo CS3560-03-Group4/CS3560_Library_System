@@ -77,7 +77,14 @@ export default function SignIn() {
         // Call login() from UserContext to update context values immediately
         login(userID);
 
-        // Navigate to the Home page after successful sign-in
+        // Navigate to the Checkout page (or specified by redirectUrl) after successful sign-in
+        const redirectUrl = localStorage.getItem("redirectUrl");
+        console.log(redirectUrl);
+        if (redirectUrl) {
+          router.push(redirectUrl);
+          return;
+        }
+
         router.push("/");
       } else {
         toast.error("Invalid credentials. Please try again.", {
@@ -119,7 +126,9 @@ export default function SignIn() {
         <div className="flex justify-center items-center h-screen bg-[#00843D] lg:bg-transparent">
           <Card className="shadow-xl m-10 rounded-xl bg-white">
             <CardHeader>
-              <p className="lg:hidden text-xl md:text-3xl font-bold">Welcome to CPPLib!</p>
+              <p className="lg:hidden text-xl md:text-3xl font-bold">
+                Welcome to CPPLib!
+              </p>
               <CardTitle className="text-4xl font-bold">Sign In</CardTitle>
             </CardHeader>
             <CardContent className="pb-0">

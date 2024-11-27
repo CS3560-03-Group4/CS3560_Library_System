@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Fine" ALTER COLUMN "studentID" DROP DEFAULT;
