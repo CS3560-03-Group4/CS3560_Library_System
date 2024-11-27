@@ -28,6 +28,12 @@ const Headbar = memo(() => {
 
   useEffect(() => {
     const userID = localStorage.getItem("userID");
+
+    if (!userID) {
+      console.error("Failed to fetch student ID. Please try again.");
+      return;
+    }
+
     const getRole = async () => {
       try {
         const response = await fetch(`/api/user/${userID}`);
@@ -126,7 +132,7 @@ const Headbar = memo(() => {
             </Tooltip>
 
             {/* Cart Icon */}
-            {role === "STUDENT" && (
+            {role !== "STAFF" && (
               <Tooltip title="Book Cart" arrow>
                 <Link
                   href="/cart"

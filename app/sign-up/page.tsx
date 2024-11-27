@@ -110,6 +110,14 @@ export default function SignUp() {
         login(userID);
 
         setIsLoading(false);
+
+        // Navigate to the Checkout page (or specified by redirectUrl) after successful sign-in
+        const redirectUrl = localStorage.getItem("redirectUrl");
+        if (redirectUrl) {
+          router.push(redirectUrl);
+          return;
+        }
+
         // Redirect to home page after successful sign-up
         router.push("/");
 

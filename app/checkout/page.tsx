@@ -1,43 +1,133 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Typography, Button, Divider, Grid2 } from "@mui/material";
+import { CartItemType } from "../cart/page";
+import { formatDate } from "@/lib/utils";
+import { useCart } from "@/contexts/CartContext";
+import { useUser } from "@/contexts/UserContext";
+import { toast } from "react-toastify";
+
+type OrderDetails = {
+  totalItems: number;
+  orderDate: string;
+  dueDate: string;
+  status: string;
+  studentID: string;
+  orderItems: string[];
+};
 
 const ReviewOrderPage = () => {
   const router = useRouter();
+  const { cart, setCart } = useCart();
+  const { isAuthenticated } = useUser();
+  const [studentID, setStudentID] = useState<string | null>(null);
+  const [orderItems, setOrderItems] = useState<CartItemType[]>([]);
+  const orderDate = formatDate(new Date().toLocaleDateString("en-CA"));
+  // Add 7 days to the current date as the due date*
+  const dueDate = formatDate(
+    new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleDateString(
+      "en-CA"
+    )
+  );
 
-  // Example order data
-  const orderItems = [
-    {
-      title: "Soul Screamers 1: My Soul to Take",
-      author: "Rachel Vincent",
-      qty: 1,
-      image:
-        "https://m.media-amazon.com/images/I/51BJSnsM8iL._UF1000,1000_QL80_.jpg",
-    },
-    {
-      title: "Soul Screamers 2: My Soul to Save",
-      author: "Rachel Vincent",
-      qty: 1,
-      image:
-        "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1255722532i/6763961.jpg",
-    },
-  ];
+  // Fetch studentID when the component loads
+  useEffect(() => {
+    const fetchStudentID = async () => {
+      const userID = localStorage.getItem("userID");
 
-  // Function to handle confirm button click
-  const handleConfirm = () => {
-    router.push("/confirm"); // Navigate to the confirmation page
+      if (!userID) {
+        console.error("Failed to fetch student ID. Please try again.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/user/${userID}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch student ID");
+        }
+
+        const data = await response.json();
+        setStudentID(data.studentID); // Assuming `data.studentID` contains the student ID
+      } catch (error) {
+        console.error("Error fetching student ID:", error);
+      }
+    };
+
+    fetchStudentID();
+  }, []);
+
+  useEffect(() => {
+    // Retrieve cart data from localStorage
+    const storedItems = localStorage.getItem("checkoutItems");
+    if (storedItems) {
+      setOrderItems(JSON.parse(storedItems));
+    }
+  }, []);
+
+  const handleConfirm = async () => {
+    if (!isAuthenticated) {
+      localStorage.setItem("redirectUrl", "/checkout");
+      toast.error("You must be logged in to place an order.", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+
+      router.push("/sign-in"); // Redirect to sign-in page
+      return;
+    }
+
+    if (!studentID) {
+      console.error("Failed to fetch your student ID. Please try again.");
+      return;
+    }
+
+    try {
+      const order: OrderDetails = {
+        totalItems: orderItems.length,
+        orderDate,
+        dueDate,
+        status: "ORDERED",
+        studentID,
+        orderItems: cart,
+      };
+
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        body: JSON.stringify(order),
+      });
+
+      if (!response.ok) {
+        toast.error("Failed to confirm order.", {
+          position: "top-center",
+          autoClose: 3000,
+        });
+      }
+
+      toast.success("Order placed successfully.", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+
+      localStorage.removeItem("cart");
+      setCart([]);
+      router.push("/confirm"); // Navigate to the confirmation page
+    } catch (error) {
+      console.error("Error confirming order:", error);
+    }
   };
 
-  // Function to handle cancel button click
   const handleCancel = () => {
-    router.push("/"); // Navigate back to the main page
+    router.push("/cart"); // Navigate back to the cart page
   };
 
   return (
     <Box sx={{ padding: 4 }}>
-      {/* Header */}
       <Typography variant="h4" gutterBottom>
         Review Order
       </Typography>
@@ -46,23 +136,24 @@ const ReviewOrderPage = () => {
       <Grid2 container spacing={4}>
         {/* Left Section: Ordered Items */}
         <Grid2 size={{ xs: 12, md: 8 }}>
-          {orderItems.map((item, index) => (
-            <Box key={index} sx={{ display: "flex", mb: 2 }}>
-              <Box
-                component="img"
-                src={item.image}
-                alt={item.title}
-                sx={{ width: 100, height: 150, mr: 2, objectFit: "cover" }}
-              />
-              <Box>
-                <Typography variant="h6">{item.title}</Typography>
-                <Typography variant="subtitle2">by {item.author}</Typography>
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                  Qty: {item.qty}
-                </Typography>
+          {orderItems.length > 0 ? (
+            orderItems.map((item, index) => (
+              <Box key={index} sx={{ display: "flex", mb: 2 }}>
+                <Box
+                  component="img"
+                  src={item.imageURL}
+                  alt={item.title}
+                  sx={{ width: 100, height: 150, mr: 2, objectFit: "cover" }}
+                />
+                <Box>
+                  <Typography variant="h6">{item.title}</Typography>
+                  <Typography variant="subtitle2">by {item.author}</Typography>
+                </Box>
               </Box>
-            </Box>
-          ))}
+            ))
+          ) : (
+            <Typography>No items in your order.</Typography>
+          )}
         </Grid2>
 
         {/* Right Section: Order Summary */}
@@ -70,20 +161,16 @@ const ReviewOrderPage = () => {
           <Typography variant="h6">Order Summary</Typography>
           <Divider sx={{ my: 1 }} />
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-            <Typography>Order No.</Typography>
-            <Typography>0001</Typography>
+            <Typography>Total Items</Typography>
+            <Typography>{orderItems.length}</Typography>
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-            <Typography>Order Date</Typography>
-            <Typography>11/12/2024</Typography>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+            <Typography>Order Date:</Typography>
+            <Typography>{orderDate}</Typography>
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-            <Typography>Email</Typography>
-            <Typography>example@cpp.edu</Typography>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
-            <Typography>Total</Typography>
-            <Typography>$0.00</Typography>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+            <Typography>Due Date:</Typography>
+            <Typography>{dueDate}</Typography>
           </Box>
         </Grid2>
       </Grid2>
@@ -93,7 +180,6 @@ const ReviewOrderPage = () => {
         <Button
           variant="contained"
           color="success"
-          // sx={{ mx: 2, width: 150 }}
           onClick={handleConfirm} // Call handleConfirm when Confirm button is clicked
         >
           Place your order
@@ -101,7 +187,6 @@ const ReviewOrderPage = () => {
         <Button
           variant="contained"
           color="inherit"
-          // sx={{ mx: 2, width: 150 }}
           onClick={handleCancel} // Call handleCancel when Cancel button is clicked
         >
           Back to Your Cart

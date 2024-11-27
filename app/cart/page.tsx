@@ -7,7 +7,7 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 
 // Define the type for a cart item
-type CartItemType = {
+export type CartItemType = {
   bookID: string;
   title: string;
   author: string;
@@ -64,6 +64,12 @@ const Cart = () => {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
+  const handleCheckout = () => {
+      // Store the cart items in localStorage
+      localStorage.setItem("checkoutItems", JSON.stringify(items));
+      router.push("/checkout"); // Navigate to the checkout page
+  };
+
   return (
     <div className="bg-gray-100">
       <main className="min-h-screen max-w-4xl mx-auto p-4 bg-white shadow-md">
@@ -109,6 +115,7 @@ const Cart = () => {
                   <button
                     className="px-4 py-2 text-white"
                     style={{ backgroundColor: "#00843D" }}
+                    onClick={handleCheckout}
                   >
                     Checkout
                   </button>

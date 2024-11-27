@@ -69,6 +69,9 @@ model Student {
   payments   Payment[] // Student - Payment (one to many) 
   bookOrders BookOrder[] // Student - BookOrder (one to many)
 
+  // relations to Fine
+  fines Fine[] // Student - Fine (one to many)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -162,6 +165,10 @@ model Fine {
   orderID  String    @unique
   order    BookOrder @relation(fields: [orderID], references: [orderID])
 
+  // studentID is a foreign key to Student
+  studentID String 
+  student   Student @relation(fields: [studentID], references: [studentID])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -177,8 +184,8 @@ model Payment {
   studentID String
   student   Student @relation(fields: [studentID], references: [studentID])
 
-  fineID    String  @unique // Payment - Fine (one to one)
-  fine      Fine    @relation(fields: [fineID], references: [fineID])
+  fineID String @unique // Payment - Fine (one to one)
+  fine   Fine   @relation(fields: [fineID], references: [fineID])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
