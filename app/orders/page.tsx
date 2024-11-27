@@ -22,18 +22,20 @@ const orders = [
     title: "Soul Screamers 2: My Soul to Save",
     author: "Rachel Vincent",
     image:
-      "https://m.media-amazon.com/images/I/51BJSnsM8iL._UF1000,1000_QL80_.jpg",
+        "https://m.media-amazon.com/images/I/51BJSnsM8iL._UF1000,1000_QL80_.jpg",
     publicationDate: "01/01/2010",
     currentStep: 2,
+    additionalBooks: 2, // Number of additional books in the order
   },
   {
     orderDate: "11/01/2024",
     title: "Soul Screamers 1: My Soul to Take",
     author: "Rachel Vincent",
     image:
-      "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1255722532i/6763961.jpg",
+        "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1255722532i/6763961.jpg",
     publicationDate: "01/01/2009",
     currentStep: 4,
+    additionalBooks: 1, // Number of additional books in the order
   },
 ];
 
@@ -59,94 +61,120 @@ const CustomStepIcon = styled("div")<{ isActive: boolean }>(({ isActive }) => ({
 
 export default function MyOrders() {
   return (
-    <Box sx={{ padding: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Your Orders
-      </Typography>
+      <Box sx={{ padding: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Your Orders
+        </Typography>
 
-      {orders.map((order, index) => (
-        <Box
-          key={index}
-          sx={{
-            marginBottom: 4,
-            padding: 2,
-            backgroundColor: "#f9f9f9",
-            borderRadius: 2,
-          }}
-        >
-          <Typography variant="subtitle1" gutterBottom>
-            Order Date: {order.orderDate}
-          </Typography>
-          <Divider sx={{ mb: 2 }} />
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: { xs: "column", md: "row" },
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 2,
-            }}
-          >
-            {/* Book Image */}
-            <Card sx={{ width: 120, height: 160, overflow: "hidden" }}>
-              <img
-                src={order.image}
-                alt={order.title}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </Card>
-
-            {/* Book Info and Stepper */}
-            <Box sx={{ flex: 1 }}>
-              <CardContent>
-                <Typography variant="h6">{order.title}</Typography>
-                <Typography variant="subtitle2">by {order.author}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Published: {order.publicationDate}
-                </Typography>
-              </CardContent>
-
-              {/* Stepper */}
-              <Stepper
-                activeStep={order.currentStep - 1}
-                alternativeLabel
-                connector={<CustomStepConnector />}
-                sx={{ marginTop: 2 }}
-              >
-                {steps.map((label, stepIndex) => (
-                  <Step key={stepIndex}>
-                    <StepLabel
-                      StepIconComponent={() => (
-                        <CustomStepIcon
-                          isActive={stepIndex === order.currentStep - 1}
-                        />
-                      )}
-                    >
-                      <Typography variant="caption">{label}</Typography>
-                    </StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
-            </Box>
-
-            {/* Cancel Order Button */}
-            <Box>
-              <Button
-                variant="contained"
+        {orders.map((order, index) => (
+            <Box
+                key={index}
                 sx={{
-                  backgroundColor: "#00843D",
-                  "&:hover": {
-                    backgroundColor: "#005A2E",
-                  },
+                  marginBottom: 4,
+                  padding: 2,
+                  backgroundColor: "#f9f9f9",
+                  borderRadius: 2,
                 }}
+            >
+              <Typography variant="subtitle1" gutterBottom>
+                Order Date: {order.orderDate}
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+
+              <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 2,
+                  }}
               >
-                Cancel Order
-              </Button>
+                {/* Book Image */}
+                <Card sx={{ width: 120, height: 160, overflow: "hidden" }}>
+                  <img
+                      src={order.image}
+                      alt={order.title}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </Card>
+
+                {/* Book Info and Stepper */}
+                <Box sx={{ flex: 1 }}>
+                  <CardContent>
+                    <Typography variant="h6">{order.title}</Typography>
+                    <Typography variant="subtitle2">by {order.author}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Published: {order.publicationDate}
+                    </Typography>
+                  </CardContent>
+
+                  {/* Stepper */}
+                  <Stepper
+                      activeStep={order.currentStep - 1}
+                      alternativeLabel
+                      connector={<CustomStepConnector />}
+                      sx={{
+                        flex: 1,
+                        maxWidth: "85%", // Reduce the length of the Stepper
+                        marginLeft: "auto",
+                        marginRight: "auto",
+                      }}
+                  >
+                    {steps.map((label, stepIndex) => (
+                        <Step key={stepIndex}>
+                          <StepLabel
+                              StepIconComponent={() => (
+                                  <CustomStepIcon
+                                      isActive={stepIndex === order.currentStep - 1}
+                                  />
+                              )}
+                          >
+                            <Typography variant="caption">{label}</Typography>
+                          </StepLabel>
+                        </Step>
+                    ))}
+                  </Stepper>
+                </Box>
+
+                {/* "+ More" and Cancel Order Button in Same Row */}
+                <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row", // Horizontal layout
+                      alignItems: "center", // Center vertically
+                      justifyContent: "flex-end",
+                      gap: 1,
+                    }}
+                >
+                  {order.additionalBooks > 0 && (
+                      <Typography
+                          variant="body2"
+                          color="primary"
+                          sx={{
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                            marginRight: 5, // Add spacing between "+ more" and button
+                          }}
+                      >
+                        +{order.additionalBooks} more
+                      </Typography>
+                  )}
+                  <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#00843D",
+                        "&:hover": {
+                          backgroundColor: "#005A2E",
+                        },
+                      }}
+                  >
+                    Cancel Order
+                  </Button>
+                </Box>
+              </Box>
             </Box>
-          </Box>
-        </Box>
-      ))}
-    </Box>
+        ))}
+      </Box>
   );
 }
