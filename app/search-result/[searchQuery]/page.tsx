@@ -83,7 +83,7 @@ export default function SearchResults({ params }: SearchResultsProps) {
                     bookID={book.bookID}
                     title={book.title}
                     author={book.author}
-                    date={book.date}
+                    datePublished={book.datePublished}
                     imageURL={book.imageURL}
                   />
                 ))

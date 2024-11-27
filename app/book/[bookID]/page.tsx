@@ -28,14 +28,13 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-
   // Sync cart state from localStorage
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
     setCart(storedCart); // Update cart context
     setIsAdded(storedCart.includes(bookID)); // Update isAdded based on persisted cart
   }, [bookID, setCart]);
-  
+
   // Use when fetching data from DB
   useEffect(() => {
     const fetchBookInfo = async () => {
@@ -70,9 +69,18 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
     const updatedCart = [...cart, bookID];
     setCart(updatedCart);
     setIsAdded(true);
-    
+
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
+
+  // Check if bookInfo is empty
+  const isBookInfoEmpty =
+    !bookInfo ||
+    Object.values(bookInfo).every(
+      (value) => value === "" || value === null || value === undefined
+    );
+  console.log(bookInfo);
+  console.log(isBookInfoEmpty);
 
   return (
     <>
@@ -90,7 +98,7 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
           <CircularProgress color="success" />
           <Typography sx={{ mt: 2 }}>Fetching book information...</Typography>
         </Box>
-      ) : (
+      ) : !isBookInfoEmpty ? (
         <div className="min-h-screen bg-gray-200/65 flex justify-center items-center p-6">
           {/* Main Content Section */}
           <div className="w-full max-w-7xl grid grid-rows-[1fr_auto] gap-8 bg-white p-8 md:p-12 rounded-xl shadow-2xl">
@@ -179,6 +187,19 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
             </div>
           </div>
         </div>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            marginTop: "2rem",
+            alignItems: "center",
+            width: "100%",
+            minHeight: "100vh",
+          }}
+        >
+          <h1 className="text-3xl font-bold">Book not found!</h1>
+        </Box>
       )}
     </>
   );

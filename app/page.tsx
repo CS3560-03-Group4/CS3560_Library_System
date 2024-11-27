@@ -266,7 +266,7 @@ export default function Home() {
                           bookID={book.bookID}
                           title={book.title}
                           author={book.author}
-                          date={book.datePublished}
+                          datePublished={book.datePublished}
                           imageURL={book.imageURL}
                         />
                       ))

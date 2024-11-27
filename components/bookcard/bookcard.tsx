@@ -14,7 +14,7 @@ export interface BookProps {
   bookID: string;
   title: string;
   author: string;
-  date: string;
+  datePublished: string;
   imageURL: string;
 }
 // Functional component BookCard using React.FC with BookProps for type definition
@@ -22,7 +22,7 @@ const BookCard: React.FC<BookProps> = ({
   bookID,
   title,
   author,
-  date,
+  datePublished,
   imageURL,
 }) => {
   const router = useRouter();
@@ -63,7 +63,6 @@ const BookCard: React.FC<BookProps> = ({
           {/* Link to detailed page */}
           <Link href={`/book/${bookID}`} passHref>
             <Typography
-              component="a"
               variant="h5"
               sx={{
                 fontWeight: "bold",
@@ -86,7 +85,7 @@ const BookCard: React.FC<BookProps> = ({
             by {author} {/* Display the author */}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {date} {/* Display the date */}
+            {datePublished} {/* Display the date */}
           </Typography>
         </CardContent>
       </CardActionArea>
