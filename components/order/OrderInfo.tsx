@@ -28,7 +28,7 @@ export default function OrderInfo({ orderID }: { orderID: string }) {
             status: orderItems[0].status,
           });
         } else {
-          console.log("Order ID not found");
+          console.error("Order ID not found");
         }
       } catch (error) {
         console.error("Error fetching order details:", error);

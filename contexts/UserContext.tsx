@@ -12,6 +12,7 @@ import { useCart } from "./CartContext";
 type UserContextType = {
   firstInitial: string;
   isAuthenticated: boolean;
+  role: string;
   login: (userID: string) => void;
   logout: () => void;
 };
@@ -23,6 +24,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [firstInitial, setFirstInitial] = useState<string>("");
+  const [role, setRole] = useState<string>("");
   const { setCart } = useCart();
 
   // Fetch user information (e.g., first initial)
@@ -30,7 +32,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const response = await fetch(`/api/user/${userID}`);
       const user = await response.json();
-      if (user) setFirstInitial(user.firstName.charAt(0).toUpperCase());
+      if (user) {
+        setFirstInitial(user.firstName.charAt(0).toUpperCase());
+        setRole(user.role);
+      }
     } catch (error) {
       console.error("Error fetching user:", error);
     }
@@ -66,7 +71,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Memoize context value to avoid unnecessary re-renders
   const value = useMemo(
-    () => ({ firstInitial, isAuthenticated, login, logout }),
+    () => ({ firstInitial, role, isAuthenticated, login, logout }),
     [firstInitial, isAuthenticated]
   );
 

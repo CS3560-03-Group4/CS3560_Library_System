@@ -1,4 +1,5 @@
 import { useCart } from "@/contexts/CartContext";
+import { LibraryBooks, Shop } from "@mui/icons-material";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -54,10 +55,18 @@ const Headbar = memo(() => {
   const navigateTo = (path: string) => {
     router.push(path);
   };
-  const navItems = {
-    Home: () => navigateTo("/"),
-    "Your Cart": () => navigateTo("/cart"),
-  };
+  const navItems =
+    role === "STAFF"
+      ? {
+          Home: () => router.push("/"),
+          "Manage Orders": () => router.push("/manage-orders"),
+          "Manage Catalog": () => router.push("/manage-catalog"),
+        }
+      : {
+          Home: () => router.push("/"),
+          "Your Cart": () => router.push("/cart"),
+        };
+
   const { cart } = useCart();
 
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -76,12 +85,17 @@ const Headbar = memo(() => {
         {Object.entries(navItems).map(([text, func]) => (
           <ListItem key={text} disablePadding>
             <ListItemButton sx={{ textAlign: "center" }} onClick={func}>
+              {/* Add icons for each navigation option */}
+              {text === "Home" && (
+                <HomeIcon /> // Add Home Icon
+              )}
               {text === "Your Cart" && (
                 <Badge badgeContent={cart.length} color="secondary">
                   <ShoppingCartIcon />
                 </Badge>
               )}
-              {text === "Home" && <HomeIcon />}
+              {text === "Manage Orders" && <Shop />}
+              {text === "Manage Catalog" && <LibraryBooks />}
               <ListItemText primary={text} />
             </ListItemButton>
           </ListItem>
@@ -102,7 +116,9 @@ const Headbar = memo(() => {
               onClick={handleDrawerToggle}
               sx={{ mr: 2, display: { sm: "none" } }}
             >
-              <MenuIcon />
+              <Badge badgeContent={cart.length} color="error">
+                <MenuIcon />
+              </Badge>
             </IconButton>
             {/* Logo */}
             <Link
@@ -146,6 +162,33 @@ const Headbar = memo(() => {
                   </IconButton>
                 </Link>
               </Tooltip>
+            )}
+
+            {role === "STAFF" && (
+              <>
+                <Tooltip title="Manage Orders" arrow>
+                  <Link
+                    href="/manage-orders"
+                    color="inherit"
+                    className="hidden md:block hover:bg-green-100/70 hover:text-black rounded-full"
+                  >
+                    <IconButton color="inherit">
+                      <Shop fontSize="large" />
+                    </IconButton>
+                  </Link>
+                </Tooltip>
+                <Tooltip title="Manage Catalog" arrow>
+                  <Link
+                    href="/manage-catalog"
+                    color="inherit"
+                    className="hidden md:block hover:bg-green-100/70 hover:text-black rounded-full"
+                  >
+                    <IconButton color="inherit">
+                      <LibraryBooks fontSize="large" />
+                    </IconButton>
+                  </Link>
+                </Tooltip>
+              </>
             )}
 
             {/* Account Menu with Logout */}

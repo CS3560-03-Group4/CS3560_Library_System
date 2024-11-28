@@ -52,7 +52,7 @@ export default function Home() {
         const response = await fetch("/api/book");
         const data = await response.json();
         const allBooks = data.books;
-        console.log(allBooks);
+        // console.log(allBooks);
         if (allBooks) {
           // Map and directly set the new state
           setBooks(
@@ -208,7 +208,7 @@ export default function Home() {
                     color: "white",
                     borderRadius: "1rem",
                     "&.Mui-focused": {
-                      color: "white", // Change this to your desired color
+                      color: "white",
                     },
                   }}
                 >
@@ -234,7 +234,7 @@ export default function Home() {
               </FormControl>
               {/* Iterates over each category and its books to render them */}
               {Object.entries(filteredGroupedBooks).map(([genre, books]) => (
-                <Box key={genre} sx={{ marginBottom: "2rem" }}>
+                <Box key={genre} sx={{ marginBottom: "1.2rem" }}>
                   <Typography
                     variant="h6"
                     sx={{
@@ -249,7 +249,9 @@ export default function Home() {
                   </Typography>
                   <Box
                     sx={{
-                      display: "grid",
+                      display: { xs: "flex", sm: "grid" },
+                      flexDirection: { xs: "column" },
+                      alignItems: { xs: "center", sm: "normal" },
                       gridTemplateColumns: {
                         xs: "repeat(1, 1fr)",
                         sm: "repeat(2, 1fr)",

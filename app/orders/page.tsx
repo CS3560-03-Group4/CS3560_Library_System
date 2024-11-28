@@ -93,7 +93,7 @@ export default function MyOrders() {
             new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
         );
 
-        console.log(sortedOrders);
+        // console.log(sortedOrders);
         setOrders(sortedOrders);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -115,7 +115,7 @@ export default function MyOrders() {
             const response = await fetch(`/api/order/${orderID}`);
             const data = await response.json();
             const { orderItems } = data;
-            console.log(orderItems);
+            // console.log(orderItems);
             return { orderID, items: data.orderItems };
           })
         );
@@ -128,7 +128,7 @@ export default function MyOrders() {
           {} as Record<string, BookItem[]> // Initialize with the correct type
         );
 
-        console.log(itemsByOrderID);
+        // console.log(itemsByOrderID);
         setOrderItems(itemsByOrderID);
       } catch (error) {
         console.error("Error fetching order details:", error);

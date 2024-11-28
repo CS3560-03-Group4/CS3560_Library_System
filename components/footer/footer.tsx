@@ -29,16 +29,36 @@ export default function Footer() {
     >
       {/* Quick Links */}
       <Box sx={{ display: "flex", justifyContent: "center", gap: 3 }}>
-        <Link href="/" color="inherit" underline="hover">
+        <Link
+          sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+          href="/"
+          color="inherit"
+          underline="hover"
+        >
           Home
         </Link>
-        <Link href="/credits" color="inherit" underline="hover">
+        <Link
+          sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+          href="/credits"
+          color="inherit"
+          underline="hover"
+        >
           About Us
         </Link>
-        <Link href={`/profile/${userID}`} color="inherit" underline="hover">
+        <Link
+          sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+          href={`/profile/${userID}`}
+          color="inherit"
+          underline="hover"
+        >
           Your Profile
         </Link>
-        <Link href="/orders" color="inherit" underline="hover">
+        <Link
+          sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+          href="/orders"
+          color="inherit"
+          underline="hover"
+        >
           Your Orders
         </Link>
       </Box>
@@ -72,7 +92,12 @@ export default function Footer() {
       </Box>
 
       {/* Copyright */}
-      <Typography variant="body2" color="inherit" className="" mt={1}>
+      <Typography
+        variant="body2"
+        color="inherit"
+        sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+        mt={1}
+      >
         © {new Date().getFullYear()} CPPLib. All rights reserved.
       </Typography>
     </Box>

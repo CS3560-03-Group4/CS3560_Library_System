@@ -12,7 +12,7 @@ export async function GET() {
         ? Number(totalOrdersResult[0].count) // Convert BigInt to Number
         : 0;
 
-    // console.log("TOTAL ORDERS:", totalOrders);
+    console.log("TOTAL ORDERS:", totalOrders);
 
     const response = NextResponse.json(
       {

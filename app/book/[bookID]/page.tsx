@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
+import { useUser } from "@/contexts/UserContext";
 import { formatDate } from "@/lib/utils";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -11,6 +12,7 @@ import { useState, useEffect } from "react";
 export default function BookPage({ params }: { params: { bookID: string } }) {
   const router = useRouter();
   const { cart, setCart } = useCart();
+  const { role } = useUser();
   const { bookID } = params;
   const [isAdded, setIsAdded] = useState<boolean>(false);
   const [bookInfo, setBookInfo] = useState({
@@ -41,7 +43,7 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
       try {
         const response = await fetch(`/api/book/${bookID}`);
         const book = await response.json(); // Results got from route.ts in api/book/[bookID]
-        console.log(book);
+        // console.log(book);
         setBookInfo({
           ...bookInfo,
           title: book.title,
@@ -79,8 +81,8 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
     Object.values(bookInfo).every(
       (value) => value === "" || value === null || value === undefined
     );
-  console.log(bookInfo);
-  console.log(isBookInfoEmpty);
+  // console.log(bookInfo);
+  // console.log(isBookInfoEmpty);
 
   return (
     <>
@@ -101,7 +103,7 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
       ) : !isBookInfoEmpty ? (
         <div className="min-h-screen bg-gray-200/65 flex justify-center items-center p-6">
           {/* Main Content Section */}
-          <div className="w-full max-w-7xl grid grid-rows-[1fr_auto] gap-8 bg-white p-8 md:p-12 rounded-xl shadow-2xl">
+          <div className="w-full min-w-[370px] max-w-7xl grid grid-rows-[1fr_auto] gap-8 bg-white p-8 md:p-12 rounded-xl shadow-2xl">
             {/* Book Details Section */}
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-8">
               {/* Left: Book Cover */}
@@ -167,17 +169,20 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
 
             {/* Bottom Button Section */}
             <div className="flex justify-end gap-4 md:gap-8 mt-4">
-              <Button
-                disabled={isAdded}
-                className={`bg-primary text-white hover:bg-[#4095ea] hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl ${
-                  cart.includes(bookID)
-                    ? "disabled:opacity-25 disabled:cursor-not-allowed"
-                    : ""
-                }`}
-                onClick={handleAddToCart}
-              >
-                {cart.includes(bookID) ? "Added to cart" : "Add to cart"}
-              </Button>
+              {role !== "STAFF" && (
+                <Button
+                  disabled={isAdded}
+                  className={`bg-primary text-white hover:bg-[#4095ea] hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl ${
+                    cart.includes(bookID)
+                      ? "disabled:opacity-25 disabled:cursor-not-allowed"
+                      : ""
+                  }`}
+                  onClick={handleAddToCart}
+                >
+                  {cart.includes(bookID) ? "Added to cart" : "Add to cart"}
+                </Button>
+              )}
+
               <Button
                 className="bg-gray-600 text-white hover:bg-gray-400/95 hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl"
                 onClick={() => router.back()}

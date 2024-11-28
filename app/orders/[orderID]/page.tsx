@@ -27,7 +27,7 @@ export default function Order({ params }: { params: { orderID: string } }) {
         if (orderItems.length > 0) {
           setBookItems(orderItems);
         } else {
-          console.log("Order ID not found");
+          console.error("Order ID not found");
         }
       } catch (error) {
         console.error("Error fetching order details:", error);

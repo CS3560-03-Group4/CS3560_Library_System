@@ -31,15 +31,16 @@ const BookCard: React.FC<BookProps> = ({
     // Card component from MUI styled using the sx prop
     <Card
       sx={{
-        maxWidth: 345, // Max width of the card
+        width: "100%", // Let the card take full width of its container
+        maxWidth: "300px", // Set a max width for the card
         boxShadow: 3, // Shadow depth for 3D effect
-        borderRadius: "10px", // Rounded corners of the card
-        overflow: "hidden", // Hides anything going out of the bounds of the card
-        position: "relative", // Used for positioning the IconButton absolutely within the card
-        transition: "0.3s", // Smooth transition for hover effect
+        borderRadius: "10px", // Rounded corners
+        overflow: "hidden", // Ensure content fits within bounds
+        position: "relative", // Needed for positioning
+        transition: "0.3s", // Smooth transition
         "&:hover": {
-          transform: "scale(1.05)", // Enlarges the card on hover
-          boxShadow: "0px 5px 15px rgba(0,0,0,0.3)", // Darkens the shadow on hover
+          transform: "scale(1.045)", // Scale slightly on hover
+          boxShadow: "0px 5px 15px rgba(0,0,0,0.3)", // Enhance shadow
         },
       }}
     >
@@ -48,10 +49,10 @@ const BookCard: React.FC<BookProps> = ({
         <CardMedia
           component="img"
           sx={{
-            width: "100%", // Set width to match the Card's width
-            height: 300, // Set a fixed height
-            objectFit: "contain", // Ensures the image covers the area without stretching
-            bgcolor: "#00843d",
+            width: "100%", // Image scales to match card's width
+            height: "auto", // Maintain aspect ratio
+            aspectRatio: "2 / 3", // Explicit aspect ratio
+            bgcolor: "#00843d", // Fallback background color
           }}
           image={imageURL}
           alt={`Cover of ${title}`}
@@ -65,6 +66,7 @@ const BookCard: React.FC<BookProps> = ({
             <Typography
               variant="h5"
               sx={{
+                fontSize: { xs: "1.2rem", md: "1.4rem" }, // Responsive font size
                 fontWeight: "bold",
                 marginBottom: 1,
                 textDecoration: "none",
@@ -80,11 +82,15 @@ const BookCard: React.FC<BookProps> = ({
           <Typography
             variant="body1"
             color="text.secondary"
-            sx={{ marginBottom: 1 }}
+            sx={{ marginBottom: 1, fontSize: { xs: "0.8rem", md: "1rem" } }}
           >
             by {author} {/* Display the author */}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ fontSize: { xs: "0.8rem", md: "1rem" } }}
+          >
             {datePublished} {/* Display the date */}
           </Typography>
         </CardContent>

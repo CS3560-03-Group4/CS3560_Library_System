@@ -79,7 +79,7 @@ export default function SignIn() {
 
         // Navigate to the Checkout page (or specified by redirectUrl) after successful sign-in
         const redirectUrl = localStorage.getItem("redirectUrl");
-        console.log(redirectUrl);
+        // console.log(redirectUrl);
         if (redirectUrl) {
           router.push(redirectUrl);
           return;
@@ -124,7 +124,7 @@ export default function SignIn() {
       {/* Right Area with Form */}
       <Grid2 size={{ xs: 12, md: 7 }}>
         <div className="flex justify-center items-center h-screen bg-[#00843D] lg:bg-transparent">
-          <Card className="shadow-xl m-10 rounded-xl bg-white">
+          <Card className="shadow-xl m-5 md:m-10 rounded-xl bg-white">
             <CardHeader>
               <p className="lg:hidden text-xl md:text-3xl font-bold">
                 Welcome to CPPLib!
@@ -132,7 +132,7 @@ export default function SignIn() {
               <CardTitle className="text-4xl font-bold">Sign In</CardTitle>
             </CardHeader>
             <CardContent className="pb-0">
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSignin}>
                 <TextField
                   label="Username"
                   variant="outlined"
@@ -171,13 +171,8 @@ export default function SignIn() {
                     },
                   }}
                 />
-              </form>
-            </CardContent>
-            <CardFooter>
-              <div className="flex flex-col w-full justify-center items-center gap-2">
                 <Button
-                  type="button"
-                  onClick={handleSignin}
+                  type="submit"
                   className="hover:bg-primary/90 text-white md:text-md lg:text-lg mt-4 w-full rounded-xl"
                 >
                   {isValidated && isLoading ? (
@@ -195,7 +190,11 @@ export default function SignIn() {
                     "Sign In"
                   )}
                 </Button>
-                <p>
+              </form>
+            </CardContent>
+            <CardFooter>
+              <div className="mt-4 flex flex-col w-full justify-center items-center gap-2">
+                <p className="text-sm md:text-lg">
                   Don't have an account?{" "}
                   <span>
                     <a className="underline text-link" href="/sign-up">

@@ -101,8 +101,8 @@ export default function SignUp() {
       if (response.ok) {
         const data = await response.json();
         const { userID, token } = data;
-        console.log("User ID:", userID);
-        console.log("Token:", token);
+        // console.log("User ID:", userID);
+        // console.log("Token:", token);
         // Store the token in localStorage
         localStorage.setItem("authToken", token);
         localStorage.setItem("userID", userID.toString());
@@ -174,12 +174,14 @@ export default function SignUp() {
       {/* Right Area with Form */}
       <Grid2 size={{ xs: 12, md: 7 }}>
         <div className="flex justify-center items-center h-screen bg-[#00843D] lg:bg-transparent">
-          <Card className="shadow-xl m-20 rounded-xl bg-white">
+          <Card className="shadow-xl m-7 md:m-20 rounded-xl bg-white">
             <CardHeader>
-              <CardTitle className="text-4xl font-bold">Register</CardTitle>
+              <CardTitle className="text-md md:text-4xl font-bold">
+                Register
+              </CardTitle>
             </CardHeader>
             <CardContent className="pb-0">
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSignup}>
                 <TextField
                   label="BroncoID"
                   variant="outlined"
@@ -256,13 +258,8 @@ export default function SignUp() {
                     },
                   }}
                 />
-              </form>
-            </CardContent>
-            <CardFooter>
-              <div className="flex flex-col w-full justify-center items-center gap-2">
                 <Button
-                  type="button"
-                  onClick={handleSignup}
+                  type="submit"
                   className="hover:bg-primary/90 text-white md:text-md lg:text-lg mt-4 w-full rounded-xl"
                 >
                   {isValidated == true && isLoading ? (
@@ -280,7 +277,11 @@ export default function SignUp() {
                     "Register"
                   )}
                 </Button>
-                <p>
+              </form>
+            </CardContent>
+            <CardFooter>
+              <div className="mt-4 flex flex-col w-full justify-center items-center gap-2">
+                <p className="text-sm md:text-lg">
                   Already have an account?{" "}
                   <span>
                     <a className="underline text-link" href="/sign-in">

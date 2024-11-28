@@ -27,7 +27,7 @@ type OrderDetails = {
 const ReviewOrderPage = () => {
   const router = useRouter();
   const { cart, setCart } = useCart();
-  const { isAuthenticated } = useUser();
+  const { isAuthenticated, role } = useUser();
   const [studentID, setStudentID] = useState<string | null>(null);
   const [orderItems, setOrderItems] = useState<CartItemType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -73,8 +73,29 @@ const ReviewOrderPage = () => {
     }
   }, []);
 
+  const cleanCartStorage = () => {
+    setCart([]);
+    localStorage.removeItem("cart");
+    localStorage.removeItem("checkoutItems");
+    localStorage.removeItem("redirectUrl");
+  };
+
   const handleConfirm = async () => {
     setIsLoading(true);
+
+    if (isAuthenticated && role !== "STUDENT") {
+      toast.error(
+        "Something went wrong! You must be a student to place an order.",
+        {
+          position: "top-center",
+          autoClose: 3000,
+        }
+      );
+      router.push("/");
+      cleanCartStorage();
+      return;
+    }
+
     if (!isAuthenticated) {
       localStorage.setItem("redirectUrl", "/checkout");
       toast.error("You must be logged in to place an order.", {
@@ -121,8 +142,7 @@ const ReviewOrderPage = () => {
         autoClose: 3000,
       });
 
-      localStorage.removeItem("cart");
-      setCart([]);
+      cleanCartStorage();
       router.push("/confirm"); // Navigate to the confirmation page
     } catch (error) {
       console.error("Error confirming order:", error);

@@ -70,7 +70,7 @@ export default function OverduePayment({ userID }: { userID: string }) {
         const response = await fetch(`/api/fines/${payment?.studentID}`);
         const data = await response.json();
         const fines = data.fines;
-        console.log(fines);
+        // console.log(fines);
         setFineInfo(fines);
       } catch (error) {
         console.error("Error fetching fine info:", error);
@@ -91,7 +91,7 @@ export default function OverduePayment({ userID }: { userID: string }) {
           fineRemaining += fine.amount;
         }
       });
-      console.log(fineRemaining);
+      // console.log(fineRemaining);
       setBalance(fineRemaining);
     };
 
