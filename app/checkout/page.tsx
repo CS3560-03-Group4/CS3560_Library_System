@@ -208,7 +208,7 @@ const ReviewOrderPage = () => {
       <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 3, mt: 4 }}>
         <Button
           sx={{
-            fontSize: { xs: "0.75rem", md: "1rem" },
+            fontSize: { xs: "0.8rem", md: "1rem" },
             boxShadow: 10,
             borderRadius: 10,
           }}
