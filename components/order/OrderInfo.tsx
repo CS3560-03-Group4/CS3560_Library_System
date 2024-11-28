@@ -81,7 +81,7 @@ export default function OrderInfo({ orderID }: { orderID: string }) {
               }  ${orderInfo.status === "RECEIVED" ? "bg-[#29d2e4] " : ""}  ${
                 orderInfo.status === "READY" ? "bg-[#2f57da] " : ""
               }  ${orderInfo.status === "BORROWED" ? "bg-[#3363e9] " : ""}   ${
-                orderInfo.status === "OVERDUE" ? "bg-[#f03535] " : ""
+                orderInfo.status === "OVERDUE" ? "bg-[#FFC107] " : ""
               }  ${
                 orderInfo.status === "CANCELED" ? "bg-[#808080] " : ""
               } inline-block text-white rounded-xl`}

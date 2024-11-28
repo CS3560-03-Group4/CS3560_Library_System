@@ -63,6 +63,12 @@ const Cart = () => {
 
     // Persist the updated cart to localStorage
     localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    if (updatedCart.length === 0) {
+      localStorage.removeItem("cart");
+      localStorage.removeItem("checkoutItems");
+      localStorage.removeItem("redirectUrl");
+    }
   };
 
   const handleCheckout = () => {
