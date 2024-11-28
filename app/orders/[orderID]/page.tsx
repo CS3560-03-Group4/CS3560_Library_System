@@ -20,7 +20,7 @@ export default function Order({ params }: { params: { orderID: string } }) {
   useEffect(() => {
     const fetchOrderItems = async () => {
       try {
-        const response = await fetch(`/api/orders/${orderID}`);
+        const response = await fetch(`/api/order/${orderID}`);
         const order = await response.json();
         const { orderItems } = order;
         // console.log(orderItems);

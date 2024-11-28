@@ -21,6 +21,7 @@ const Cart = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+
     const fetchCartItems = async () => {
       if (cart.length === 0) {
         setItems([]); // Clear items when cart is empty
@@ -65,9 +66,9 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-      // Store the cart items in localStorage
-      localStorage.setItem("checkoutItems", JSON.stringify(items));
-      router.push("/checkout"); // Navigate to the checkout page
+    // Store the cart items in localStorage
+    localStorage.setItem("checkoutItems", JSON.stringify(items));
+    router.push("/checkout"); // Navigate to the checkout page
   };
 
   return (
@@ -110,22 +111,19 @@ const Cart = () => {
 
             {/* Checkout and Add More Books Buttons */}
             {items.length > 0 && (
-              <div className="flex justify-between items-center mt-4">
-                <div className="flex space-x-2">
-                  <button
-                    className="px-4 py-2 text-white"
-                    style={{ backgroundColor: "#00843D" }}
-                    onClick={handleCheckout}
-                  >
-                    Checkout
-                  </button>
-                  <button
-                    className="px-4 py-2 text-gray-700 border rounded hover:bg-gray-100"
-                    onClick={() => router.push("/")}
-                  >
-                    Add More Books
-                  </button>
-                </div>
+              <div className="mt-5 flex justify-center sm:justify-end items-center gap-4">
+                <button
+                  className="px-4 py-2 text-gray-700 border rounded-xl shadow-lg hover:bg-gray-100"
+                  onClick={() => router.push("/")}
+                >
+                  Add More Books
+                </button>
+                <button
+                  className="px-4 py-2 text-white rounded-xl shadow-lg bg-[#00843D] hover:bg-[#00843D]/80"
+                  onClick={handleCheckout}
+                >
+                  Checkout
+                </button>
               </div>
             )}
           </>

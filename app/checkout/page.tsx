@@ -2,7 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Typography, Button, Divider, Grid2 } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Divider,
+  Grid2,
+  CircularProgress,
+} from "@mui/material";
 import { CartItemType } from "../cart/page";
 import { formatDate } from "@/lib/utils";
 import { useCart } from "@/contexts/CartContext";
@@ -14,7 +21,6 @@ type OrderDetails = {
   orderDate: string;
   dueDate: string;
   status: string;
-  studentID: string;
   orderItems: string[];
 };
 
@@ -24,6 +30,7 @@ const ReviewOrderPage = () => {
   const { isAuthenticated } = useUser();
   const [studentID, setStudentID] = useState<string | null>(null);
   const [orderItems, setOrderItems] = useState<CartItemType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const orderDate = formatDate(new Date().toLocaleDateString("en-CA"));
   // Add 7 days to the current date as the due date*
   const dueDate = formatDate(
@@ -67,6 +74,7 @@ const ReviewOrderPage = () => {
   }, []);
 
   const handleConfirm = async () => {
+    setIsLoading(true);
     if (!isAuthenticated) {
       localStorage.setItem("redirectUrl", "/checkout");
       toast.error("You must be logged in to place an order.", {
@@ -89,11 +97,10 @@ const ReviewOrderPage = () => {
         orderDate,
         dueDate,
         status: "ORDERED",
-        studentID,
         orderItems: cart,
       };
 
-      const response = await fetch("/api/orders", {
+      const response = await fetch(`/api/orders/${studentID}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,6 +126,8 @@ const ReviewOrderPage = () => {
       router.push("/confirm"); // Navigate to the confirmation page
     } catch (error) {
       console.error("Error confirming order:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -176,15 +185,40 @@ const ReviewOrderPage = () => {
       </Grid2>
 
       {/* Bottom Buttons */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 4, mt: 4 }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 3, mt: 4 }}>
         <Button
+          sx={{
+            fontSize: { xs: "0.75rem", md: "1rem" },
+            boxShadow: 10,
+            borderRadius: 10,
+          }}
+          className="rounded-xl shadow-lg"
           variant="contained"
           color="success"
           onClick={handleConfirm} // Call handleConfirm when Confirm button is clicked
         >
-          Place your order
+          {isLoading ? (
+            <>
+              Placing your order...
+              <CircularProgress
+                color="inherit"
+                size={"1rem"}
+                sx={{
+                  animation: "spin 1s linear infinite",
+                  ml: "0.5rem",
+                }}
+              />
+            </>
+          ) : (
+            "Place your order"
+          )}
         </Button>
         <Button
+          sx={{
+            fontSize: { xs: "0.75rem", md: "1rem" },
+            boxShadow: 10,
+            borderRadius: 10,
+          }}
           variant="contained"
           color="inherit"
           onClick={handleCancel} // Call handleCancel when Cancel button is clicked

@@ -205,101 +205,110 @@ export default function OverduePayment({ userID }: { userID: string }) {
           }}
         >
           <h1 className="text-2xl font-bold">Balance: ${balance}</h1>
-          {fineInfo.map((fine) => (
-            <Box
-              key={fine.orderID}
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                justifyContent: { sm: "space-between" },
-                alignItems: "center",
-                border: "1px solid #ccc",
-                p: 2,
-                gap: { xs: 1, sm: 0 },
-                borderRadius: "1rem",
-              }}
+          {fineInfo.length === 0 ? (
+            <Typography
+              variant="h6"
+              sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
             >
+              Awesome! You have no overdue fines.
+            </Typography>
+          ) : (
+            fineInfo.map((fine) => (
               <Box
+                key={fine.orderID}
                 sx={{
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  gap: 0.5,
+                  flexDirection: { xs: "column", sm: "row" },
+                  justifyContent: { sm: "space-between" },
+                  alignItems: "center",
+                  border: "1px solid #ccc",
+                  p: 2,
+                  gap: { xs: 1, sm: 0 },
+                  borderRadius: "1rem",
                 }}
               >
-                <Typography
-                  variant="h6"
-                  fontWeight="bold"
+                <Box
                   sx={{
-                    fontSize: { xs: "1rem", sm: "1.2rem" },
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    gap: 0.5,
                   }}
                 >
-                  Order ID:{" "}
-                  <Typography component="span">{fine.orderID}</Typography>
-                </Typography>
-                <Typography
-                  variant="h6"
-                  fontWeight="bold"
-                  sx={{
-                    fontSize: { xs: "1rem", sm: "1.2rem" },
-                  }}
-                >
-                  Amount:{" "}
-                  <Typography component="span">${fine.amount}</Typography>
-                </Typography>
-                <Typography
-                  variant="h6"
-                  fontWeight="bold"
-                  sx={{
-                    fontSize: { xs: "1rem", sm: "1.2rem" },
-                  }}
-                >
-                  Status:{" "}
-                  <Typography
-                    component="span"
-                    sx={{
-                      fontWeight: "bold",
-                      fontSize: { xs: "1rem", sm: "1.2rem" },
-                    }}
-                    className={`${
-                      fine.status === "UNPAID"
-                        ? "text-[#FF0000]"
-                        : "text-[#00843D]"
-                    }`}
-                  >
-                    {fine.status === "PAID" ? "Paid" : "Unpaid"}
-                  </Typography>
-                </Typography>
-                {fine.status === "PAID" && (
                   <Typography
                     variant="h6"
                     fontWeight="bold"
-                    sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
+                    sx={{
+                      fontSize: { xs: "1rem", sm: "1.2rem" },
+                    }}
                   >
-                    Payment Date:{" "}
-                    <Typography component="span">
-                      {fine.paymentDate && formatDate(fine.paymentDate)}
+                    Order ID:{" "}
+                    <Typography component="span">{fine.orderID}</Typography>
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    fontWeight="bold"
+                    sx={{
+                      fontSize: { xs: "1rem", sm: "1.2rem" },
+                    }}
+                  >
+                    Amount:{" "}
+                    <Typography component="span">${fine.amount}</Typography>
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    fontWeight="bold"
+                    sx={{
+                      fontSize: { xs: "1rem", sm: "1.2rem" },
+                    }}
+                  >
+                    Status:{" "}
+                    <Typography
+                      component="span"
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: { xs: "1rem", sm: "1.2rem" },
+                      }}
+                      className={`${
+                        fine.status === "UNPAID"
+                          ? "text-[#FF0000]"
+                          : "text-[#00843D]"
+                      }`}
+                    >
+                      {fine.status === "PAID" ? "Paid" : "Unpaid"}
                     </Typography>
                   </Typography>
+                  {fine.status === "PAID" && (
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      sx={{ fontSize: { xs: "1rem", sm: "1.2rem" } }}
+                    >
+                      Payment Date:{" "}
+                      <Typography component="span">
+                        {fine.paymentDate && formatDate(fine.paymentDate)}
+                      </Typography>
+                    </Typography>
+                  )}
+                </Box>
+                {fine.status === "UNPAID" && (
+                  <Button
+                    variant="contained"
+                    sx={{
+                      alignSelf: {
+                        xs: "center",
+                        sm: "center",
+                        background: "#00843D",
+                      },
+                    }}
+                    onClick={() => handleOpenDialog(fine)}
+                  >
+                    Pay
+                  </Button>
                 )}
               </Box>
-              {fine.status === "UNPAID" && (
-                <Button
-                  variant="contained"
-                  sx={{
-                    alignSelf: {
-                      xs: "center",
-                      sm: "center",
-                      background: "#00843D",
-                    },
-                  }}
-                  onClick={() => handleOpenDialog(fine)}
-                >
-                  Pay
-                </Button>
-              )}
-            </Box>
-          ))}
+            ))
+          )}
 
           <Dialog
             open={Boolean(selectedFine)}

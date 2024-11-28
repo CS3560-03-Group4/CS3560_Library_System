@@ -16,7 +16,7 @@ export default function OrderInfo({ orderID }: { orderID: string }) {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const response = await fetch(`/api/orders/${orderID}`);
+        const response = await fetch(`/api/order/${orderID}`);
         const order = await response.json();
         const { orderItems } = order;
         // console.log(orderItems[0]);
@@ -26,7 +26,7 @@ export default function OrderInfo({ orderID }: { orderID: string }) {
             orderDate: formatDate(orderItems[0].orderDate),
             dueDate: formatDate(orderItems[0].dueDate),
             status: orderItems[0].status,
-          }); 
+          });
         } else {
           console.log("Order ID not found");
         }
@@ -75,7 +75,17 @@ export default function OrderInfo({ orderID }: { orderID: string }) {
           </div>
           <div>
             <h3 className="font-semibold text-xl">Status</h3>
-            <div className="mt-2 bg-[#00843d] inline-block text-white rounded-xl">
+            <div
+              className={`mt-2 ${
+                orderInfo.status === "ORDERED" ? "bg-[#00843d] " : ""
+              }  ${orderInfo.status === "RECEIVED" ? "bg-[#29d2e4] " : ""}  ${
+                orderInfo.status === "READY" ? "bg-[#2f57da] " : ""
+              }  ${orderInfo.status === "BORROWED" ? "bg-[#3363e9] " : ""}   ${
+                orderInfo.status === "OVERDUE" ? "bg-[#f03535] " : ""
+              }  ${
+                orderInfo.status === "CANCELED" ? "bg-[#808080] " : ""
+              } inline-block text-white rounded-xl`}
+            >
               <p className="p-2 font-bold">{orderInfo.status}</p>
             </div>
           </div>
