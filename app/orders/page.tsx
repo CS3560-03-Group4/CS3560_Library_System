@@ -2,6 +2,7 @@
 
 import CustomStepIcon from "@/components/order/CustomStepIcon";
 import { formatDate } from "@/lib/utils";
+import { Warning } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -254,6 +255,7 @@ export default function MyOrders() {
                       flex: 1,
                       justifyContent: { xs: "center", md: "flex-start" },
                       alignItems: "center",
+                      gap: { xs: 1, md: 2 },
                     }}
                   >
                     <CardContent>
@@ -320,9 +322,13 @@ export default function MyOrders() {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
+                          backgroundColor: "#FFC107", // Yellow warning color
+                          padding: 1,
+                          borderRadius: 2,
                         }}
                       >
-                        <Typography variant="body2" color="error">
+                        <Warning sx={{ mr: 1 }} />
+                        <Typography variant="body1" fontWeight="bold">
                           Overdue
                         </Typography>
                       </Box>
