@@ -3,8 +3,18 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
+import { useEffect, useState } from "react";
 
 export default function Footer() {
+  const [userID, setUserID] = useState<string>("");
+
+  useEffect(() => {
+    const userID = localStorage.getItem("userID");
+    if (userID) {
+      setUserID(userID);
+    }
+  }, []);
+
   return (
     <Box
       component="footer"
@@ -22,11 +32,14 @@ export default function Footer() {
         <Link href="/" color="inherit" underline="hover">
           Home
         </Link>
-        <Link href="/about" color="inherit" underline="hover">
+        <Link href="/credits" color="inherit" underline="hover">
           About Us
         </Link>
-        <Link href="/contact" color="inherit" underline="hover">
-          Contact
+        <Link href={`/profile/${userID}`} color="inherit" underline="hover">
+          Your Profile
+        </Link>
+        <Link href="/orders" color="inherit" underline="hover">
+          Your Orders
         </Link>
       </Box>
 
