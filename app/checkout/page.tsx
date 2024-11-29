@@ -205,10 +205,17 @@ const ReviewOrderPage = () => {
       </Grid2>
 
       {/* Bottom Buttons */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 3, mt: 4 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: { xs: "center", md: "flex-end" },
+          gap: 3,
+          mt: 4,
+        }}
+      >
         <Button
           sx={{
-            fontSize: { xs: "0.8rem", md: "1rem" },
+            fontSize: { xs: "0.8rem", sm: "1rem" },
             boxShadow: 10,
             borderRadius: 10,
           }}
@@ -235,7 +242,7 @@ const ReviewOrderPage = () => {
         </Button>
         <Button
           sx={{
-            fontSize: { xs: "0.75rem", md: "1rem" },
+            fontSize: { xs: "0.8rem", sm: "1rem" },
             boxShadow: 10,
             borderRadius: 10,
           }}
