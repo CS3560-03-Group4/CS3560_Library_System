@@ -2,7 +2,7 @@
 
 import BookCard from "@/components/bookcard/bookcard";
 import { formatDate } from "@/lib/utils";
-import { ArrowUpward } from "@mui/icons-material";
+import { ArrowForward, ArrowUpward } from "@mui/icons-material";
 import {
   Box,
   CircularProgress,
@@ -73,6 +73,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    // setIsLoading(true);
     const fetchAllBooks = async () => {
       try {
         const response = await fetch("/api/book");
@@ -221,8 +222,7 @@ export default function Home() {
             <Box
               sx={{
                 marginLeft: { xs: "0", sm: "12rem" },
-                width: "100%",
-                flex: 1, // Takes up remaining space after the sidebar
+                width: { xs: "100%", sm: "calc(100% - 12rem)" }, // Adjust width for sidebar
                 padding: "0 1.5rem 1.5rem 1.5rem", // Padding around the content area
                 justifyContent: "center", // Centers the content horizontally
               }}
@@ -287,7 +287,6 @@ export default function Home() {
                     variant="h6"
                     sx={{
                       mt: 2,
-                      mb: 2,
                       color: "#00843d",
                       fontWeight: "bold",
                       fontSize: "1.5rem",
@@ -297,16 +296,14 @@ export default function Home() {
                   </Typography>
                   <Box
                     sx={{
-                      display: { xs: "flex", sm: "grid" },
-                      flexDirection: { xs: "column" },
-                      alignItems: { xs: "center", sm: "normal" },
-                      gridTemplateColumns: {
-                        xs: "repeat(1, 1fr)",
-                        sm: "repeat(2, 1fr)",
-                        md: "repeat(3, 1fr)",
-                        lg: "repeat(4, 1fr)",
+                      display: "flex",
+                      overflowX: "auto",
+                      gap: "1rem", // Spacing between cards
+                      padding: "0.8rem",
+                      scrollbarWidth: "none", // Firefox
+                      "&::-webkit-scrollbar": {
+                        display: "none", // Chrome/Safari
                       },
-                      gap: 2,
                     }}
                   >
                     {books.length > 0 ? (

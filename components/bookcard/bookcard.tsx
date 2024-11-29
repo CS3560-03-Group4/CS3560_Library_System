@@ -31,15 +31,16 @@ const BookCard: React.FC<BookProps> = ({
     // Card component from MUI styled using the sx prop
     <Card
       sx={{
-        width: "100%", // Let the card take full width of its container
-        maxWidth: "30rem", // Set a max width for the card
+        minWidth: 150,
+        maxWidth: 180,
+        flex: "0 0 auto", // Prevent cards from shrinking or growing
         boxShadow: 3, // Shadow depth for 3D effect
         borderRadius: "10px", // Rounded corners
         overflow: "hidden", // Ensure content fits within bounds
         position: "relative", // Needed for positioning
         transition: "0.3s", // Smooth transition
         "&:hover": {
-          transform: "scale(1.045)", // Scale slightly on hover
+          transform: "scale(1.05)", // Scale slightly on hover
           boxShadow: "0px 5px 15px rgba(0,0,0,0.3)", // Enhance shadow
         },
       }}
@@ -50,9 +51,8 @@ const BookCard: React.FC<BookProps> = ({
           component="img"
           sx={{
             width: "100%", // Image scales to match card's width
-            height: "auto", // Maintain aspect ratio
-            aspectRatio: "2 / 3", // Explicit aspect ratio
-            bgcolor: "#00843d", // Fallback background color
+            height: 300,
+            bgcolor: "#f4f4f4", // Fallback background color
           }}
           image={imageURL}
           alt={`Cover of ${title}`}
@@ -64,11 +64,11 @@ const BookCard: React.FC<BookProps> = ({
           {/* Link to detailed page */}
           <Link href={`/book/${bookID}`} passHref>
             <Typography
-              variant="h5"
+              noWrap
+              variant="body1"
               sx={{
-                fontSize: { xs: "1.3rem", md: "1.4rem" }, // Responsive font size
                 fontWeight: "bold",
-                marginBottom: 1,
+                marginBottom: 0.5,
                 textDecoration: "none",
                 color: "inherit",
                 "&:hover": {
@@ -80,16 +80,16 @@ const BookCard: React.FC<BookProps> = ({
             </Typography>
           </Link>
           <Typography
-            variant="body1"
+            variant="body2"
             color="text.secondary"
-            sx={{ marginBottom: 1, fontSize: { xs: "0.8rem", md: "1rem" } }}
+            sx={{ marginBottom: 1, fontSize: "0.85rem" }}
           >
             by {author} {/* Display the author */}
           </Typography>
           <Typography
-            variant="body2"
+            variant="subtitle2"
             color="text.secondary"
-            sx={{ fontSize: { xs: "0.8rem", md: "1rem" } }}
+            sx={{ fontSize: "0.8rem" }}
           >
             {datePublished} {/* Display the date */}
           </Typography>
