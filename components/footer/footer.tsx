@@ -45,22 +45,26 @@ export default function Footer() {
         >
           About Us
         </Link>
-        <Link
-          sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
-          href={`/profile/${userID}`}
-          color="inherit"
-          underline="hover"
-        >
-          Your Profile
-        </Link>
-        <Link
-          sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
-          href="/orders"
-          color="inherit"
-          underline="hover"
-        >
-          Your Orders
-        </Link>
+        {userID && (
+          <>
+            <Link
+              sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+              href={`/profile/${userID}`}
+              color="inherit"
+              underline="hover"
+            >
+              Your Profile
+            </Link>
+            <Link
+              sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+              href="/orders"
+              color="inherit"
+              underline="hover"
+            >
+              Your Orders
+            </Link>
+          </>
+        )}
       </Box>
 
       {/* Social Media Links */}

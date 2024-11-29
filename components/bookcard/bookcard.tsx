@@ -66,7 +66,7 @@ const BookCard: React.FC<BookProps> = ({
             <Typography
               variant="h5"
               sx={{
-                fontSize: { xs: "1.2rem", md: "1.4rem" }, // Responsive font size
+                fontSize: { xs: "1.3rem", md: "1.4rem" }, // Responsive font size
                 fontWeight: "bold",
                 marginBottom: 1,
                 textDecoration: "none",
