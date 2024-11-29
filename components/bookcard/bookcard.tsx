@@ -32,7 +32,7 @@ const BookCard: React.FC<BookProps> = ({
     <Card
       sx={{
         width: "100%", // Let the card take full width of its container
-        maxWidth: "300px", // Set a max width for the card
+        maxWidth: "30rem", // Set a max width for the card
         boxShadow: 3, // Shadow depth for 3D effect
         borderRadius: "10px", // Rounded corners
         overflow: "hidden", // Ensure content fits within bounds

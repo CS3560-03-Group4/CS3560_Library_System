@@ -2,9 +2,11 @@
 
 import BookCard from "@/components/bookcard/bookcard";
 import { formatDate } from "@/lib/utils";
+import { ArrowUpward } from "@mui/icons-material";
 import {
   Box,
   CircularProgress,
+  Fab,
   FormControl,
   InputLabel,
   List,
@@ -13,6 +15,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -45,6 +48,29 @@ export default function Home() {
   const [selectedGenre, setSelectedGenre] = useState<string>("All"); // Default to "All" genre
   const [activeGenre, setActiveGenre] = useState<string>(""); // To track the active genre for styling
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  // Function to handle scrolling to the top
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Add event listener to detect scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollButton(true); // Show the button when scrolled 300px down
+      } else {
+        setShowScrollButton(false); // Hide the button otherwise
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchAllBooks = async () => {
@@ -126,6 +152,28 @@ export default function Home() {
           </Box>
         ) : (
           <>
+            {/* Scroll to Top Button */}
+            {showScrollButton && (
+              <Tooltip title="Go to Top" arrow>
+                <Fab
+                  aria-label="scroll-to-top"
+                  onClick={scrollToTop}
+                  sx={{
+                    background: "#00843d",
+                    position: "fixed",
+                    bottom: "2rem",
+                    right: "2rem",
+                    zIndex: 2,
+                    "&:hover": {
+                      background: "#00843d",
+                      opacity: 0.9,
+                    },
+                  }}
+                >
+                  <ArrowUpward />
+                </Fab>
+              </Tooltip>
+            )}
             {/* Sidebar container for category listings */}
             <Box
               sx={{
