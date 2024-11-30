@@ -16,9 +16,49 @@ export default function Order({ params }: { params: { orderID: string } }) {
   const { orderID } = params;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [bookItems, setBookItems] = useState<BookProps[]>([]);
+  const [orderInfo, setOrderInfo] = useState({
+    totalItems: "",
+    orderDate: "",
+    dueDate: "",
+    status: "",
+  });
+  const [userID, setUserID] = useState<string>("");
+
+  useEffect(() => {
+    const userID = localStorage.getItem("userID");
+    if (userID) {
+      setUserID(userID);
+    }
+    const fetchOrderDetails = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/order/${orderID}`);
+        const order = await response.json();
+        const { orderItems } = order;
+        // console.log(orderItems[0]);
+        if (order) {
+          setOrderInfo({
+            totalItems: orderItems[0].totalItems,
+            orderDate: formatDate(orderItems[0].orderDate),
+            dueDate: formatDate(orderItems[0].dueDate),
+            status: orderItems[0].status,
+          });
+        } else {
+          console.error("Order ID not found");
+        }
+      } catch (error) {
+        console.error("Error fetching order details:", error);
+      } finally {
+        setIsLoading(false); // Set loading to false once the fetch is complete
+      }
+    };
+
+    fetchOrderDetails();
+  }, []);
 
   useEffect(() => {
     const fetchOrderItems = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(`/api/order/${orderID}`);
         const order = await response.json();
@@ -59,7 +99,14 @@ export default function Order({ params }: { params: { orderID: string } }) {
           {/* Left Banner */}
           <Grid2 size={{ xs: 12, md: 2 }}>
             <h1 className="mt-4 mb-5 text-4xl font-bold">Your Order</h1>
-            <OrderInfo orderID={orderID} />
+            <OrderInfo
+              orderID={orderID}
+              userID={userID}
+              totalItems={orderInfo.totalItems}
+              orderDate={orderInfo.orderDate}
+              dueDate={orderInfo.dueDate}
+              status={orderInfo.status}
+            />
           </Grid2>
           <Grid2>
             <Divider
@@ -75,14 +122,14 @@ export default function Order({ params }: { params: { orderID: string } }) {
             <h1 className="mt-4 mb-5 text-4xl font-bold">Order Items</h1>
             <Box
               sx={{
-                display: "grid",
-                gridTemplateColumns: {
-                  xs: "repeat(1, 1fr)",
-                  sm: "repeat(2, 1fr)",
-                  md: "repeat(3, 1fr)",
-                  xl: "repeat(4, 1fr)",
+                display: "flex",
+                overflowX: "auto",
+                gap: "1rem", // Spacing between cards
+                padding: "0.8rem",
+                scrollbarWidth: "none", // Firefox
+                "&::-webkit-scrollbar": {
+                  display: "none", // Chrome/Safari
                 },
-                gap: 2,
               }}
             >
               {bookItems.map((book, index) => (

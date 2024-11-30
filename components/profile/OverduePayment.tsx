@@ -16,10 +16,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-interface Fine {
+export interface Fine {
   fineID: string;
   orderID: string;
   amount: number;
@@ -27,7 +28,7 @@ interface Fine {
   paymentDate?: string;
 }
 
-interface Payment {
+export interface Payment {
   fineID?: string;
   studentID?: string;
   paymentMethod?: string;
@@ -243,7 +244,18 @@ export default function OverduePayment({ userID }: { userID: string }) {
                     }}
                   >
                     Order ID:{" "}
-                    <Typography component="span">{fine.orderID}</Typography>
+                    <Link
+                      href={`/orders/${fine.orderID}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Typography
+                        component="span"
+                        sx={{ color: "blue", textDecoration: "underline" }}
+                      >
+                        {fine.orderID}
+                      </Typography>
+                    </Link>
                   </Typography>
                   <Typography
                     variant="h6"

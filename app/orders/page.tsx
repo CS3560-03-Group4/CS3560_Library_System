@@ -9,6 +9,10 @@ import {
   Card,
   CardContent,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   StepConnector as MuiStepConnector,
   Step,
@@ -47,6 +51,10 @@ export default function MyOrders() {
   const [isCanceling, setIsCanceling] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // New state for dialog control
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedOrderID, setSelectedOrderID] = useState<string | null>(null);
+
   // Fetch studentID when the component loads
   useEffect(() => {
     const fetchStudentID = async () => {
@@ -76,8 +84,10 @@ export default function MyOrders() {
 
   // Fetch orders when studentID is available
   useEffect(() => {
+    if (!studentID) return;
+
+    setIsLoading(true);
     const fetchOrders = async () => {
-      setIsLoading(true);
       try {
         const response = await fetch(`/api/orders/${studentID}`);
         if (!response.ok) {
@@ -107,8 +117,8 @@ export default function MyOrders() {
 
   // Get book items in each order ID
   useEffect(() => {
+    setIsLoading(true);
     const fetchOrderItems = async () => {
-      // console.log(orders);
       try {
         const items = await Promise.all(
           orders.map(async ({ orderID }) => {
@@ -116,7 +126,7 @@ export default function MyOrders() {
             const data = await response.json();
             const { orderItems } = data;
             // console.log(orderItems);
-            return { orderID, items: data.orderItems };
+            return { orderID, items: orderItems };
           })
         );
 
@@ -157,8 +167,8 @@ export default function MyOrders() {
   };
 
   const handleCancelOrder = async (orderID: string) => {
-    setIsCanceling(true);
     try {
+      setIsCanceling(true);
       const response = await fetch(`/api/order/${orderID}`, {
         method: "PUT",
         headers: {
@@ -173,7 +183,19 @@ export default function MyOrders() {
       console.error("Error canceling order:", error);
     } finally {
       setIsCanceling(false); // Set loading to false once the fetch is complete
+      setIsDialogOpen(false); // Close dialog after action
     }
+  };
+
+  // Dialog control functions
+  const openDialog = (orderID: string) => {
+    setSelectedOrderID(orderID);
+    setIsDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setSelectedOrderID(null);
+    setIsDialogOpen(false);
   };
 
   return (
@@ -377,49 +399,61 @@ export default function MyOrders() {
                       >
                         View Details
                       </Button>
-                      {order.status !== "BORROWED" && (
-                        <Button
-                          disabled={order.status === "CANCELED"}
-                          variant="contained"
-                          sx={{
-                            borderRadius: 3,
-                            boxShadow: 7,
-                            backgroundColor: `${
-                              order.status === "CANCELED"
-                                ? "#808080"
-                                : "#F6171A"
-                            }`,
-                            "&:hover": {
-                              opacity: 0.7,
-                            },
-                          }}
-                          onClick={() => handleCancelOrder(order.orderID)}
-                        >
-                          {isCanceling ? (
-                            <>
-                              Canceling Order...
-                              <CircularProgress
-                                color="inherit"
-                                size={"1rem"}
-                                sx={{
-                                  ml: 1,
-                                  animation: "spin 1s linear infinite",
-                                }}
-                              />
-                            </>
-                          ) : order.status === "CANCELED" ? (
-                            "Order Canceled"
-                          ) : (
-                            "Cancel Order"
-                          )}
-                        </Button>
-                      )}
+                      {order.status !== "BORROWED" &&
+                        order.status !== "OVERDUE" &&
+                        order.status !== "RETURNED" && (
+                          <Button
+                            disabled={order.status === "CANCELED"}
+                            variant="contained"
+                            sx={{
+                              borderRadius: 3,
+                              boxShadow: 7,
+                              backgroundColor: `${
+                                order.status === "CANCELED"
+                                  ? "#808080"
+                                  : "#F6171A"
+                              }`,
+                              "&:hover": {
+                                opacity: 0.7,
+                              },
+                            }}
+                            onClick={() => openDialog(order.orderID)}
+                          >
+                            {order.status === "CANCELED"
+                              ? "Order Canceled"
+                              : "Cancel Order"}
+                          </Button>
+                        )}
                     </Box>
                   </Box>
                 </Box>
               </Box>
             );
           })}
+
+          {/* Confirmation Dialog */}
+          <Dialog open={isDialogOpen} onClose={closeDialog}>
+            <DialogTitle fontWeight={"bold"}>Confirm Cancellation</DialogTitle>
+            <DialogContent>
+              <Typography>
+                Are you sure you want to cancel this order?
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={closeDialog} color="inherit">
+                No
+              </Button>
+              <Button
+                onClick={() =>
+                  selectedOrderID && handleCancelOrder(selectedOrderID)
+                }
+                color="error"
+                variant="contained"
+              >
+                {isCanceling ? "Cancelling..." : "Yes"}
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       )}
     </>
