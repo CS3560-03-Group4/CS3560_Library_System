@@ -244,11 +244,7 @@ export default function OverduePayment({ userID }: { userID: string }) {
                     }}
                   >
                     Order ID:{" "}
-                    <Link
-                      href={`/orders/${fine.orderID}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <Link href={`/orders/${fine.orderID}`}>
                       <Typography
                         component="span"
                         sx={{ color: "blue", textDecoration: "underline" }}
