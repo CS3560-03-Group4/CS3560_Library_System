@@ -2,12 +2,20 @@
 
 import BookCard from "@/components/bookcard/bookcard";
 import { formatDate } from "@/lib/utils";
+import { ArrowForward, ArrowUpward } from "@mui/icons-material";
 import {
   Box,
   CircularProgress,
+  Fab,
+  FormControl,
+  InputLabel,
   List,
   ListItem,
   ListItemText,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -21,6 +29,7 @@ const categories = [
   "Thriller",
   "Mystery",
   "Fantasy",
+  "Self-help",
   "Computer Science",
 ];
 
@@ -40,13 +49,37 @@ export default function Home() {
   const [activeGenre, setActiveGenre] = useState<string>(""); // To track the active genre for styling
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  // Function to handle scrolling to the top
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Add event listener to detect scroll position
   useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollButton(true); // Show the button when scrolled 300px down
+      } else {
+        setShowScrollButton(false); // Hide the button otherwise
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    // setIsLoading(true);
     const fetchAllBooks = async () => {
       try {
         const response = await fetch("/api/book");
         const data = await response.json();
         const allBooks = data.books;
-        console.log(allBooks);
+        // console.log(allBooks);
         if (allBooks) {
           // Map and directly set the new state
           setBooks(
@@ -92,6 +125,13 @@ export default function Home() {
     setSelectedGenre(category);
     setActiveGenre(category); // Hightlight the selected genre
   };
+
+  const [category, setCategory] = React.useState("");
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setCategory(event.target.value);
+    setSelectedGenre(event.target.value);
+  };
   // Render the component
   return (
     <>
@@ -113,6 +153,28 @@ export default function Home() {
           </Box>
         ) : (
           <>
+            {/* Scroll to Top Button */}
+            {showScrollButton && (
+              <Tooltip title="Go to Top" arrow>
+                <Fab
+                  aria-label="scroll-to-top"
+                  onClick={scrollToTop}
+                  sx={{
+                    background: "#00843d",
+                    position: "fixed",
+                    bottom: "2rem",
+                    right: "2rem",
+                    zIndex: 2,
+                    "&:hover": {
+                      background: "#00843d",
+                      opacity: 0.9,
+                    },
+                  }}
+                >
+                  <ArrowUpward />
+                </Fab>
+              </Tooltip>
+            )}
             {/* Sidebar container for category listings */}
             <Box
               sx={{
@@ -121,6 +183,7 @@ export default function Home() {
                 overflowY: "auto", // Allows scrolling if content exceeds the viewport height
                 borderRight: "1px solid #ddd", // Right border styling
                 zIndex: 1,
+                display: { xs: "none", sm: "block" },
               }}
             >
               {/* List component that contains clickable list items for categories */}
@@ -158,21 +221,72 @@ export default function Home() {
             {/* Main Content Area for displaying books by category */}
             <Box
               sx={{
-                marginLeft: "12rem",
-                width: "100%",
-                flex: 1, // Takes up remaining space after the sidebar
+                marginLeft: { xs: "0", sm: "12rem" },
+                width: { xs: "100%", sm: "calc(100% - 12rem)" }, // Adjust width for sidebar
                 padding: "0 1.5rem 1.5rem 1.5rem", // Padding around the content area
                 justifyContent: "center", // Centers the content horizontally
               }}
             >
+              <FormControl
+                variant="filled"
+                sx={{
+                  mt: 2,
+                  width: "100%",
+                  display: { xs: "block", sm: "none" },
+                  backgroundColor: "#00843D",
+                  color: "white",
+                  opacity: 0.9,
+                  borderRadius: "1rem",
+                  "& .MuiFilledInput-root": {
+                    borderRadius: "1rem", // Rounds the inner Select component
+                    backgroundColor: "#00843D", // Ensure consistent background
+                    borderBottom: "none", // Remove the bottom border
+                    "&:before": {
+                      borderBottom: "none", // Removes the underline before focus
+                    },
+                    "&:after": {
+                      borderBottom: "none", // Removes the underline after focus
+                    },
+                  },
+                }}
+              >
+                <InputLabel
+                  id="demo-simple-select-filled-label"
+                  sx={{
+                    color: "white",
+                    borderRadius: "1rem",
+                    "&.Mui-focused": {
+                      color: "white",
+                    },
+                  }}
+                >
+                  Category
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-filled-label"
+                  id="demo-simple-select-filled"
+                  value={category}
+                  onChange={handleChange}
+                  sx={{
+                    width: "100%",
+                    color: "white",
+                    borderRadius: "1rem",
+                  }}
+                >
+                  {categories.map((category, index) => (
+                    <MenuItem key={index} value={category}>
+                      {category}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               {/* Iterates over each category and its books to render them */}
               {Object.entries(filteredGroupedBooks).map(([genre, books]) => (
-                <Box key={genre} sx={{ marginBottom: "2rem" }}>
+                <Box key={genre} sx={{ marginBottom: "1.2rem" }}>
                   <Typography
                     variant="h6"
                     sx={{
                       mt: 2,
-                      mb: 2,
                       color: "#00843d",
                       fontWeight: "bold",
                       fontSize: "1.5rem",
@@ -182,26 +296,28 @@ export default function Home() {
                   </Typography>
                   <Box
                     sx={{
-                      display: "grid",
-                      gridTemplateColumns: {
-                        xs: "repeat(1, 1fr)",
-                        sm: "repeat(2, 1fr)",
-                        md: "repeat(3, 1fr)",
-                        lg: "repeat(4, 1fr)",
+                      display: "flex",
+                      overflowX: "auto",
+                      gap: "1rem", // Spacing between cards
+                      padding: "0.8rem",
+                      scrollbarWidth: "none", // Firefox
+                      "&::-webkit-scrollbar": {
+                        display: "none", // Chrome/Safari
                       },
-                      gap: 2,
                     }}
                   >
-                    {books.length > 0 ? books.map((book) => (
-                      <BookCard
-                        key={book.bookID}
-                        id={book.bookID}
-                        title={book.title}
-                        author={book.author}
-                        date={book.datePublished}
-                        imageUrl={book.imageURL}
-                      />
-                    )) : (
+                    {books.length > 0 ? (
+                      books.map((book) => (
+                        <BookCard
+                          key={book.bookID}
+                          bookID={book.bookID}
+                          title={book.title}
+                          author={book.author}
+                          datePublished={book.datePublished}
+                          imageURL={book.imageURL}
+                        />
+                      ))
+                    ) : (
                       <Typography variant="h6">No books found.</Typography>
                     )}
                   </Box>

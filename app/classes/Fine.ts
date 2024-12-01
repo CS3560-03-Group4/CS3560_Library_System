@@ -1,3 +1,9 @@
+export enum FineStatus {
+  PAID = "PAID",
+  UNPAID = "UNPAID",
+  PENDING = "PENDING",
+}
+
 class Fine {
   private amount: number;
   private status: string;

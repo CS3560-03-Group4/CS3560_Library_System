@@ -5,12 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
+export const formatDate = (date: string | Date): string => {
+  const dateObj = typeof date === "string" ? new Date(date) : date;
   const utcDate = new Date(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate()
+    dateObj.getUTCFullYear(),
+    dateObj.getUTCMonth(),
+    dateObj.getUTCDate()
   );
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",

@@ -15,6 +15,7 @@ import { Grid2, IconButton, InputAdornment } from "@mui/material";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useUser } from "@/contexts/UserContext";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +30,7 @@ export default function SignUp() {
     username: "",
     password: "",
   });
+  const { login } = useUser();
 
   const handleShowPassword = () => setShowPassword((show) => !show);
 
@@ -99,13 +101,23 @@ export default function SignUp() {
       if (response.ok) {
         const data = await response.json();
         const { userID, token } = data;
-        console.log("User ID:", userID);
-        console.log("Token:", token);
+        // console.log("User ID:", userID);
+        // console.log("Token:", token);
         // Store the token in localStorage
         localStorage.setItem("authToken", token);
         localStorage.setItem("userID", userID.toString());
 
+        login(userID);
+
         setIsLoading(false);
+
+        // Navigate to the Checkout page (or specified by redirectUrl) after successful sign-in
+        const redirectUrl = localStorage.getItem("redirectUrl");
+        if (redirectUrl) {
+          router.push(redirectUrl);
+          return;
+        }
+
         // Redirect to home page after successful sign-up
         router.push("/");
 
@@ -144,7 +156,10 @@ export default function SignUp() {
   return (
     <Grid2 container>
       {/* Left Banner */}
-      <Grid2 size={{ xs: 12, md: 5 }}>
+      <Grid2
+        size={{ xs: 12, md: 5 }}
+        sx={{ display: { xs: "none", md: "block" } }}
+      >
         <div className="h-screen bg-[#00843D] flex flex-col justify-center items-center gap-3">
           <img
             src="/lib_logo.jpg"
@@ -158,13 +173,15 @@ export default function SignUp() {
 
       {/* Right Area with Form */}
       <Grid2 size={{ xs: 12, md: 7 }}>
-        <div className="flex justify-center items-center h-screen">
-          <Card className="shadow-xl m-20 rounded-xl">
+        <div className="flex justify-center items-center h-screen bg-[#00843D] lg:bg-transparent">
+          <Card className="shadow-xl m-7 md:m-20 rounded-xl bg-white">
             <CardHeader>
-              <CardTitle className="text-4xl font-bold">Register</CardTitle>
+              <CardTitle className="text-md md:text-4xl font-bold">
+                Register
+              </CardTitle>
             </CardHeader>
             <CardContent className="pb-0">
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSignup}>
                 <TextField
                   label="BroncoID"
                   variant="outlined"
@@ -241,13 +258,8 @@ export default function SignUp() {
                     },
                   }}
                 />
-              </form>
-            </CardContent>
-            <CardFooter>
-              <div className="flex flex-col w-full justify-center items-center gap-2">
                 <Button
-                  type="button"
-                  onClick={handleSignup}
+                  type="submit"
                   className="hover:bg-primary/90 text-white md:text-md lg:text-lg mt-4 w-full rounded-xl"
                 >
                   {isValidated == true && isLoading ? (
@@ -265,7 +277,11 @@ export default function SignUp() {
                     "Register"
                   )}
                 </Button>
-                <p>
+              </form>
+            </CardContent>
+            <CardFooter>
+              <div className="mt-4 flex flex-col w-full justify-center items-center gap-2">
+                <p className="text-sm md:text-lg">
                   Already have an account?{" "}
                   <span>
                     <a className="underline text-link" href="/sign-in">

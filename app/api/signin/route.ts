@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       { expiresIn: "2h" } // Token expiration time
     );
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         message: "Login successful",
         userID: user[0].userID,
@@ -51,6 +51,11 @@ export async function POST(req: Request) {
       },
       { status: 200 }
     );
+
+    // Add Cache-Control header to the response
+    response.headers.set("Cache-Control", "no-store");
+
+    return response;
   } catch (error) {
     console.error("[ROUTE_SIGNIN] Error during sign-in:", error);
     return NextResponse.json(
