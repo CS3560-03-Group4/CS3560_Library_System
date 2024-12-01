@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Grid2, IconButton, InputAdornment } from "@mui/material";
+import { Grid2, IconButton, InputAdornment, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -75,9 +75,16 @@ export default function SignIn() {
         localStorage.setItem("authToken", token);
 
         // Call login() from UserContext to update context values immediately
-        login();
+        login(userID);
 
-        // Navigate to the Home page after successful sign-in
+        // Navigate to the Checkout page (or specified by redirectUrl) after successful sign-in
+        const redirectUrl = localStorage.getItem("redirectUrl");
+        // console.log(redirectUrl);
+        if (redirectUrl) {
+          router.push(redirectUrl);
+          return;
+        }
+
         router.push("/");
       } else {
         toast.error("Invalid credentials. Please try again.", {
@@ -99,7 +106,10 @@ export default function SignIn() {
   return (
     <Grid2 container>
       {/* Left Banner */}
-      <Grid2 size={{ xs: 12, md: 5 }}>
+      <Grid2
+        size={{ xs: 12, md: 5 }}
+        sx={{ display: { xs: "none", md: "block" } }}
+      >
         <div className="h-screen bg-[#00843D] flex flex-col justify-center items-center gap-3">
           <img
             src="/lib_logo.jpg"
@@ -113,13 +123,16 @@ export default function SignIn() {
 
       {/* Right Area with Form */}
       <Grid2 size={{ xs: 12, md: 7 }}>
-        <div className="flex justify-center items-center h-screen">
-          <Card className="shadow-xl m-10 rounded-xl">
+        <div className="flex justify-center items-center h-screen bg-[#00843D] lg:bg-transparent">
+          <Card className="shadow-xl m-5 md:m-10 rounded-xl bg-white">
             <CardHeader>
+              <p className="lg:hidden text-xl md:text-3xl font-bold">
+                Welcome to CPPLib!
+              </p>
               <CardTitle className="text-4xl font-bold">Sign In</CardTitle>
             </CardHeader>
             <CardContent className="pb-0">
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleSignin}>
                 <TextField
                   label="Username"
                   variant="outlined"
@@ -131,7 +144,7 @@ export default function SignIn() {
                 />
                 <TextField
                   label="Password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   variant="outlined"
                   name="password"
                   value={signinForm.password}
@@ -158,13 +171,8 @@ export default function SignIn() {
                     },
                   }}
                 />
-              </form>
-            </CardContent>
-            <CardFooter>
-              <div className="flex flex-col w-full justify-center items-center gap-2">
                 <Button
-                  type="button"
-                  onClick={handleSignin}
+                  type="submit"
                   className="hover:bg-primary/90 text-white md:text-md lg:text-lg mt-4 w-full rounded-xl"
                 >
                   {isValidated && isLoading ? (
@@ -182,7 +190,11 @@ export default function SignIn() {
                     "Sign In"
                   )}
                 </Button>
-                <p>
+              </form>
+            </CardContent>
+            <CardFooter>
+              <div className="mt-4 flex flex-col w-full justify-center items-center gap-2">
+                <p className="text-sm md:text-lg">
                   Don't have an account?{" "}
                   <span>
                     <a className="underline text-link" href="/sign-up">

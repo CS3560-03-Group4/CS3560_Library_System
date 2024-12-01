@@ -18,7 +18,7 @@ const Searchbar = () => {
   return (
     <Autocomplete
       freeSolo
-      className="w-1/2 md:w-1/4 my-2 bg-white rounded-2xl px-2"
+      className="w-full md:w-1/3 my-2 bg-white rounded-2xl px-2"
       sx={{
         "& .MuiInputBase-root": {
           padding: 0, // Remove padding from TextField's input container

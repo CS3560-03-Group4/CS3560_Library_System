@@ -21,14 +21,14 @@ export default function SearchResults({ params }: SearchResultsProps) {
     const fetchsearchBooks = async () => {
       try {
         const response = await fetch(`/api/search-result/${searchQuery}`);
-        console.log(response);
+        // console.log(response);
         // Check if the response is ok (status 200)
         if (!response.ok) {
           console.error(`Error: ${response.status} ${response.statusText}`);
         }
         const book = await response.json();
         const bookResults = book.data;
-        console.log("Fetch response:", bookResults);
+        // console.log("Fetch response:", bookResults);
         if (book) {
           setBooks(bookResults);
         }
@@ -83,7 +83,7 @@ export default function SearchResults({ params }: SearchResultsProps) {
                     bookID={book.bookID}
                     title={book.title}
                     author={book.author}
-                    date={book.date}
+                    datePublished={book.datePublished}
                     imageURL={book.imageURL}
                   />
                 ))

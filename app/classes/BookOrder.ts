@@ -1,11 +1,11 @@
-enum Status {
-  PENDING = "PENDING",
+export enum Status {
   ORDERED = "ORDERED",
+  RECEIVED = "RECEIVED",
+  READY = "READY",
   BORROWED = "BORROWED",
   RETURNED = "RETURNED",
-  RENEWED = "RENEWED",
-  OVERDUE = "OVERDUE",
   CANCELLED = "CANCELLED",
+  OVERDUE = "OVERDUE",
 }
 
 class BookOrder {

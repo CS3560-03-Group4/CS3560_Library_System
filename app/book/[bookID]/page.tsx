@@ -1,23 +1,22 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCart } from "@/contexts/CartContext";
+import { useUser } from "@/contexts/UserContext";
 import { formatDate } from "@/lib/utils";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function BookPage({ params }: { params: { bookID: string } }) {
   const router = useRouter();
+  const { cart, setCart } = useCart();
+  const { role } = useUser();
   const { bookID } = params;
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAdded, setIsAdded] = useState<boolean>(false);
   const [bookInfo, setBookInfo] = useState({
+    // [var, function to update var]
     title: "",
     author: "",
     datePublished: "",
@@ -26,46 +25,64 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
     numberOfPages: "",
     genre: "",
     imageURL: "",
-    quantityInStock: "10",
+    quantityInStock: "",
   });
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Sync cart state from localStorage
   useEffect(() => {
-    const fetchBookByBookID = async () => {
+    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    setCart(storedCart); // Update cart context
+    setIsAdded(storedCart.includes(bookID)); // Update isAdded based on persisted cart
+  }, [bookID, setCart]);
+
+  // Use when fetching data from DB
+  useEffect(() => {
+    const fetchBookInfo = async () => {
       try {
         const response = await fetch(`/api/book/${bookID}`);
-
-        // Check if the response is ok (status 200)
-        if (!response.ok) {
-          console.error(`Error: ${response.status} ${response.statusText}`);
-          return;
-        }
-
-        // Attempt to parse the JSON only if the response is successful
-        const book = await response.json();
-        console.log("BOOK INFO: ", book);
-        if (book) {
-          // Map and directly set the new state
-          setBookInfo({
-            ...bookInfo,
-            title: book.title,
-            author: book.author,
-            datePublished: formatDate(book.datePublished),
-            description: book.description,
-            publisher: book.publisher,
-            numberOfPages: book.numberOfPages,
-            genre: book.genre,
-            imageURL: book.imageURL,
-          });
-        }
+        const book = await response.json(); // Results got from route.ts in api/book/[bookID]
+        // console.log(book);
+        setBookInfo({
+          ...bookInfo,
+          title: book.title,
+          author: book.author,
+          datePublished: formatDate(book.datePublished),
+          description: book.description,
+          publisher: book.publisher,
+          numberOfPages: book.numberOfPages,
+          genre: book.genre,
+          imageURL: book.imageURL,
+          quantityInStock: book.quantity,
+        });
       } catch (error) {
         console.error("Error fetching book info:", error);
       } finally {
-        setIsLoading(false); // Set loading to false once the fetch is complete
+        setIsLoading(false);
       }
     };
+    fetchBookInfo();
+  }, [bookID]);
 
-    fetchBookByBookID();
-  }, []);
+  const handleAddToCart = () => {
+    if (isAdded) return;
+
+    const updatedCart = [...cart, bookID];
+    setCart(updatedCart);
+    setIsAdded(true);
+
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  // Check if bookInfo is empty
+  const isBookInfoEmpty =
+    !bookInfo ||
+    Object.values(bookInfo).every(
+      (value) => value === "" || value === null || value === undefined
+    );
+  // console.log(bookInfo);
+  // console.log(isBookInfoEmpty);
 
   return (
     <>
@@ -83,10 +100,10 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
           <CircularProgress color="success" />
           <Typography sx={{ mt: 2 }}>Fetching book information...</Typography>
         </Box>
-      ) : (
+      ) : !isBookInfoEmpty ? (
         <div className="min-h-screen bg-gray-200/65 flex justify-center items-center p-6">
           {/* Main Content Section */}
-          <div className="w-full max-w-7xl grid grid-rows-[1fr_auto] gap-8 bg-white p-8 md:p-12 rounded-xl shadow-2xl">
+          <div className="w-full min-w-[370px] max-w-7xl grid grid-rows-[1fr_auto] gap-8 bg-white p-8 md:p-12 rounded-xl shadow-2xl">
             {/* Book Details Section */}
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-8">
               {/* Left: Book Cover */}
@@ -104,11 +121,11 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
               <div className="flex flex-col">
                 <Card className="shadow-none border-none h-full">
                   <CardHeader>
-                    <CardTitle className="text-4xl md:text-5xl font-bold mb-2">
+                    <CardTitle className="text-4xl md:text-5xl font-bold">
                       {bookInfo.title}
                     </CardTitle>
                     <p className="text-gray-500 mt-2 text-xl md:text-2xl">
-                      {bookInfo.author}
+                      by {bookInfo.author}
                     </p>
                     <p className="text-gray-400 text-lg mt-1">
                       Published on {bookInfo.datePublished}
@@ -116,9 +133,10 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
                   </CardHeader>
                   <CardContent>
                     <p className="text-gray-700 text-lg md:text-xl leading-relaxed border-t border-gray-300 pt-6">
-                      {bookInfo.description.split("\\n").map((word, index) => (
-                        <p key={index}>{word}</p>
-                      ))}
+                      {bookInfo.description &&
+                        bookInfo.description
+                          .split("\\n")
+                          .map((word, index) => <p key={index}>{word}</p>)}
                     </p>
                   </CardContent>
                 </Card>
@@ -150,10 +168,21 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
             </div>
 
             {/* Bottom Button Section */}
-            <div className="flex justify-end gap-8 mt-4">
-              <Button className="bg-primary text-white hover:bg-[#4095ea] hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl">
-                Add to cart
-              </Button>
+            <div className="flex justify-end gap-4 md:gap-8 mt-4">
+              {role !== "STAFF" && (
+                <Button
+                  disabled={isAdded}
+                  className={`bg-primary text-white hover:bg-[#4095ea] hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl ${
+                    cart.includes(bookID)
+                      ? "disabled:opacity-25 disabled:cursor-not-allowed"
+                      : ""
+                  }`}
+                  onClick={handleAddToCart}
+                >
+                  {cart.includes(bookID) ? "Added to cart" : "Add to cart"}
+                </Button>
+              )}
+
               <Button
                 className="bg-gray-600 text-white hover:bg-gray-400/95 hover:text-black px-8 py-3 rounded-xl shadow-xl text-lg md:text-xl"
                 onClick={() => router.back()}
@@ -163,6 +192,19 @@ export default function BookPage({ params }: { params: { bookID: string } }) {
             </div>
           </div>
         </div>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            marginTop: "2rem",
+            alignItems: "center",
+            width: "100%",
+            minHeight: "100vh",
+          }}
+        >
+          <h1 className="text-3xl font-bold">Book not found!</h1>
+        </Box>
       )}
     </>
   );

@@ -1,0 +1,1 @@
+SELECT "quantity" FROM "BookInventory" WHERE "bookID" = $1;

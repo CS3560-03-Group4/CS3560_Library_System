@@ -110,7 +110,7 @@ export async function POST(req: Request) {
       ? await db.$queryRawTyped(createNewStudent(broncoID, newUser[0].userID))
       : await db.$queryRawTyped(createNewStaff(broncoID, newUser[0].userID));
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         message: "User created successfully",
         userID: newUser[0].userID,
@@ -118,6 +118,11 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
+
+    // Add Cache-Control header to the response
+    response.headers.set("Cache-Control", "no-store");
+
+    return response;
   } catch (error) {
     console.error("[ROUTE_SIGNUP] Error during sign-up:", error);
     return NextResponse.json(

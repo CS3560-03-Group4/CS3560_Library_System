@@ -15,10 +15,16 @@ export async function GET(
     if (results.length === 0) {
       return NextResponse.json({ error: "No result found" }, { status: 404 });
     }
-    return NextResponse.json(
+
+    const response = NextResponse.json(
       { message: "Search results", data: results },
       { status: 200 }
     );
+
+    // Add Cache-Control header to the response
+    response.headers.set("Cache-Control", "no-store");
+    
+    return response;
   } catch (error) {
     console.error("[ROUTE_SEARCH] Error during search:", error);
     return NextResponse.json(

@@ -1,4 +1,4 @@
-import Book from "./Book";
+import Book from "./book"
 import BookOrder from "./BookOrder";
 
 // An association class between Book and BookOrder

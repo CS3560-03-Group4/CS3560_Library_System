@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import { UserProvider } from "@/contexts/UserContext";
+import { CartProvider } from "@/contexts/CartContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,20 +34,27 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Home</title>
+        <title>CPPLib</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+          name="description"
+          content="A library subsystem app that manages book catalog, inventory, and student orders."
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        <UserProvider>
-          <AppRouterCacheProvider>
-            {/* Conditionally render Header and Footer */}
-            {!hideHeaderAndFooter && <Header />}
-            {children}
-            {!hideHeaderAndFooter && <Footer />}
-          </AppRouterCacheProvider>
-          <ToastContainer />
-        </UserProvider>
+        <CartProvider>
+          <UserProvider>
+            <AppRouterCacheProvider>
+              {/* Conditionally render Header and Footer */}
+              {!hideHeaderAndFooter && <Header />}
+              {children}
+              {!hideHeaderAndFooter && <Footer />}
+            </AppRouterCacheProvider>
+            <ToastContainer />
+          </UserProvider>
+        </CartProvider>
       </body>
     </html>
   );
