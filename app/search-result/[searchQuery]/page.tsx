@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import BookCard, { BookProps } from "@/components/bookcard/bookcard";
-import { Box, Grid2 } from "@mui/material";
+import { Box, Grid2, CircularProgress, Typography, useTheme } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
+import { formatDate } from "@/lib/utils";
 
 interface SearchResultsProps {
   params: {
@@ -12,6 +13,7 @@ interface SearchResultsProps {
 }
 
 export default function SearchResults({ params }: SearchResultsProps) {
+  const theme = useTheme();
   const router = useRouter();
   const { searchQuery } = params;
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -38,9 +40,9 @@ export default function SearchResults({ params }: SearchResultsProps) {
         setIsLoading(false); // Set loading to false once the fetch is complete
       }
     };
-
     fetchsearchBooks();
   }, [searchQuery]);
+
   return (
     <>
       <Head>
@@ -50,30 +52,62 @@ export default function SearchResults({ params }: SearchResultsProps) {
           content="View the search results on our site."
         />
       </Head>
-      <Grid2 container padding={2}>
+      <Grid2 container padding={2} direction="column" >
         {/* Component structure */}
-        <Box
-          sx={{
-            padding: "80px", // Padding around the content area
-            justifyContent: "center", // Centers the content horizontally
-          }}
-        ></Box>
-        <Grid2 size={{ xs: 12, md: 9 }}>
-          <h1 className="text-3xl font-bold">
-          Results for "{decodeURIComponent(searchQuery)}"
-          </h1>
+        <Box>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 'bold',
+              fontSize: '1.5rem',
+              marginLeft: {
+                xs: '10px',
+                sm: '20px',
+                md: '30px',
+                lg: '40px'
+              },              
+              marginBottom: theme.spacing(2) // Adds space below the text
+            }}
+          >
+            Results for "{decodeURIComponent(searchQuery)}"
+          </Typography>
+        </Box>
           {isLoading ? (
-            <p>Loading books...</p> // Display while data is being fetched
-          ) : (
-            <div
-              className="mt-4"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4, 1fr)",
-                gap: "20px",
-                flexWrap: "wrap",
-                justifyContent: "space-between",
+            // Display while data is being fetched
+            <Box 
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
                 width: "100%",
+                minHeight: "100vh",
+              }}
+            >
+              <CircularProgress color="success"/> 
+              <Typography sx={{ mt: 2 }}>Loading books...</Typography>
+            </Box> 
+          ) : (
+            <Box
+              sx={{
+                marginLeft: {
+                  xs: '10px',
+                  sm: '20px',
+                  md: '30px',
+                  lg: '40px'
+                },
+                width: "100%",
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "repeat(2, 1fr)",
+                  sm: "repeat(3, 1fr)",
+                  md: "repeat(4, 1fr)",
+                  lg: "repeat(6, 1fr)",
+                },
+                gap: '10px',
+                rowGap: '40px',
+                justifyContent: "center",
+
               }}
             >
               {books && books.length > 0 ? (
@@ -83,17 +117,18 @@ export default function SearchResults({ params }: SearchResultsProps) {
                     bookID={book.bookID}
                     title={book.title}
                     author={book.author}
-                    date={book.date}
+                    datePublished={formatDate(book.datePublished)}
                     imageURL={book.imageURL}
                   />
                 ))
               ) : (
-                <p>No books found.</p> // Display if no books are found
+                <Typography variant="subtitle1">
+                  No books found.
+                </Typography>
               )}
-            </div>
+            </Box>
           )}
         </Grid2>
-      </Grid2>
     </>
   );
 }
