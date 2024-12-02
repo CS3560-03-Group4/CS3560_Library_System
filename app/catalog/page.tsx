@@ -38,6 +38,26 @@ import { useRouter } from "next/navigation";
 export default function Catalog() {
   const router = useRouter();
   const { isAuthenticated, role } = useUser();
+  const [books, setBooks] = useState<BookCatalogProps[]>([]);
+  const [selectedBook, setSelectedBook] = useState<BookCatalogProps | null>(
+    null
+  );
+  // State for opening different dialogs
+  const [isDialogOpen, setDialogOpen] = useState(false); // State for book details dialog
+  const [isAddDialogOpen, setAddDialogOpen] = useState(false); // State for adding book dialog
+  const [isUpdateDialogOpen, setUpdateDialogOpen] = useState(false); // State for updating book dialog
+  const [isRemoveDialogOpen, setRemoveDialogOpen] = useState(false); // State for removing book dialog
+
+  // State for request loading
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
+
+  // State for rerendering
+  const [isAdded, setIsAdded] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [isRemoved, setIsRemoved] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -79,27 +99,6 @@ export default function Catalog() {
       </Box>
     );
   }
-
-  const [books, setBooks] = useState<BookCatalogProps[]>([]);
-  const [selectedBook, setSelectedBook] = useState<BookCatalogProps | null>(
-    null
-  );
-  // State for opening different dialogs
-  const [isDialogOpen, setDialogOpen] = useState(false); // State for book details dialog
-  const [isAddDialogOpen, setAddDialogOpen] = useState(false); // State for adding book dialog
-  const [isUpdateDialogOpen, setUpdateDialogOpen] = useState(false); // State for updating book dialog
-  const [isRemoveDialogOpen, setRemoveDialogOpen] = useState(false); // State for removing book dialog
-
-  // State for request loading
-  const [isLoading, setIsLoading] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [isRemoving, setIsRemoving] = useState(false);
-
-  // State for rerendering
-  const [isAdded, setIsAdded] = useState(false);
-  const [isUpdated, setIsUpdated] = useState(false);
-  const [isRemoved, setIsRemoved] = useState(false);
 
   // Add book logic
   const handleAddBook = async (newBook: any) => {
