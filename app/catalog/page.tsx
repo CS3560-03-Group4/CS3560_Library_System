@@ -274,7 +274,7 @@ export default function Catalog() {
           }}
         >
           <CircularProgress color="success" />
-          <Typography sx={{ mt: 2 }}>Fetching all book data...</Typography>
+          <Typography sx={{ mt: 2 }}>Fetching all books from database...</Typography>
         </Box>
       ) : (
         <>

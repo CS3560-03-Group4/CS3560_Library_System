@@ -156,7 +156,7 @@ const OrderPage: React.FC = () => {
           }}
         >
           <CircularProgress color="success" />
-          <Typography sx={{ mt: 2 }}>Fetching all book data...</Typography>
+          <Typography sx={{ mt: 2 }}>Fetching all orders from database...</Typography>
         </Box>
       ) : (
         <Box
