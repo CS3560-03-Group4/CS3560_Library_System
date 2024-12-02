@@ -3,7 +3,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const books = [{ title: "Book 1" }, { title: "Book 2" }, { title: "Book 3" }];
+const books = [{ title: "Harry Potter and the Philosopher's Stone" }, { title: "Detective Conan" }, { title: "I See yellow Flowers in The Green Grass" }];
 
 const Searchbar = () => {
   const router = useRouter();

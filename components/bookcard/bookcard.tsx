@@ -4,6 +4,7 @@ import {
   CardContent,
   CardMedia,
   Typography,
+  Tooltip
 } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,6 +32,7 @@ const BookCard: React.FC<BookProps> = ({
     // Card component from MUI styled using the sx prop
     <Card
       sx={{
+        width: '100%',
         minWidth: 150,
         maxWidth: 180,
         flex: "0 0 auto", // Prevent cards from shrinking or growing
@@ -60,25 +62,26 @@ const BookCard: React.FC<BookProps> = ({
         />
         {/* CardContent contains the text elements of the card */}
         <CardContent sx={{ bgcolor: "#fff" }}>
-          {/* Background color: white */}
-          {/* Link to detailed page */}
-          <Link href={`/book/${bookID}`} passHref>
-            <Typography
-              noWrap
-              variant="body1"
-              sx={{
-                fontWeight: "bold",
-                marginBottom: 0.5,
-                textDecoration: "none",
-                color: "inherit",
-                "&:hover": {
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              {title} {/* Display the book title */}
-            </Typography>
-          </Link>
+        {/* Display the full title when the user hovers over it */}
+        <Tooltip title={title} placement="top">
+            <Link href={`/book/${bookID}`} passHref>
+              <Typography
+                noWrap
+                variant="body1"
+                sx={{
+                  fontWeight: "bold",
+                  marginBottom: 0.5,
+                  textDecoration: "none",
+                  color: "inherit",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                {title}
+              </Typography>
+            </Link>
+          </Tooltip>
           <Typography
             variant="body2"
             color="text.secondary"
