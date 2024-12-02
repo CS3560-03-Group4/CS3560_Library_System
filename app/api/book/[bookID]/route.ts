@@ -6,6 +6,7 @@ import {
   removeBookByBookID,
   removeBookInventoryByBookID,
   updateBookInfoByBookID,
+  updateBookInventoryByBookID,
 } from "@prisma/client/sql";
 
 export async function GET(
@@ -78,6 +79,18 @@ export async function PUT(
       return NextResponse.json({ error: "Book not found" }, { status: 404 });
     }
 
+    const updateQuantity = await db.$queryRawTyped(
+      updateBookInventoryByBookID(quantity, bookID)
+    );
+
+    if (!updateQuantity) {
+      // Check if the book was not found
+      return NextResponse.json(
+        { error: "Book not found in book inventory" },
+        { status: 404 }
+      );
+    }
+
     const response = NextResponse.json(
       { message: "Book updated successfully", updatedBook },
       { status: 200 }
@@ -104,11 +117,14 @@ export async function DELETE(
   try {
     const removeQuantity = await db.$queryRawTyped(
       removeBookInventoryByBookID(bookID)
-    )
+    );
 
     if (!removeQuantity) {
       // Check if the book was not found
-      return NextResponse.json({ error: "Book not found in BookInventory" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Book not found in BookInventory" },
+        { status: 404 }
+      );
     }
 
     const removedBook = await db.$queryRawTyped(
@@ -117,7 +133,10 @@ export async function DELETE(
 
     if (!removedBook) {
       // Check if the book was not found
-      return NextResponse.json({ error: "Book not found in Book table" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Book not found in Book table" },
+        { status: 404 }
+      );
     }
 
     const response = NextResponse.json(

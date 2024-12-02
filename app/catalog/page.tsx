@@ -32,12 +32,8 @@ import AddBookDialog from "@/components/catalog/add-book-dialog";
 import UpdateBookDialog from "@/components/catalog/update-book-catalog";
 import { toast } from "react-toastify";
 import RemoveBookDialog from "@/components/catalog/remove-book-dialog";
-import { useUser } from "@/contexts/UserContext";
-import { useRouter } from "next/navigation";
 
 export default function Catalog() {
-  const router = useRouter();
-  const { isAuthenticated, role } = useUser();
   const [books, setBooks] = useState<BookCatalogProps[]>([]);
   const [selectedBook, setSelectedBook] = useState<BookCatalogProps | null>(
     null
@@ -58,47 +54,6 @@ export default function Catalog() {
   const [isAdded, setIsAdded] = useState(false);
   const [isUpdated, setIsUpdated] = useState(false);
   const [isRemoved, setIsRemoved] = useState(false);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      toast.error(
-        "Something went wrong! You must be logged in to access this page.",
-        {
-          position: "top-center",
-          autoClose: 3000,
-        }
-      );
-      router.push("/login"); // Redirect to login if no userID
-    } else if (role !== "STAFF") {
-      toast.error(
-        "Something went wrong! You must be a staff to access this page.",
-        {
-          position: "top-center",
-          autoClose: 3000,
-        }
-      );
-      router.push("/"); // Redirect to home if the user is not a staff
-      return;
-    }
-  }, [isAuthenticated, role, router]);
-
-  // Early return with a loading spinner or redirect indicator
-  if (!isAuthenticated || role !== "STAFF") {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-          flexDirection: "column",
-        }}
-      >
-        <CircularProgress color="success" />
-        <Typography sx={{ mt: 2 }}>Redirecting to home...</Typography>
-      </Box>
-    );
-  }
 
   // Add book logic
   const handleAddBook = async (newBook: any) => {
@@ -199,10 +154,6 @@ export default function Catalog() {
         throw new Error("Failed to remove book");
       }
 
-      toast.success("Book removed successfully!", {
-        position: "top-center",
-        autoClose: 3000,
-      });
       setIsRemoved(true);
     } catch (error) {
       console.error("Error removing book:", error);

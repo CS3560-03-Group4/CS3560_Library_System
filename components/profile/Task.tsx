@@ -26,18 +26,20 @@ const Task: React.FC = () => {
         </Link>
 
         {/* Manage Orders Button */}
-        <Button
-          variant={"contained"}
-          //   onClick={() => setActiveTask('Manage Orders')}
-          sx={{
-            color: "black",
-            borderColor: "black",
-            backgroundColor: "white",
-            "&:hover": { backgroundColor: "#00843D", color: "white" },
-          }}
-        >
-          Manage Orders
-        </Button>
+        <Link href="/order">
+          <Button
+            variant={"contained"}
+            //   onClick={() => setActiveTask('Manage Orders')}
+            sx={{
+              color: "black",
+              borderColor: "black",
+              backgroundColor: "white",
+              "&:hover": { backgroundColor: "#00843D", color: "white" },
+            }}
+          >
+            Manage Orders
+          </Button>
+        </Link>
       </Box>
     </Box>
   );

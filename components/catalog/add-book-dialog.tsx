@@ -210,7 +210,18 @@ export default function AddBookDialog({
         <Button onClick={() => setDialogOpen(false)} color="secondary">
           Cancel
         </Button>
-        <Button onClick={handleSubmit} color="primary">
+        <Button
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          sx={{
+            backgroundColor: !isSubmitting ? "#00843D" : "gray",
+            color: "white",
+            "&:disabled": {
+              backgroundColor: "gray",
+              color: "lightgray",
+            },
+          }}
+        >
           {isSubmitting ? "Submitting..." : "Submit"}
         </Button>
       </DialogActions>

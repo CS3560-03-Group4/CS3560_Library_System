@@ -78,7 +78,7 @@ export default function Footer() {
             </Link>
             <Link
               sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
-              href="/manage-orders"
+              href="/order"
               color="inherit"
               underline="hover"
             >
