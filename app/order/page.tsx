@@ -13,11 +13,15 @@ import {
   Button,
   Select,
   MenuItem,
+  CircularProgress,
+  Typography,
+  TablePagination,
 } from "@mui/material";
 import { TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import UpdateOrderModal from "@/components/update_order_form/updateOrderModal";
 import { formatDate } from "@/lib/utils";
+import { toast } from "react-toastify";
 
 interface Order {
   orderId: string;
@@ -33,10 +37,14 @@ const OrderPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [modalOpen, setModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchAllOrdersInfo = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch("/api/getAllOrdersInfo");
         if (!response.ok) {
@@ -59,13 +67,14 @@ const OrderPage: React.FC = () => {
         setOrders(transformedOrders);
       } catch (error) {
         console.error("Error fetching orders:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchAllOrdersInfo();
   }, []);
 
-  // Filter orders based on search term and selected status
   const filteredOrders = orders.filter(
     (order) =>
       order.studentId.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -91,6 +100,10 @@ const OrderPage: React.FC = () => {
       });
 
       if (!response.ok) {
+        toast.error("Failed to update order in the database", {
+          position: "top-center",
+          autoClose: 3000,
+        });
         throw new Error("Failed to update order in the database");
       }
 
@@ -103,204 +116,223 @@ const OrderPage: React.FC = () => {
       );
       setOrders(updatedOrdersList);
 
-      setSuccessMessage(`Order has been updated successfully in the database!`);
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 3000);
+      toast.success("Order updated successfully", {
+        position: "top-center",
+        autoClose: 3000,
+      });
     } catch (error) {
       console.error("Error updating order:", error);
       alert("Failed to update the order. Please try again.");
     }
   };
 
+  const handleEditClick = (orderId: Order) => {
+    setSelectedOrder(orderId);
+    setModalOpen(true);
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      {/* Header Section */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "12px 16px",
-          gap: 1,
-        }}
-      >
-        <h1 style={{ fontWeight: "bold", fontSize: "50px", margin: 6 }}>
-          Manage Book Orders
-        </h1>
-
-        {/* Search Bar with Icon */}
-        <TextField
-          variant="outlined"
-          placeholder="Search by StudentID"
-          sx={{
-            width: "280px",
-            "& .MuiOutlinedInput-root": { borderRadius: "2px", padding: "2px" },
-          }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            },
-          }}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </Box>
-
-      {/* Filter Section */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          padding: "4px 16px",
-          gap: 1,
-          marginTop: "-15px",
-        }}
-      >
-        <Select
-          value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
-          displayEmpty
-          sx={{ fontSize: "14px", marginLeft: "10px", height: "40px" }}
-        >
-          <MenuItem value="">All</MenuItem>
-          <MenuItem value="READY">READY</MenuItem>
-          <MenuItem value="RECEIVED">RECEIVED</MenuItem>
-          <MenuItem value="CANCELED">CANCELED</MenuItem>
-          <MenuItem value="ORDERED">ORDERED</MenuItem>
-          <MenuItem value="RETURNED">RETURNED</MenuItem>
-          <MenuItem value="OVERDUE">OVERDUE</MenuItem>
-          <MenuItem value="BORROWED">BORROWED</MenuItem>
-        </Select>
-      </Box>
-
-      {/* Main Section */}
-      <Box sx={{ display: "flex", flexGrow: 1 }}>
-        <Box sx={{ flexGrow: 1, p: 3 }}>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: "#00843D" }}>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
-                    OrderID
-                  </TableCell>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
-                    StudentID
-                  </TableCell>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
-                    BookItem(s)
-                  </TableCell>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
-                    Borrow Date
-                  </TableCell>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
-                    Due Date
-                  </TableCell>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
-                    Status
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredOrders.map((order: any) => (
-                  <TableRow
-                    key={order.orderId}
-                    sx={{
-                      backgroundColor:
-                        order.status === "OVERDUE"
-                          ? "#ffebee"
-                          : order.status === "RETURNED"
-                          ? "#e8f5e9"
-                          : order.status === "BORROWED"
-                          ? "#e3f2fd"
-                          : "#fff",
-                    }}
-                  >
-                    <TableCell sx={{ fontSize: "18px" }}>
-                      {order.orderId}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: "18px" }}>
-                      {order.studentId}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: "18px" }}>
-                      {order.bookTitles}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: "18px" }}>
-                      {formatDate(order.borrowDate)}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: "18px" }}>
-                      {formatDate(order.dueDate)}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: "18px" }}>
-                      {order.status}{" "}
-                      {order.status === "OVERDUE" && <span>❗</span>}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </Box>
-
-      {/* Success Message Box */}
-      {successMessage && (
+    <>
+      {isLoading ? (
         <Box
           sx={{
-            color: "green",
-            fontSize: "20px",
-            textAlign: "center",
-            padding: "12px 20px",
-            backgroundColor: "#dff0d8",
-            marginBottom: "20px",
-            position: "fixed",
-            left: "20px",
-            bottom: "20px",
-            borderRadius: "4px",
-            zIndex: 1000,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            minHeight: "100vh",
           }}
         >
-          {successMessage}
+          <CircularProgress color="success" />
+          <Typography sx={{ mt: 2 }}>Fetching all book data...</Typography>
+        </Box>
+      ) : (
+        <Box
+          sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+        >
+          {/* Header Section */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "12px 16px",
+              gap: 1,
+            }}
+          >
+            <h1 style={{ fontWeight: "bold", fontSize: "50px", margin: 6 }}>
+              Manage Book Orders
+            </h1>
+
+            {/* Search Bar */}
+            <TextField
+              variant="outlined"
+              placeholder="Search by StudentID"
+              sx={{
+                width: "280px",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "2px",
+                  padding: "2px",
+                },
+              }}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </Box>
+
+          {/* Filter Section */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              padding: "4px 16px",
+              gap: 1,
+              marginTop: "-15px",
+            }}
+          >
+            <Select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              displayEmpty
+              sx={{ fontSize: "14px", marginLeft: "10px", height: "40px" }}
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="READY">READY</MenuItem>
+              <MenuItem value="RECEIVED">RECEIVED</MenuItem>
+              <MenuItem value="CANCELED">CANCELED</MenuItem>
+              <MenuItem value="ORDERED">ORDERED</MenuItem>
+              <MenuItem value="RETURNED">RETURNED</MenuItem>
+              <MenuItem value="OVERDUE">OVERDUE</MenuItem>
+              <MenuItem value="BORROWED">BORROWED</MenuItem>
+            </Select>
+          </Box>
+
+          {/* Main Section */}
+          <Box sx={{ flexGrow: 1, p: 3 }}>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: "#00843D" }}>
+                    <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
+                      OrderID
+                    </TableCell>
+                    <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
+                      StudentID
+                    </TableCell>
+                    <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
+                      BookItem(s)
+                    </TableCell>
+                    <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
+                      Borrow Date
+                    </TableCell>
+                    <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
+                      Due Date
+                    </TableCell>
+                    <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
+                      Status
+                    </TableCell>
+                    <TableCell sx={{ color: "#fff", fontSize: "22px" }}>
+                      Action
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {(rowsPerPage > 0
+                    ? filteredOrders.slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                    : filteredOrders
+                  ).map((order) => (
+                    <TableRow
+                      key={order.orderId}
+                      sx={{
+                        backgroundColor:
+                          order.status === "OVERDUE"
+                            ? "#ffebee"
+                            : order.status === "RETURNED"
+                            ? "#e8f5e9"
+                            : order.status === "BORROWED"
+                            ? "#e3f2fd"
+                            : "#fff",
+                      }}
+                    >
+                      <TableCell sx={{ fontSize: "18px" }}>
+                        {order.orderId}
+                      </TableCell>
+                      <TableCell sx={{ fontSize: "18px" }}>
+                        {order.studentId}
+                      </TableCell>
+                      <TableCell sx={{ fontSize: "18px" }}>
+                        {order.bookTitles}
+                      </TableCell>
+                      <TableCell sx={{ fontSize: "18px" }}>
+                        {formatDate(order.borrowDate)}
+                      </TableCell>
+                      <TableCell sx={{ fontSize: "18px" }}>
+                        {formatDate(order.dueDate)}
+                      </TableCell>
+                      <TableCell sx={{ fontSize: "18px" }}>
+                        {order.status}{" "}
+                        {order.status === "OVERDUE" && <span>❗</span>}
+                      </TableCell>
+
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={() => handleEditClick(order)}
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={filteredOrders.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Box>
+
+          {/* Update Order Modal */}
+          <UpdateOrderModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            selectedOrder={selectedOrder} // Pass the selected order here
+            onUpdateOrder={handleUpdateOrder}
+          />
         </Box>
       )}
-
-      {/* Footer */}
-      <Box
-        component="footer"
-        sx={{
-          padding: 4,
-          backgroundColor: "#f5f5f5",
-          textAlign: "right",
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: 2,
-        }}
-      >
-        <Button
-          variant="contained"
-          onClick={() => setModalOpen(true)}
-          sx={{
-            color: "#000",
-            backgroundColor: "#9cb8b1",
-            fontSize: "18px",
-            padding: "12px 24px",
-            height: "50px",
-          }}
-        >
-          Update an Order
-        </Button>
-        <UpdateOrderModal
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          orders={orders}
-          onUpdateOrder={handleUpdateOrder}
-        />
-      </Box>
-    </Box>
+    </>
   );
 };
 
