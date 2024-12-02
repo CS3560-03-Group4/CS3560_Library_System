@@ -1,3 +1,4 @@
+import { useUser } from "@/contexts/UserContext";
 import { Facebook, Instagram, Twitter } from "@mui/icons-material";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -7,6 +8,7 @@ import { useEffect, useState } from "react";
 
 export default function Footer() {
   const [userID, setUserID] = useState<string>("");
+  const { role } = useUser();
 
   useEffect(() => {
     const userID = localStorage.getItem("userID");
@@ -45,7 +47,7 @@ export default function Footer() {
         >
           About Us
         </Link>
-        {userID && (
+        {userID && role === "STUDENT" ? (
           <>
             <Link
               sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
@@ -62,6 +64,25 @@ export default function Footer() {
               underline="hover"
             >
               Your Orders
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link
+              sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+              href="/catalog"
+              color="inherit"
+              underline="hover"
+            >
+              Manage Catalog
+            </Link>
+            <Link
+              sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
+              href="/manage-orders"
+              color="inherit"
+              underline="hover"
+            >
+              Manage Orders
             </Link>
           </>
         )}

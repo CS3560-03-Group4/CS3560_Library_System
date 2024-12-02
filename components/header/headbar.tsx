@@ -179,7 +179,7 @@ const Headbar = memo(() => {
                 </Tooltip>
                 <Tooltip title="Manage Catalog" arrow>
                   <Link
-                    href="/manage-catalog"
+                    href="/catalog"
                     color="inherit"
                     className="hidden md:block hover:bg-green-100/70 hover:text-black rounded-full"
                   >
