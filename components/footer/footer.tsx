@@ -47,7 +47,7 @@ export default function Footer() {
         >
           About Us
         </Link>
-        {userID && role === "STUDENT" ? (
+        {userID && role === "STUDENT" && (
           <>
             <Link
               sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
@@ -66,7 +66,8 @@ export default function Footer() {
               Your Orders
             </Link>
           </>
-        ) : (
+        )}
+        {userID && role === "STAFF" && (
           <>
             <Link
               sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
