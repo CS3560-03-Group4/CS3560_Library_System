@@ -4,7 +4,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, M
 interface Order {
   orderId: string;
   studentId: string;
-  bookIds: string;
+  bookTitles: string;
   borrowDate: string;
   dueDate: string;
   status: string;
@@ -53,7 +53,7 @@ const UpdateOrderModal: React.FC<{ open: boolean; onClose: () => void; orders: O
         sx={{
           fontSize: "18px",
           marginTop: -2,
-          paddingLeft: 3
+          paddingLeft: 3,
         }}
       >
         Enter OrderID to view and update status.
@@ -72,7 +72,7 @@ const UpdateOrderModal: React.FC<{ open: boolean; onClose: () => void; orders: O
           <>
             <TextField fullWidth margin="dense" label="Borrower Name" value={orderDetails.studentId} disabled />
             <TextField fullWidth margin="dense" label="StudentID" value={orderDetails.studentId} disabled />
-            <TextField fullWidth margin="dense" label="BookID(s)" value={orderDetails.bookIds} disabled />
+            <TextField fullWidth margin="dense" label="Book Titles" value={orderDetails.bookTitles} disabled /> 
             <TextField fullWidth margin="dense" label="Borrow Date" value={orderDetails.borrowDate} disabled />
             <TextField fullWidth margin="dense" label="Due Date" value={orderDetails.dueDate} disabled />
             <TextField
@@ -83,10 +83,13 @@ const UpdateOrderModal: React.FC<{ open: boolean; onClose: () => void; orders: O
               value={status}
               onChange={(e) => setStatus(e.target.value)}
             >
-              <MenuItem value="Ordered">Ordered</MenuItem>
-              <MenuItem value="Returned">Returned</MenuItem>
-              <MenuItem value="Overdue">Overdue</MenuItem>
-              <MenuItem value="Borrowed">Borrowed</MenuItem>
+              <MenuItem value="READY">READY</MenuItem>
+              <MenuItem value="RECEIVED">RECEIVED</MenuItem>
+              <MenuItem value="CANCELED">CANCELED</MenuItem>
+              <MenuItem value="ORDERED">ORDERED</MenuItem>
+              <MenuItem value="RETURNED">RETURNED</MenuItem>
+              <MenuItem value="OVERDUE">OVERDUE</MenuItem>
+              <MenuItem value="BORROWED">BORROWED</MenuItem>
             </TextField>
           </>
         ) : (
