@@ -33,8 +33,8 @@ const BookCard: React.FC<BookProps> = ({
     <Card
       sx={{
         width: '100%',
-        minWidth: 150,
-        maxWidth: 180,
+        minWidth: 180,
+        maxWidth: 200,
         flex: "0 0 auto", // Prevent cards from shrinking or growing
         boxShadow: 3, // Shadow depth for 3D effect
         borderRadius: "10px", // Rounded corners
