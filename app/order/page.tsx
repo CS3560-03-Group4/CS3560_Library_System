@@ -156,7 +156,9 @@ const OrderPage: React.FC = () => {
           }}
         >
           <CircularProgress color="success" />
-          <Typography sx={{ mt: 2 }}>Fetching all orders from database...</Typography>
+          <Typography sx={{ mt: 2 }}>
+            Fetching all orders from database...
+          </Typography>
         </Box>
       ) : (
         <Box
@@ -172,7 +174,13 @@ const OrderPage: React.FC = () => {
               gap: 1,
             }}
           >
-            <h1 style={{ fontWeight: "bold", fontSize: "50px", margin: 6 }}>
+            <h1
+              style={{
+                fontWeight: "bold",
+                fontSize: "clamp(1.5rem, 2.5vw, 3rem)",
+                margin: 6,
+              }}
+            >
               Manage Book Orders
             </h1>
 
@@ -183,8 +191,9 @@ const OrderPage: React.FC = () => {
               sx={{
                 width: "280px",
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: "2px",
-                  padding: "2px",
+                  borderRadius: "1rem",
+                  padding: "0.1rem",
+                  my: 1,
                 },
               }}
               slotProps={{

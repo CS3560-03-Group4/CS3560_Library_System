@@ -274,11 +274,22 @@ export default function Catalog() {
           }}
         >
           <CircularProgress color="success" />
-          <Typography sx={{ mt: 2 }}>Fetching all books from database...</Typography>
+          <Typography sx={{ mt: 2 }}>
+            Fetching all books from database...
+          </Typography>
         </Box>
       ) : (
         <>
           <div className="mt-5 mx-5 border-green-300">
+            <h1
+              style={{
+                fontWeight: "bold",
+                fontSize: "clamp(1.5rem, 2.5vw, 3rem)",
+                margin: 6,
+              }}
+            >
+              Manage Book Catalog
+            </h1>
             <DataTable columns={columns} data={books} />
 
             <div className="my-4 border-green-300">

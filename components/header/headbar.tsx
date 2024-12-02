@@ -59,8 +59,8 @@ const Headbar = memo(() => {
     role === "STAFF"
       ? {
           Home: () => router.push("/"),
-          "Manage Orders": () => router.push("/manage-orders"),
-          "Manage Catalog": () => router.push("/manage-catalog"),
+          "Manage Orders": () => router.push("/order"),
+          "Manage Catalog": () => router.push("/catalog"),
         }
       : {
           Home: () => router.push("/"),

@@ -122,7 +122,7 @@ export default function Profile({ params }: { params: { userID: string } }) {
             ) : (
               <>
                 {/* Heading */}
-                <h1 className="text-4xl font-bold mb-6">Summary</h1>
+                <h1 className="mt-4 text-4xl font-bold mb-6">Summary</h1>
                 {/* Catalog Summary */}
                 <div className="mt-4" style={{ width: "100%" }}>
                   <CatalogSummary
@@ -134,7 +134,7 @@ export default function Profile({ params }: { params: { userID: string } }) {
                 <div className="my-12"></div> {/* Adds vertical space */}
                 {/* Task Section */}
                 <h1 className="text-4xl font-bold mb-6">What To Do?</h1>
-                <div className="mt-4 scale-110" style={{ width: "40%" }}>
+                <div className="mt-4 flex">
                   <Task />
                 </div>
               </>

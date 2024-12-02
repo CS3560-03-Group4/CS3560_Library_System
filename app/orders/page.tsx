@@ -220,216 +220,226 @@ export default function MyOrders() {
             Your Orders
           </Typography>
 
-          {orders.map((order) => {
-            const items = orderItems[order.orderID] || [];
-            const firstBook = items[0] || null; // Get the first book
-            const remainingBooks = items.length - 1; // Count remaining books
+          {orders.length > 0 ? (
+            orders.map((order) => {
+              const items = orderItems[order.orderID] || [];
+              const firstBook = items[0] || null; // Get the first book
+              const remainingBooks = items.length - 1; // Count remaining books
 
-            return (
-              <Box
-                key={order.orderID}
-                sx={{
-                  marginBottom: 4,
-                  padding: 2,
-                  backgroundColor: "#f9f9f9",
-                  border: "1px solid #00843D",
-                  borderRadius: 2,
-                }}
-              >
-                <Typography variant="subtitle1" gutterBottom>
-                  Order Date: {formatDate(order.orderDate)}
-                </Typography>
-                <Divider sx={{ mb: 2 }} />
-
+              return (
                 <Box
+                  key={order.orderID}
                   sx={{
-                    display: "flex",
-                    flexDirection: { xs: "column", md: "row" },
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 2,
+                    marginBottom: 4,
+                    padding: 2,
+                    backgroundColor: "#f9f9f9",
+                    border: "1px solid #00843D",
+                    borderRadius: 2,
                   }}
                 >
-                  {/* Book Image */}
-                  <Card sx={{ width: 120, height: 160, overflow: "hidden" }}>
-                    {firstBook ? (
-                      <img
-                        src={firstBook.imageURL}
-                        alt={firstBook.title}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <Typography variant="caption" align="center">
-                        No image available
-                      </Typography>
-                    )}
-                  </Card>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Order Date: {formatDate(order.orderDate)}
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
 
-                  {/* Book Info */}
                   <Box
                     sx={{
                       display: "flex",
                       flexDirection: { xs: "column", md: "row" },
-                      flex: 1,
-                      justifyContent: { xs: "center", md: "flex-start" },
                       alignItems: "center",
-                      gap: { xs: 1, md: 2 },
+                      justifyContent: "space-between",
+                      gap: 2,
                     }}
                   >
-                    <CardContent>
+                    {/* Book Image */}
+                    <Card sx={{ width: 120, height: 160, overflow: "hidden" }}>
                       {firstBook ? (
-                        <>
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              fontWeight: "bold",
-                              textAlign: { xs: "center", md: "left" },
-                              fontSize: { xs: "1.1em", md: "1.3rem" },
-                            }}
-                          >
-                            {firstBook.title}
-                          </Typography>
-                          <Typography
-                            variant="subtitle2"
-                            sx={{
-                              fontSize: { xs: "1em", md: "1rem" },
-                              textAlign: { xs: "center", md: "left" },
-                            }}
-                          >
-                            by {firstBook.author}
-                          </Typography>
-                        </>
+                        <img
+                          src={firstBook.imageURL}
+                          alt={firstBook.title}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
                       ) : (
-                        <Typography variant="body2" color="text.secondary">
-                          No book information available
+                        <Typography variant="caption" align="center">
+                          No image available
                         </Typography>
                       )}
-                    </CardContent>
-                    {order.status !== "CANCELED" &&
-                      order.status !== "RETURNED" &&
-                      order.status !== "OVERDUE" && (
-                        <Stepper
-                          activeStep={currentStatus(order.status)}
-                          alternativeLabel
-                          connector={<CustomStepConnector />}
+                    </Card>
+
+                    {/* Book Info */}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: { xs: "column", md: "row" },
+                        flex: 1,
+                        justifyContent: { xs: "center", md: "flex-start" },
+                        alignItems: "center",
+                        gap: { xs: 1, md: 2 },
+                      }}
+                    >
+                      <CardContent>
+                        {firstBook ? (
+                          <>
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                fontWeight: "bold",
+                                textAlign: { xs: "center", md: "left" },
+                                fontSize: { xs: "1.1em", md: "1.3rem" },
+                              }}
+                            >
+                              {firstBook.title}
+                            </Typography>
+                            <Typography
+                              variant="subtitle2"
+                              sx={{
+                                fontSize: { xs: "1em", md: "1rem" },
+                                textAlign: { xs: "center", md: "left" },
+                              }}
+                            >
+                              by {firstBook.author}
+                            </Typography>
+                          </>
+                        ) : (
+                          <Typography variant="body2" color="text.secondary">
+                            No book information available
+                          </Typography>
+                        )}
+                      </CardContent>
+                      {order.status !== "CANCELED" &&
+                        order.status !== "RETURNED" &&
+                        order.status !== "OVERDUE" && (
+                          <Stepper
+                            activeStep={currentStatus(order.status)}
+                            alternativeLabel
+                            connector={<CustomStepConnector />}
+                            sx={{
+                              flex: 1,
+                              maxWidth: { xs: "100%", md: "80%" }, // Reduce the length of the Stepper
+                              marginLeft: "auto",
+                              marginRight: "auto",
+                            }}
+                          >
+                            {steps.map((label, stepIndex) => (
+                              <Step key={stepIndex}>
+                                <StepLabel
+                                  StepIconComponent={(props) => (
+                                    <CustomStepIcon {...props} />
+                                  )}
+                                >
+                                  <Typography variant="caption">
+                                    {label}
+                                  </Typography>
+                                </StepLabel>
+                              </Step>
+                            ))}
+                          </Stepper>
+                        )}
+                      {order.status === "OVERDUE" && (
+                        <Box
                           sx={{
-                            flex: 1,
-                            maxWidth: { xs: "100%", md: "80%" }, // Reduce the length of the Stepper
-                            marginLeft: "auto",
-                            marginRight: "auto",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: "#FFC107", // Yellow warning color
+                            padding: 1,
+                            borderRadius: 2,
                           }}
                         >
-                          {steps.map((label, stepIndex) => (
-                            <Step key={stepIndex}>
-                              <StepLabel
-                                StepIconComponent={(props) => (
-                                  <CustomStepIcon {...props} />
-                                )}
-                              >
-                                <Typography variant="caption">
-                                  {label}
-                                </Typography>
-                              </StepLabel>
-                            </Step>
-                          ))}
-                        </Stepper>
+                          <Warning sx={{ mr: 1 }} />
+                          <Typography variant="body1" fontWeight="bold">
+                            Overdue
+                          </Typography>
+                        </Box>
                       )}
-                    {order.status === "OVERDUE" && (
+                    </Box>
+
+                    {/* "+ More" Link */}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: { xs: "column", md: "row" }, // Horizontal layout
+                        alignItems: "center", // Center vertically
+                        justifyContent: "flex-end",
+                        gap: { xs: 2, md: 8 },
+                      }}
+                    >
+                      {remainingBooks > 0 && (
+                        <Typography
+                          variant="body1"
+                          color="primary"
+                          sx={{
+                            border: "1px solid #00843D",
+                            color: "#00843D",
+                            padding: 1,
+                            borderRadius: 2,
+                          }}
+                        >
+                          +{remainingBooks}{" "}
+                          {remainingBooks === 1 ? "book" : "books"} more
+                        </Typography>
+                      )}
                       <Box
                         sx={{
                           display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          backgroundColor: "#FFC107", // Yellow warning color
-                          padding: 1,
-                          borderRadius: 2,
+                          flexDirection: "column",
+                          gap: 2,
                         }}
                       >
-                        <Warning sx={{ mr: 1 }} />
-                        <Typography variant="body1" fontWeight="bold">
-                          Overdue
-                        </Typography>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            borderRadius: 3,
+                            boxShadow: 7,
+                            backgroundColor: "#00843d",
+                            "&:hover": {
+                              opacity: 0.7,
+                            },
+                          }}
+                          onClick={() =>
+                            router.push(`/orders/${order.orderID}`)
+                          }
+                        >
+                          View Details
+                        </Button>
+                        {order.status !== "BORROWED" &&
+                          order.status !== "OVERDUE" &&
+                          order.status !== "RETURNED" && (
+                            <Button
+                              disabled={order.status === "CANCELED"}
+                              variant="contained"
+                              sx={{
+                                borderRadius: 3,
+                                boxShadow: 7,
+                                backgroundColor: `${
+                                  order.status === "CANCELED"
+                                    ? "#808080"
+                                    : "#F6171A"
+                                }`,
+                                "&:hover": {
+                                  opacity: 0.7,
+                                },
+                              }}
+                              onClick={() => openDialog(order.orderID)}
+                            >
+                              {order.status === "CANCELED"
+                                ? "Order Canceled"
+                                : "Cancel Order"}
+                            </Button>
+                          )}
                       </Box>
-                    )}
-                  </Box>
-
-                  {/* "+ More" Link */}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: { xs: "column", md: "row" }, // Horizontal layout
-                      alignItems: "center", // Center vertically
-                      justifyContent: "flex-end",
-                      gap: { xs: 2, md: 8 },
-                    }}
-                  >
-                    {remainingBooks > 0 && (
-                      <Typography
-                        variant="body1"
-                        color="primary"
-                        sx={{
-                          border: "1px solid #00843D",
-                          color: "#00843D",
-                          padding: 1,
-                          borderRadius: 2,
-                        }}
-                      >
-                        +{remainingBooks}{" "}
-                        {remainingBooks === 1 ? "book" : "books"} more
-                      </Typography>
-                    )}
-                    <Box
-                      sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-                    >
-                      <Button
-                        variant="contained"
-                        sx={{
-                          borderRadius: 3,
-                          boxShadow: 7,
-                          backgroundColor: "#00843d",
-                          "&:hover": {
-                            opacity: 0.7,
-                          },
-                        }}
-                        onClick={() => router.push(`/orders/${order.orderID}`)}
-                      >
-                        View Details
-                      </Button>
-                      {order.status !== "BORROWED" &&
-                        order.status !== "OVERDUE" &&
-                        order.status !== "RETURNED" && (
-                          <Button
-                            disabled={order.status === "CANCELED"}
-                            variant="contained"
-                            sx={{
-                              borderRadius: 3,
-                              boxShadow: 7,
-                              backgroundColor: `${
-                                order.status === "CANCELED"
-                                  ? "#808080"
-                                  : "#F6171A"
-                              }`,
-                              "&:hover": {
-                                opacity: 0.7,
-                              },
-                            }}
-                            onClick={() => openDialog(order.orderID)}
-                          >
-                            {order.status === "CANCELED"
-                              ? "Order Canceled"
-                              : "Cancel Order"}
-                          </Button>
-                        )}
                     </Box>
                   </Box>
                 </Box>
-              </Box>
-            );
-          })}
+              );
+            })
+          ) : (
+            <Typography variant="h6">You don't have any orders yet.</Typography>
+          )}
 
           {/* Confirmation Dialog */}
           <Dialog open={isDialogOpen} onClose={closeDialog}>
