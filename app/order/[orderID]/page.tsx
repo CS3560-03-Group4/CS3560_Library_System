@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Select, MenuItem } from "@mui/material";
-import { TextField, InputAdornment } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import UpdateOrderModal from "@/components/update_order_form/updateOrderModal"; 
+import { TextField, InputAdornment } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import UpdateOrderModal from "@/components/update_order_form/updateOrderModal";
 import { formatDate } from "@/lib/utils";
 
 interface Order {
@@ -22,6 +22,7 @@ const OrderPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
     const fetchAllOrdersInfo = async () => {
@@ -53,7 +54,6 @@ const OrderPage: React.FC = () => {
     fetchAllOrdersInfo();
   }, []);
 
-  // Filter orders based on search term and selected status
   const filteredOrders = orders.filter((order) =>
     order.studentId.toLowerCase().includes(searchTerm.toLowerCase()) &&
     (selectedStatus ? order.status.toUpperCase() === selectedStatus.toUpperCase() : true)
@@ -62,7 +62,7 @@ const OrderPage: React.FC = () => {
   const handleUpdateOrder = async (updatedOrder: Order) => {
     try {
       updatedOrder.status = updatedOrder.status.toUpperCase();
-  
+
       // Send update request to the backend
       const response = await fetch('/api/getAllOrdersInfo', {
         method: 'POST',
@@ -71,20 +71,20 @@ const OrderPage: React.FC = () => {
         },
         body: JSON.stringify({ orderId: updatedOrder.orderId, status: updatedOrder.status }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to update order in the database');
       }
-  
+
       const data = await response.json();
       console.log('Order updated:', data);
-  
+
       // Update local state
       const updatedOrdersList = orders.map((order) =>
         order.orderId === updatedOrder.orderId ? updatedOrder : order
       );
       setOrders(updatedOrdersList);
-  
+
       setSuccessMessage(`Order has been updated successfully in the database!`);
       setTimeout(() => {
         setSuccessMessage(null);
@@ -95,13 +95,18 @@ const OrderPage: React.FC = () => {
     }
   };
 
+  const handleEditClick = (orderId: Order) => {
+    setSelectedOrder(orderId);
+    setModalOpen(true);
+  };
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       {/* Header Section */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", gap: 1 }}>
-        <h1 style={{ fontWeight: "bold", fontSize: "50px", margin: 6 }}>Manage Book Orders</h1> 
+        <h1 style={{ fontWeight: "bold", fontSize: "50px", margin: 6 }}>Manage Book Orders</h1>
 
-        {/* Search Bar with Icon */}
+        {/* Search Bar */}
         <TextField
           variant="outlined"
           placeholder="Search by StudentID"
@@ -138,103 +143,86 @@ const OrderPage: React.FC = () => {
       </Box>
 
       {/* Main Section */}
-      <Box sx={{ display: "flex", flexGrow: 1 }}>
-        <Box sx={{ flexGrow: 1, p: 3 }}>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: "#00843D" }}>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>OrderID</TableCell>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>StudentID</TableCell>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>BookItem(s)</TableCell>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>Borrow Date</TableCell>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>Due Date</TableCell>
-                  <TableCell sx={{ color: "#fff", fontSize: "22px" }}>Status</TableCell>
+      <Box sx={{ flexGrow: 1, p: 3 }}>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "#00843D" }}>
+                <TableCell sx={{ color: "#fff", fontSize: "22px" }}>OrderID</TableCell>
+                <TableCell sx={{ color: "#fff", fontSize: "22px" }}>StudentID</TableCell>
+                <TableCell sx={{ color: "#fff", fontSize: "22px" }}>BookItem(s)</TableCell>
+                <TableCell sx={{ color: "#fff", fontSize: "22px" }}>Borrow Date</TableCell>
+                <TableCell sx={{ color: "#fff", fontSize: "22px" }}>Due Date</TableCell>
+                <TableCell sx={{ color: "#fff", fontSize: "22px" }}>Status</TableCell>
+                <TableCell sx={{ color: "#fff", fontSize: "22px" }}>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredOrders.map((order) => (
+                <TableRow key={order.orderId}
+                  sx={{
+                    backgroundColor:
+                      order.status === "OVERDUE"
+                        ? "#ffebee"
+                        : order.status === "RETURNED"
+                        ? "#e8f5e9"
+                        : order.status === "BORROWED"
+                        ? "#e3f2fd"
+                        : "#fff",
+                  }}>
+                  <TableCell sx={{ fontSize: "18px" }}>{order.orderId}</TableCell>
+                  <TableCell sx={{ fontSize: "18px" }}>{order.studentId}</TableCell>
+                  <TableCell sx={{ fontSize: "18px" }}>{order.bookTitles}</TableCell>
+                  <TableCell sx={{ fontSize: "18px" }}>{formatDate(order.borrowDate)}</TableCell>
+                  <TableCell sx={{ fontSize: "18px" }}>{formatDate(order.dueDate)}</TableCell>
+                  <TableCell sx={{ fontSize: "18px" }}>{order.status} {order.status === "OVERDUE"  && <span>❗</span>}</TableCell>
+                  
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => handleEditClick(order)}
+                    >
+                      Edit
+                    </Button>
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredOrders.map((order: any) => (
-                  <TableRow
-                    key={order.orderId}
-                    sx={{
-                      backgroundColor:
-                        order.status === "OVERDUE"
-                          ? "#ffebee"
-                          : order.status === "RETURNED"
-                          ? "#e8f5e9"
-                          : order.status === "BORROWED"
-                          ? "#e3f2fd"
-                          : "#fff",
-                    }}
-                  >
-                    <TableCell sx={{ fontSize: "18px" }}>{order.orderId}</TableCell>
-                    <TableCell sx={{ fontSize: "18px" }}>{order.studentId}</TableCell>
-                    <TableCell sx={{ fontSize: "18px" }}>{order.bookTitles}</TableCell>
-                    <TableCell sx={{ fontSize: "18px" }}>{formatDate(order.borrowDate)}</TableCell>
-                    <TableCell sx={{ fontSize: "18px" }}>{formatDate(order.dueDate)}</TableCell>
-                    <TableCell sx={{ fontSize: "18px" }}>
-                      {order.status} {order.status === "OVERDUE"  && <span>❗</span>}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
 
-        {/* Success Message Box */}
-        {successMessage && (
-          <Box
+      {/* Success Message */}
+      {successMessage && (
+        <Box
           sx={{
             color: "green",
-            fontSize: "20px",  
+            fontSize: "20px",
             textAlign: "center",
-            padding: "12px 20px",  
-            backgroundColor: "#dff0d8",  
-            marginBottom: "20px",  
-            position: "fixed", 
-            left: "20px", 
-            bottom: "20px",  
-            borderRadius: "4px",  
-            zIndex: 1000,  
-          }}
-          >
-            {successMessage}
-          </Box>
-        )}
-
-        {/* Footer */}
-        <Box
-          component="footer"
-          sx={{
-            padding: 4,
-            backgroundColor: "#f5f5f5",
-            textAlign: "right",
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: 2,
+            padding: "12px 20px",
+            backgroundColor: "#dff0d8",
+            marginBottom: "20px",
+            position: "fixed",
+            left: "20px",
+            bottom: "20px",
+            borderRadius: "4px",
+            zIndex: 1000,
           }}
         >
-          <Button variant="contained" onClick={() => setModalOpen(true)}
-            sx={{
-              color: "#000",
-              backgroundColor: "#9cb8b1",
-              fontSize: "18px", 
-              padding: "12px 24px", 
-              height: "50px", 
-            }}>
-            Update an Order
-          </Button>
-          <UpdateOrderModal
-            open={modalOpen}
-            onClose={() => setModalOpen(false)}
-            orders={orders}
-            onUpdateOrder={handleUpdateOrder}
-          />
+          {successMessage}
         </Box>
+      )}
+
+      {/* Update Order Modal */}
+      <UpdateOrderModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        selectedOrder={selectedOrder} // Pass the selected order here
+        onUpdateOrder={handleUpdateOrder}
+      />
     </Box>
-    );
-  };
+  );
+};
 
 export default OrderPage;
